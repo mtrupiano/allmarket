@@ -1,0 +1,28 @@
+nav {
+    background-color: rgb(39, 70, 39);
+}
+
+tbody {
+    display: block;
+    height: 70vh;
+    overflow: auto;
+}
+
+thead, tbody tr {
+    display: table;
+    width:100%;
+    table-layout: fixed;
+}
+
+thead {
+    width: calc(100% - 1em)
+}
+
+table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.tabs .tab a {
+    color:rgb(39, 70, 39);
+}
