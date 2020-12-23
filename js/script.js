@@ -45,4 +45,12 @@ $(document).ready(function() {
         console.log(response);
     });
 
+    $("tbody").click(function(event) {
+        $("#table-container").removeClass("container"); // This will remove wide right and left margins
+        var colEl = $("#table-column");
+        colEl.removeClass("s12");
+        colEl.addClass("s6");
+        
+    });
+
 });
