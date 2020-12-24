@@ -27,3 +27,28 @@ table {
 .tabs .tab a {
     color:rgb(39, 70, 39);
 }
+
+.btn-large {
+    width: 200px;
+}
+
+.buy-btn {
+    background-color: green;
+}
+
+.sell-btn {
+    background-color: red;
+}
+
+.watch-btn {
+    color: black;
+    background-color: yellow;
+}
+
+.active {
+    background-color: indianred;
+}
+
+#chart-div {
+    margin-top: 10px;
+}
