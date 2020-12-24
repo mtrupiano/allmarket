@@ -45,6 +45,7 @@ $(document).ready(function() {
         console.log(response);
     });
 
+
     // Event listener for selecting a cryptocurrency from the presented table
     $("tbody").click(function(event) {
 
