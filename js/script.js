@@ -9,6 +9,13 @@
 
 $(document).ready(function() {
 
+    if (localStorage.getItem("watchList")) {
+        var watchList = JSON.parse(localStorage.getItem("watchList"));
+    } else {
+        var watchList = [];
+        localStorage.setItem("watchList", JSON.stringify(watchList));
+    }
+
     var coinLoreURL = "https://api.coinlore.net/api/tickers/";
     var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE";
 
@@ -65,38 +72,60 @@ $(document).ready(function() {
             // Un-hide the chart area div
             $("#chart-div").attr("style", "");
 
-            loadModals({coinName: name, coinSymbol: symbol});
+            loadButtons({ coinName: name, coinSymbol: symbol });
 
         });
 
     });
 
-    function loadModals(coinInfo) {
+    /**
+     * Adds event listeners to 'BUY', 'SELL', & 'WATCH' buttons in chart area
+     * 
+     * @param {coinName, coinSymbol}    selectedCoinInfo      Object containing selected currency's 
+     *                                                        name and symbol
+     */
+    function loadButtons(selectedCoinInfo) {
+        $("#buy-sell-watch-group").click(function(event) {
+            event.preventDefault();
+            var target = $(event.target);
+            console.log(event.target);
+            if (target.text() !== "WATCH") {
+                loadBuyOrSellModal(target.text(), selectedCoinInfo);
+            } else {
+                addToWatchList(selectedCoinInfo);
+            }
+        });
+    }
+
+    /** 
+     *  Load modal pane content for buying or selling a currency
+     * 
+     * @param                           method        BUY or SELL (dictates content presented in modal pane)
+     * @param {coinName, coinSymbol}    coinInfo      Object containing selected currency's name and symbol
+     */
+    function loadBuyOrSellModal(method, coinInfo) {
         // Initialize modal pane and attach listeners
-        $("#buy-form").modal({
+        $("#buysell-form").modal({
             dismissible: false,
             onOpenStart: function (modal, trigger) {
-                $(".form-coin-name").text(coinInfo.coinName);
+                ($(".modal-content").children("h1")).text(method + " " + coinInfo.coinName);
             },
             onOpenEnd: function (modal, trigger) {
                 console.log(modal, trigger);
                 $(".modal-form-close-btn").click(function (event) {
-                    $("#buy-form").modal('close');
+                    $("#buysell-form").modal('close');
                 });
             }
         });
+    }
 
-        $("#sell-form").modal({
-            dismissible: false,
-            onOpenStart: function(modal, trigger) {
-                $(".form-coin-name").text(coinInfo.coinName);
-            },
-            onOpenEnd: function(modal, trigger) {
-                $(".modal-form-close-btn").click(function (event) {
-                    $("#sell-form").modal('close');
-                });
-            }
-        });
+    /**
+     * 
+     * @param {*} coinInfo 
+     */
+    function addToWatchList(coinInfo) {
+        watchList.push(coinInfo);
+        localStorage.setItem("watchList", JSON.stringify(watchList));
     }
 
     $.ajax({
