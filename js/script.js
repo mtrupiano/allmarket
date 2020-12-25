@@ -65,23 +65,35 @@ $(document).ready(function() {
             // Un-hide the chart area div
             $("#chart-div").attr("style", "");
 
-            loadModals();
+            loadModals({coinName: name, coinSymbol: symbol});
 
         });
 
     });
 
-    function loadModals() {
+    function loadModals(coinInfo) {
         // Initialize modal pane and attach listeners
         $("#buy-form").modal({
             dismissible: false,
             onOpenStart: function (modal, trigger) {
-                $("#buy-coin-name").text(name);
+                $(".form-coin-name").text(coinInfo.coinName);
             },
             onOpenEnd: function (modal, trigger) {
                 console.log(modal, trigger);
-                $("#buy-form-close-btn").click(function (event) {
+                $(".modal-form-close-btn").click(function (event) {
                     $("#buy-form").modal('close');
+                });
+            }
+        });
+
+        $("#sell-form").modal({
+            dismissible: false,
+            onOpenStart: function(modal, trigger) {
+                $(".form-coin-name").text(coinInfo.coinName);
+            },
+            onOpenEnd: function(modal, trigger) {
+                $(".modal-form-close-btn").click(function (event) {
+                    $("#sell-form").modal('close');
                 });
             }
         });
