@@ -43,6 +43,8 @@ $(document).ready(function() {
             var target = $(event.target);
             var selectedRow = target.parent();
 
+            // Remove highlight from any previously selected row
+            ($("tbody").find(".active")).removeClass("active");
             // Add highlight to selected row
             selectedRow.addClass("active");
 
@@ -84,7 +86,7 @@ $(document).ready(function() {
         colEl.addClass("s12");
 
         // Remove highlight from selected row 
-        // ** ISSUE #22 ** //
+        ($("tbody").find(".active")).removeClass("active");
     });
 
 });
