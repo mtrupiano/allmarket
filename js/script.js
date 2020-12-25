@@ -38,7 +38,7 @@ $(document).ready(function() {
 
         // Event listener for selecting a cryptocurrency from the presented table
         $("tbody").click(function (event) {
-
+            
             // Get selected table row from event
             var target = $(event.target);
             var selectedRow = target.parent();
@@ -64,7 +64,23 @@ $(document).ready(function() {
 
             // Un-hide the chart area div
             $("#chart-div").attr("style", "");
+
+            // Initialize modal pane and attach listeners
+            $("#buy-form").modal({
+                dismissible: false,
+                onOpenStart: function(modal, trigger) {
+                    $("#buy-coin-name").text(name);
+                },
+                onOpenEnd: function(modal, trigger) {
+                    console.log(modal, trigger);
+                    $("#buy-form-close-btn").click(function(event) {
+                        $("#buy-form").modal('close');
+                    });
+                }
+            });
+
         });
+
     });
 
     $.ajax({
