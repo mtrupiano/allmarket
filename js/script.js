@@ -124,8 +124,10 @@ $(document).ready(function() {
      * @param {*} coinInfo 
      */
     function addToWatchList(coinInfo) {
-        watchList.push(coinInfo);
-        localStorage.setItem("watchList", JSON.stringify(watchList));
+        if (!watchList.find(c => c.coinSymbol === coinInfo.coinSymbol)) {
+            watchList.push(coinInfo);
+            localStorage.setItem("watchList", JSON.stringify(watchList));
+        }
     }
 
     $.ajax({
