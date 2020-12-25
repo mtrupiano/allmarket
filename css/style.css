@@ -37,10 +37,12 @@ table {
 }
 
 .sell-btn {
+    width: 80px;
     background-color: red;
 }
 
 .watch-btn {
+    width: 80px;
     color: black;
     background-color: yellow;
 }

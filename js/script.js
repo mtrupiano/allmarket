@@ -45,6 +45,8 @@ $(document).ready(function() {
 
         // Event listener for selecting a cryptocurrency from the presented table
         $("tbody").click(function (event) {
+            // Remove any previously assigned event listener to buy/sell/watch buttons
+            $("#buy-sell-watch-group").off(); 
             
             // Get selected table row from event
             var target = $(event.target);
@@ -72,7 +74,16 @@ $(document).ready(function() {
             // Un-hide the chart area div
             $("#chart-div").attr("style", "");
 
-            loadButtons({ coinName: name, coinSymbol: symbol });
+            // Add event listener to buy/sell/watch buttons
+            $("#buy-sell-watch-group").click(function (event) {
+                event.preventDefault();
+                var target = $(event.target);
+                if (target.text() !== "WATCH") {
+                    loadBuyOrSellModal(target.text(), { coinName: name, coinSymbol: symbol });
+                } else {
+                    addToWatchList({ coinName: name, coinSymbol: symbol });
+                }
+            });
 
         });
 
@@ -85,16 +96,7 @@ $(document).ready(function() {
      *                                                        name and symbol
      */
     function loadButtons(selectedCoinInfo) {
-        $("#buy-sell-watch-group").click(function(event) {
-            event.preventDefault();
-            var target = $(event.target);
-            console.log(event.target);
-            if (target.text() !== "WATCH") {
-                loadBuyOrSellModal(target.text(), selectedCoinInfo);
-            } else {
-                addToWatchList(selectedCoinInfo);
-            }
-        });
+        
     }
 
     /** 
@@ -127,6 +129,15 @@ $(document).ready(function() {
         if (!watchList.find(c => c.coinSymbol === coinInfo.coinSymbol)) {
             watchList.push(coinInfo);
             localStorage.setItem("watchList", JSON.stringify(watchList));
+            M.toast({
+                html: `Added ${coinInfo.coinName} (${coinInfo.coinSymbol}) to your watch list.`,
+                displayLength: 2000
+            });
+        } else {
+            M.toast({ 
+                html: `${coinInfo.coinName} (${coinInfo.coinSymbol}) is already on your watch list`,
+                displayLength: 2000
+            });
         }
     }
 
