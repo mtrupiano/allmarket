@@ -52,7 +52,9 @@ $(document).ready(function() {
         // Get selected table row from event
         var target = $(event.target);
         var selectedRow = target.parent();
-        selectedRow.addClass("active"); // Change background color of selected table row
+
+        // Add highlight to selected row
+        selectedRow.addClass("active");
 
         // Extract coin symbol and name from selected row
         var symbol = $(selectedRow.children()[0]).text();
@@ -70,6 +72,21 @@ $(document).ready(function() {
 
         // Un-hide the chart area div
         $("#chart-div").attr("style", "");
+    });
+
+    // Event listener for chart area close button
+    $("#chart-close-btn").click(function(event) {
+        // Hide chart area div
+        $("#chart-div").attr("style", "display: none;");
+
+        // Re-size table
+        $("#table-container").addClass("container");
+        var colEl = $("#table-column");
+        colEl.removeClass("s6");
+        colEl.addClass("s12");
+
+        // Remove highlight from selected row 
+        // ** ISSUE #22 ** //
     });
 
 });
