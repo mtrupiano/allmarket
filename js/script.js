@@ -36,6 +36,33 @@ $(document).ready(function() {
             $("tbody").append(newTableRow);
         }
 
+        // Event listener for selecting a cryptocurrency from the presented table
+        $("tbody").click(function (event) {
+
+            // Get selected table row from event
+            var target = $(event.target);
+            var selectedRow = target.parent();
+
+            // Add highlight to selected row
+            selectedRow.addClass("active");
+
+            // Extract coin symbol and name from selected row
+            var symbol = $(selectedRow.children()[0]).text();
+            var name = $(selectedRow.children()[1]).text();
+
+            // Add coin symbol and name as headers in chart area
+            $("#coin-chart-header").children("h3").text(symbol);
+            $("#coin-chart-header").children("h4").text(name);
+
+            // Shrink table to the left of the page
+            $("#table-container").removeClass("container");
+            var colEl = $("#table-column");
+            colEl.removeClass("s12");
+            colEl.addClass("s6");
+
+            // Un-hide the chart area div
+            $("#chart-div").attr("style", "");
+        });
     });
 
     $.ajax({
@@ -43,35 +70,6 @@ $(document).ready(function() {
         method: "GET"
     }).then(function(response) {
         console.log(response);
-    });
-
-
-    // Event listener for selecting a cryptocurrency from the presented table
-    $("tbody").click(function(event) {
-
-        // Get selected table row from event
-        var target = $(event.target);
-        var selectedRow = target.parent();
-
-        // Add highlight to selected row
-        selectedRow.addClass("active");
-
-        // Extract coin symbol and name from selected row
-        var symbol = $(selectedRow.children()[0]).text();
-        var name = $(selectedRow.children()[1]).text();
-
-        // Add coin symbol and name as headers in chart area
-        $("#coin-chart-header").children("h3").text(symbol);
-        $("#coin-chart-header").children("h4").text(name);
-        
-        // Shrink table to the left of the page
-        $("#table-container").removeClass("container");
-        var colEl = $("#table-column");
-        colEl.removeClass("s12");
-        colEl.addClass("s6");
-
-        // Un-hide the chart area div
-        $("#chart-div").attr("style", "");
     });
 
     // Event listener for chart area close button
