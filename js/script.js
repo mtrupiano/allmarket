@@ -90,7 +90,7 @@ $(document).ready(function() {
     });
 
     /** 
-     *  Load modal pane content for buying or selling a currency
+     * Load modal pane content for buying or selling a currency
      * 
      * @param                           method        BUY or SELL (dictates content presented in modal pane)
      * @param {coinName, coinSymbol}    coinInfo      Object containing selected currency's name and symbol
@@ -111,7 +111,19 @@ $(document).ready(function() {
         });
 
         $("#purchase-btn").click(function(event) {
+            var qty = $("#purchase-quantity").val();
+            if (qty < 1) {
+                $("#validation-alert").text("Must be greater than 0.");
+                return;
+            }
+        });
 
+        $("#purchase-quantity").change(function(event) {
+            if ($("#purchase-quantity").val() < 1) {
+                $("#validation-alert").show();
+            } else {
+                $("#validation-alert").hide();
+            }
         });
 
         $("#cancel-purchase-btn").click(function(event) {
