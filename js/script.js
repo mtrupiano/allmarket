@@ -89,16 +89,6 @@ $(document).ready(function() {
 
     });
 
-    /**
-     * Adds event listeners to 'BUY', 'SELL', & 'WATCH' buttons in chart area
-     * 
-     * @param {coinName, coinSymbol}    selectedCoinInfo      Object containing selected currency's 
-     *                                                        name and symbol
-     */
-    function loadButtons(selectedCoinInfo) {
-        
-    }
-
     /** 
      *  Load modal pane content for buying or selling a currency
      * 
@@ -110,7 +100,7 @@ $(document).ready(function() {
         $("#buysell-form").modal({
             dismissible: false,
             onOpenStart: function (modal, trigger) {
-                ($(".modal-content").children("h1")).text(method + " " + coinInfo.coinName);
+                $("#modal-form-header").text(`${method} ${coinInfo.coinName} (${coinInfo.coinSymbol})`);
             },
             onOpenEnd: function (modal, trigger) {
                 console.log(modal, trigger);
@@ -123,17 +113,20 @@ $(document).ready(function() {
 
     /**
      * 
-     * @param {*} coinInfo 
+     * 
+     * @param {coinName, coinSymbol} coinInfo 
      */
     function addToWatchList(coinInfo) {
         if (!watchList.find(c => c.coinSymbol === coinInfo.coinSymbol)) {
             watchList.push(coinInfo);
             localStorage.setItem("watchList", JSON.stringify(watchList));
+            M.Toast.dismissAll();
             M.toast({
                 html: `Added ${coinInfo.coinName} (${coinInfo.coinSymbol}) to your watch list.`,
                 displayLength: 2000
             });
         } else {
+            M.Toast.dismissAll();
             M.toast({ 
                 html: `${coinInfo.coinName} (${coinInfo.coinSymbol}) is already on your watch list`,
                 displayLength: 2000
