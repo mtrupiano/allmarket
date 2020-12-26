@@ -90,12 +90,17 @@ $(document).ready(function() {
     });
 
     /** 
-     *  Load modal pane content for buying or selling a currency
+     * Load modal pane content for buying or selling a currency
      * 
      * @param                           method        BUY or SELL (dictates content presented in modal pane)
      * @param {coinName, coinSymbol}    coinInfo      Object containing selected currency's name and symbol
      */
     function loadBuyOrSellModal(method, coinInfo) {
+        // Reset fields
+        var purchaseQuantityField = $("#purchase-quantity");
+        purchaseQuantityField.val("1");
+        $("#validation-alert").hide();
+
         // Initialize modal pane and attach listeners
         $("#buysell-form").modal({
             dismissible: false,
@@ -108,6 +113,28 @@ $(document).ready(function() {
                     $("#buysell-form").modal('close');
                 });
             }
+        });
+
+        $("#purchase-btn").click(function(event) {
+            var qty = $("#purchase-quantity").val();
+            if (qty < 1) {
+                $("#validation-alert").text("Must be greater than 0.");
+                return;
+            }
+        });
+
+        // Toggle validation alert on change if value in quantity field < 0
+        purchaseQuantityField.change(function(event) {
+            if (purchaseQuantityField.val() <= 0) {
+                $("#validation-alert").show();
+            } else {
+                $("#validation-alert").hide();
+            }
+        });
+
+        // Event listener for cancel button
+        $("#cancel-purchase-btn").click(function(event) {
+            $("#buysell-form").modal('close');
         });
     }
 
