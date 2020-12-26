@@ -109,6 +109,14 @@ $(document).ready(function() {
                 });
             }
         });
+
+        $("#purchase-btn").click(function(event) {
+
+        });
+
+        $("#cancel-purchase-btn").click(function(event) {
+            $("#buysell-form").modal('close');
+        });
     }
 
     /**

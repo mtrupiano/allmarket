@@ -54,3 +54,12 @@ table {
 #chart-div {
     margin-top: 10px;
 }
+
+#purchase-btn {
+    width: 100%;
+}
+
+#cancel-purchase-btn {
+    width: 90%;
+    background-color: red;
+}
