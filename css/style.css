@@ -74,3 +74,7 @@ table {
     border-radius: 2px;
     color: rgba(48, 48, 48, 0.6);
 }
+
+#currency-acronym {
+    font-size: 12pt;
+}
