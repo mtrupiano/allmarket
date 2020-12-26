@@ -96,8 +96,11 @@ $(document).ready(function() {
      * @param {coinName, coinSymbol}    coinInfo      Object containing selected currency's name and symbol
      */
     function loadBuyOrSellModal(method, coinInfo) {
+        // Reset fields
         var purchaseQuantityField = $("#purchase-quantity");
         purchaseQuantityField.val("1");
+        $("#validation-alert").hide();
+
         // Initialize modal pane and attach listeners
         $("#buysell-form").modal({
             dismissible: false,
@@ -122,7 +125,7 @@ $(document).ready(function() {
 
         // Toggle validation alert on change if value in quantity field < 0
         purchaseQuantityField.change(function(event) {
-            if (purchaseQuantityField.val() < 1) {
+            if (purchaseQuantityField.val() <= 0) {
                 $("#validation-alert").show();
             } else {
                 $("#validation-alert").hide();
