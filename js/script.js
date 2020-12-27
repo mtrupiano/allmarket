@@ -35,8 +35,10 @@ $(document).ready(function() {
             var symbol = responseArr[i].symbol;
             var name = responseArr[i].name;
             var price = responseArr[i].price_usd;
+            var id = responseArr[i].id;
 
             var newTableRow = $("<tr>");
+            newTableRow.attr("data-crypto-id", id);
             newTableRow.append($("<td>").text(symbol));
             newTableRow.append($("<td>").text(name));
             newTableRow.append($("<td>").text(price));
@@ -60,6 +62,7 @@ $(document).ready(function() {
             // Extract coin symbol and name from selected row
             var symbol = $(selectedRow.children()[0]).text();
             var name = $(selectedRow.children()[1]).text();
+            var cryptoId = selectedRow.attr("data-crypto-id");
 
             // Add coin symbol and name as headers in chart area
             $("#coin-chart-header").children("h3").text(symbol);
@@ -79,7 +82,7 @@ $(document).ready(function() {
                 event.preventDefault();
                 var target = $(event.target);
                 if (target.text() !== "WATCH") {
-                    loadBuyOrSellModal(target.text(), { coinName: name, coinSymbol: symbol });
+                    loadBuyOrSellModal(target.text(), { coinName: name, coinSymbol: symbol, coinID: cryptoId });
                 } else {
                     addToWatchList({ coinName: name, coinSymbol: symbol });
                 }
@@ -92,10 +95,11 @@ $(document).ready(function() {
     /** 
      * Load modal pane content for buying or selling a currency
      * 
-     * @param                           method        BUY or SELL (dictates content presented in modal pane)
-     * @param {coinName, coinSymbol}    coinInfo      Object containing selected currency's name and symbol
+     * @param                                   method        BUY or SELL (dictates content presented in modal pane)
+     * @param {coinName, coinSymbol, coinId}    coinInfo      Object containing selected currency's name, symbol, and currency ID number
      */
     function loadBuyOrSellModal(method, coinInfo) {
+        console.log(coinInfo.coinID);
         // Reset fields
         var purchaseQuantityField = $("#purchase-quantity");
         purchaseQuantityField.val("1");
