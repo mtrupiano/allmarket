@@ -99,7 +99,7 @@ $(document).ready(function() {
                 if (target.text() !== "WATCH") {
                     loadBuyOrSellModal(target.text(), selectedCoin);
                 } else {
-                    addToWatchList({ coinName: name, coinSymbol: symbol });
+                    addToWatchList(selectedCoin);
                 }
             });
 
@@ -110,8 +110,9 @@ $(document).ready(function() {
     /** 
      * Load modal pane content for buying or selling a currency
      * 
-     * @param                                   method        BUY or SELL (dictates content presented in modal pane)
-     * @param {coinName, coinSymbol, coinId}    coinInfo      Object containing selected currency's name, symbol, and currency ID number
+     * @param                       method          BUY or SELL (dictates content presented in modal pane)
+     * @param {name, symbol, id}    coinInfo        Object containing selected currency's name, symbol,
+     *                                              and currency ID number
      */
     function loadBuyOrSellModal(method, coinInfo) {
         // Reset fields
@@ -186,21 +187,21 @@ $(document).ready(function() {
     /**
      * 
      * 
-     * @param {coinName, coinSymbol} coinInfo 
+     * @param {name, symbol, id} coinInfo   Object containing info about coin to watch
      */
-    function addToWatchList(coinInfo) {
-        if (!watchList.find(c => c.coinSymbol === coinInfo.coinSymbol)) {
-            watchList.push(coinInfo);
+    function addToWatchList(selectedCoin) {
+        if (!watchList.find(c => c.symbol === selectedCoin.symbol)) {
+            watchList.push(selectedCoin);
             localStorage.setItem("watchList", JSON.stringify(watchList));
             M.Toast.dismissAll();
             M.toast({
-                html: `Added ${coinInfo.coinName} (${coinInfo.coinSymbol}) to your watch list.`,
+                html: `Added ${selectedCoin.name} (${selectedCoin.symbol}) to your watch list.`,
                 displayLength: 2000
             });
         } else {
             M.Toast.dismissAll();
             M.toast({ 
-                html: `${coinInfo.coinName} (${coinInfo.coinSymbol}) is already on your watch list`,
+                html: `${selectedCoin.name} (${selectedCoin.symbol}) is already on your watch list`,
                 displayLength: 2000
             });
         }
