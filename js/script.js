@@ -20,8 +20,7 @@ $(document).ready(function() {
     var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE";
 
     var cryptoCompareKey = "f4b9e28c75f0678a37042564fa90fd5214aa232b975d626b838a5f4a526ac605";
-    var cryptoCompareURL = "https://min-api.cryptocompare.com/data/v2/histoday?fsym=ETH&tsym=USD&api_key=" + cryptoCompareKey;
-    
+
     var nomicsKey = "fa8abceb3eb222b8e323180022446677";
     var nomicsURL = "https://api.nomics.com/v1/currencies?key=" + nomicsKey + "&ids=BTC,ETH,XRP&attributes=id,name,logo_url";
     // var coinAPIURL = "https://rest-sandbox.coinapi.io/v1/quotes/HBDM_FTS_BTC_USD_191227/history?apikey=" + key + "&time_start=1607558400";
@@ -47,6 +46,8 @@ $(document).ready(function() {
 
         // Event listener for selecting a cryptocurrency from the presented table
         $("tbody").click(function (event) {
+            event.preventDefault();
+
             // Remove any previously assigned event listener to buy/sell/watch buttons
             $("#buy-sell-watch-group").off(); 
             
@@ -74,12 +75,23 @@ $(document).ready(function() {
             colEl.removeClass("s12");
             colEl.addClass("s6");
 
+            // Submit API request to CryptoCompare for history of selected coin's value
+            var cryptoCompareURL = 
+                `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}`;
+            $.ajax({
+                url: cryptoCompareURL,
+                method: "GET"
+            }).then(function (response) {
+                console.log(response);
+            });
+
             // Un-hide the chart area div
             $("#chart-div").attr("style", "");
 
             // Add event listener to buy/sell/watch buttons
             $("#buy-sell-watch-group").click(function (event) {
                 event.preventDefault();
+
                 var target = $(event.target);
                 if (target.text() !== "WATCH") {
                     loadBuyOrSellModal(target.text(), { coinName: name, coinSymbol: symbol, coinID: cryptoId });
@@ -99,7 +111,6 @@ $(document).ready(function() {
      * @param {coinName, coinSymbol, coinId}    coinInfo      Object containing selected currency's name, symbol, and currency ID number
      */
     function loadBuyOrSellModal(method, coinInfo) {
-        console.log(coinInfo.coinID);
         // Reset fields
         var purchaseQuantityField = $("#purchase-quantity");
         purchaseQuantityField.val("1");
@@ -112,14 +123,16 @@ $(document).ready(function() {
                 $("#modal-form-header").text(`${method} ${coinInfo.coinName} (${coinInfo.coinSymbol})`);
             },
             onOpenEnd: function (modal, trigger) {
-                console.log(modal, trigger);
                 $(".modal-form-close-btn").click(function (event) {
                     $("#buysell-form").modal('close');
                 });
             }
         });
 
+        // Event listener for purchase button
         $("#purchase-btn").click(function(event) {
+            event.preventDefault();
+            
             var qty = $("#purchase-quantity").val();
             if (qty < 1) {
                 $("#validation-alert").text("Must be greater than 0.");
@@ -164,13 +177,6 @@ $(document).ready(function() {
             });
         }
     }
-
-    $.ajax({
-        url: cryptoCompareURL,
-        method: "GET"
-    }).then(function(response) {
-        console.log(response);
-    });
 
     // Event listener for chart area close button
     $("#chart-close-btn").click(function(event) {
