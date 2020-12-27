@@ -150,7 +150,6 @@ $(document).ready(function() {
     // Event listener for purchase button
     $("#purchase-btn").click(function (event) {
         event.preventDefault();
-        console.log("Hello??")
 
         // Validate input in quantity field
         var qty = $("#purchase-quantity").val();
