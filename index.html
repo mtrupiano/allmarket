@@ -101,16 +101,25 @@
                                         <span id="validation-alert" style="display: none;">Must be greater than 0.</span>
                                     </div>
                                     <div class="col s6">
-                                        <h3 class="center-align" id="price-display">
-                                            <span id="currency-icon">$</span>
-                                            <span id="price-value">000.00</span>
-                                            <span id="currency-acronym">(USD)</span>
-                                        </h3>
+                                        <div class="row">
+                                            <h3 class="center-align" id="price-display">
+                                                Price per: 
+                                                <span id="currency-icon">$</span>
+                                                <span id="price-value"></span>
+                                                <span id="currency-acronym">(USD)</span>
+                                            </h3>
+                                        </div>
+                                        <div class="row">
+                                            qty: <span id="qty-display"></span>
+                                        </div>
+                                        <div class="row">
+                                            total: <span id="total-price-display"></span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col s8">
-                                        <button class="btn btn-large" id="purchase-btn">Purchase</button>
+                                        <button class="btn btn-large disabled" id="purchase-btn">Purchase</button>
                                     </div>
                                     <div class="col s4">
                                         <button class="btn btn-large" id="cancel-purchase-btn">Cancel</button>
