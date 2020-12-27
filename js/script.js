@@ -22,13 +22,12 @@ $(document).ready(function() {
     var purchaseQuantityField = $("#purchase-quantity");
 
     var coinLoreURL = "https://api.coinlore.net/api/tickers/";
-    var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE";
+    var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE/";
 
     var cryptoCompareKey = "f4b9e28c75f0678a37042564fa90fd5214aa232b975d626b838a5f4a526ac605";
 
     var nomicsKey = "fa8abceb3eb222b8e323180022446677";
     var nomicsURL = "https://api.nomics.com/v1/currencies?key=" + nomicsKey + "&ids=BTC,ETH,XRP&attributes=id,name,logo_url";
-    // var coinAPIURL = "https://rest-sandbox.coinapi.io/v1/quotes/HBDM_FTS_BTC_USD_191227/history?apikey=" + key + "&time_start=1607558400";
 
     $.ajax({
         url: coinLoreURL,
@@ -118,12 +117,23 @@ $(document).ready(function() {
         // Reset fields
         purchaseQuantityField.val("1");
         $("#validation-alert").hide();
+        $("#purchase-btn").addClass("disabled");
 
-        // Initialize modal pane and attach listeners
+        // Initialize modal pane
         $("#buysell-form").modal({
             dismissible: false,
             onOpenStart: function (modal, trigger) {
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
+                $("#qty-display").text(purchaseQuantityField.val());
+
+                $.ajax({
+                    url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
+                    method: "GET"
+                }).then(function (response) {
+                    $("#price-value").text(response[0].price_usd);
+                    $("#purchase-btn").removeClass("disabled");
+                    $("#total-price-display").text((purchaseQuantityField.val() * response[0].price_usd).toFixed(2));
+                });
             }
         });
         
@@ -138,8 +148,18 @@ $(document).ready(function() {
     purchaseQuantityField.change(function(event) {
         if (purchaseQuantityField.val() <= 0) {
             $("#validation-alert").show();
+            $("#purchase-btn").addClass("disabled");
         } else {
             $("#validation-alert").hide();
+            $("#qty-display").text(purchaseQuantityField.val());
+            $.ajax({
+                url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
+                method: "GET"
+            }).then(function (response) {
+                $("#price-value").text(response[0].price_usd);
+                $("#purchase-btn").removeClass("disabled");
+                $("#total-price-display").text((purchaseQuantityField.val() * response[0].price_usd).toFixed(2));
+            });
         }
     });
 
@@ -154,34 +174,30 @@ $(document).ready(function() {
 
         // Validate input in quantity field
         var qty = $("#purchase-quantity").val();
-        if (qty < 1) {
-            $("#validation-alert").text("Must be greater than 0.");
-            return;
-        }
 
-        /*
-            As of right now, clicking 'purchase' will just use the price that was populated in
-            the modal's price field. Eventually this should submit another API request for an
-            up-to-date price. This up-to-date price may not match what the user saw when they clicked
-            'purchase', but there will be a disclaimer about this.
-        */
-        var price = parseFloat($("#price-value").text());
-        var receipt = {
-            symbol: selectedCoin.symbol,
-            coin: selectedCoin.name,
-            id: selectedCoin.id,
-            price: price,
-            qty: qty,
-            date: moment()._d
-        };
-        console.log(receipt);
-        if (!localStorage.getItem("receipts")) {
-            var storedReceipts = [];
-        } else {
-            var storedReceipts = JSON.parse(localStorage.getItem("receipts"));
-        }
-        storedReceipts.push(receipt);
-        localStorage.setItem("receipts", JSON.stringify(storedReceipts));
+        // Submit another API request to get most up-to-date price
+        $.ajax({
+            url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
+            method: "GET"
+        }).then(function (response) {
+            var price = response[0].price_usd * qty;
+            var receipt = {
+                symbol: selectedCoin.symbol,
+                coin: selectedCoin.name,
+                id: selectedCoin.id,
+                price: price,
+                qty: qty,
+                date: moment()._d
+            };
+            console.log(receipt);
+            if (!localStorage.getItem("receipts")) {
+                var storedReceipts = [];
+            } else {
+                var storedReceipts = JSON.parse(localStorage.getItem("receipts"));
+            }
+            storedReceipts.push(receipt);
+            localStorage.setItem("receipts", JSON.stringify(storedReceipts));
+        });
     });
 
     /**
