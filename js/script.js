@@ -16,6 +16,9 @@ $(document).ready(function() {
         localStorage.setItem("watchList", JSON.stringify(watchList));
     }
 
+    var selectedCoin;
+    var purchaseQuantityField = $("#purchase-quantity");
+
     var coinLoreURL = "https://api.coinlore.net/api/tickers/";
     var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE";
 
@@ -24,8 +27,6 @@ $(document).ready(function() {
     var nomicsKey = "fa8abceb3eb222b8e323180022446677";
     var nomicsURL = "https://api.nomics.com/v1/currencies?key=" + nomicsKey + "&ids=BTC,ETH,XRP&attributes=id,name,logo_url";
     // var coinAPIURL = "https://rest-sandbox.coinapi.io/v1/quotes/HBDM_FTS_BTC_USD_191227/history?apikey=" + key + "&time_start=1607558400";
-
-    var selectedCoin;
 
     $.ajax({
         url: coinLoreURL,
@@ -49,9 +50,6 @@ $(document).ready(function() {
         // Event listener for selecting a cryptocurrency from the presented table
         $("tbody").click(function (event) {
             event.preventDefault();
-
-            // Remove any previously assigned event listener to buy/sell/watch buttons
-            $("#buy-sell-watch-group").off(); 
             
             // Get selected table row from event
             var target = $(event.target);
@@ -91,20 +89,20 @@ $(document).ready(function() {
             // Un-hide the chart area div
             $("#chart-div").attr("style", "");
 
-            // Add event listener to buy/sell/watch buttons
-            $("#buy-sell-watch-group").click(function (event) {
-                event.preventDefault();
-
-                var target = $(event.target);
-                if (target.text() !== "WATCH") {
-                    loadBuyOrSellModal(target.text(), selectedCoin);
-                } else {
-                    addToWatchList(selectedCoin);
-                }
-            });
-
         });
 
+    });
+
+    // Event listener for buy/sell/watch buttons
+    $("#buy-sell-watch-group").click(function (event) {
+        event.preventDefault();
+
+        var target = $(event.target);
+        if (target.text() !== "WATCH") {
+            loadBuyOrSellModal(target.text(), selectedCoin);
+        } else {
+            addToWatchList(selectedCoin);
+        }
     });
 
     /** 
@@ -116,7 +114,6 @@ $(document).ready(function() {
      */
     function loadBuyOrSellModal(method, coinInfo) {
         // Reset fields
-        var purchaseQuantityField = $("#purchase-quantity");
         purchaseQuantityField.val("1");
         $("#validation-alert").hide();
 
@@ -125,30 +122,31 @@ $(document).ready(function() {
             dismissible: false,
             onOpenStart: function (modal, trigger) {
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
-            },
-            onOpenEnd: function (modal, trigger) {
-                $(".modal-form-close-btn").click(function (event) {
-                    $("#buysell-form").modal('close');
-                });
             }
         });
-
-        // Toggle validation alert on change if value in quantity field < 0
-        purchaseQuantityField.change(function(event) {
-            if (purchaseQuantityField.val() <= 0) {
-                $("#validation-alert").show();
-            } else {
-                $("#validation-alert").hide();
-            }
-        });
-
-        // Event listener for cancel button
-        $("#cancel-purchase-btn").click(function(event) {
-            $("#buysell-form").modal('close');
-        });
+        
     }
 
-    // Event listener for purchase button
+    // Event listener for modal form close button
+    $(".modal-form-close-btn").click(function (event) {
+        $("#buysell-form").modal('close');
+    });
+
+    // Toggle validation alert on change if value in quantity field < 0
+    purchaseQuantityField.change(function(event) {
+        if (purchaseQuantityField.val() <= 0) {
+            $("#validation-alert").show();
+        } else {
+            $("#validation-alert").hide();
+        }
+    });
+
+    // Event listener for modal form cancel button
+    $("#cancel-purchase-btn").click(function(event) {
+        $("#buysell-form").modal('close');
+    });
+
+    // Event listener for modal form purchase button
     $("#purchase-btn").click(function (event) {
         event.preventDefault();
 
