@@ -47,7 +47,8 @@ table {
     background-color: yellow;
 }
 
-.active {
+/* Highlight color for selected table row */
+tr.active {
     background-color: indianred;
 }
 
