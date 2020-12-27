@@ -115,6 +115,7 @@ $(document).ready(function() {
         var purchaseQuantityField = $("#purchase-quantity");
         purchaseQuantityField.val("1");
         $("#validation-alert").hide();
+        $("#purchase-btn").off();
 
         // Initialize modal pane and attach listeners
         $("#buysell-form").modal({
@@ -138,6 +139,22 @@ $(document).ready(function() {
                 $("#validation-alert").text("Must be greater than 0.");
                 return;
             }
+
+            var price = parseFloat($("#price-value").text());
+            var receipt = {
+                coin: coinInfo,
+                price: price,
+                qty: qty,
+                date: moment()._d
+            };
+            console.log(receipt);
+            if (!localStorage.getItem("receipts")) {
+                var storedReceipts = [];
+            } else {
+                var storedReceipts = JSON.parse(localStorage.getItem("receipts"));
+            }
+            storedReceipts.push(receipt);
+            localStorage.setItem("receipts", JSON.stringify(storedReceipts));
         });
 
         // Toggle validation alert on change if value in quantity field < 0
