@@ -9,6 +9,8 @@
 
 $(document).ready(function() {
 
+    $(".tabs").tabs();
+
     if (localStorage.getItem("watchList")) {
         var watchList = JSON.parse(localStorage.getItem("watchList"));
     } else {
@@ -71,7 +73,7 @@ $(document).ready(function() {
             $("#coin-chart-header").children("h4").text(name);
 
             // Shrink table to the left of the page
-            $("#table-container").removeClass("container");
+            $("#coins-view").removeClass("container");
             var colEl = $("#table-column");
             colEl.removeClass("s12");
             colEl.addClass("s6");
@@ -211,7 +213,7 @@ $(document).ready(function() {
         $("#chart-div").attr("style", "display: none;");
 
         // Re-size table
-        $("#table-container").addClass("container");
+        $("#coins-view").addClass("container");
         var colEl = $("#table-column");
         colEl.removeClass("s6");
         colEl.addClass("s12");
