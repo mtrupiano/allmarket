@@ -25,6 +25,8 @@ $(document).ready(function() {
     var nomicsURL = "https://api.nomics.com/v1/currencies?key=" + nomicsKey + "&ids=BTC,ETH,XRP&attributes=id,name,logo_url";
     // var coinAPIURL = "https://rest-sandbox.coinapi.io/v1/quotes/HBDM_FTS_BTC_USD_191227/history?apikey=" + key + "&time_start=1607558400";
 
+    var selectedCoin;
+
     $.ajax({
         url: coinLoreURL,
         method: "GET"
@@ -64,6 +66,7 @@ $(document).ready(function() {
             var symbol = $(selectedRow.children()[0]).text();
             var name = $(selectedRow.children()[1]).text();
             var cryptoId = selectedRow.attr("data-crypto-id");
+            selectedCoin = { symbol: symbol, name: name, id: cryptoId };
 
             // Add coin symbol and name as headers in chart area
             $("#coin-chart-header").children("h3").text(symbol);
@@ -94,7 +97,7 @@ $(document).ready(function() {
 
                 var target = $(event.target);
                 if (target.text() !== "WATCH") {
-                    loadBuyOrSellModal(target.text(), { coinName: name, coinSymbol: symbol, coinID: cryptoId });
+                    loadBuyOrSellModal(target.text(), selectedCoin);
                 } else {
                     addToWatchList({ coinName: name, coinSymbol: symbol });
                 }
@@ -115,46 +118,18 @@ $(document).ready(function() {
         var purchaseQuantityField = $("#purchase-quantity");
         purchaseQuantityField.val("1");
         $("#validation-alert").hide();
-        $("#purchase-btn").off();
 
         // Initialize modal pane and attach listeners
         $("#buysell-form").modal({
             dismissible: false,
             onOpenStart: function (modal, trigger) {
-                $("#modal-form-header").text(`${method} ${coinInfo.coinName} (${coinInfo.coinSymbol})`);
+                $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
             },
             onOpenEnd: function (modal, trigger) {
                 $(".modal-form-close-btn").click(function (event) {
                     $("#buysell-form").modal('close');
                 });
             }
-        });
-
-        // Event listener for purchase button
-        $("#purchase-btn").click(function(event) {
-            event.preventDefault();
-            
-            var qty = $("#purchase-quantity").val();
-            if (qty < 1) {
-                $("#validation-alert").text("Must be greater than 0.");
-                return;
-            }
-
-            var price = parseFloat($("#price-value").text());
-            var receipt = {
-                coin: coinInfo,
-                price: price,
-                qty: qty,
-                date: moment()._d
-            };
-            console.log(receipt);
-            if (!localStorage.getItem("receipts")) {
-                var storedReceipts = [];
-            } else {
-                var storedReceipts = JSON.parse(localStorage.getItem("receipts"));
-            }
-            storedReceipts.push(receipt);
-            localStorage.setItem("receipts", JSON.stringify(storedReceipts));
         });
 
         // Toggle validation alert on change if value in quantity field < 0
@@ -171,6 +146,43 @@ $(document).ready(function() {
             $("#buysell-form").modal('close');
         });
     }
+
+    // Event listener for purchase button
+    $("#purchase-btn").click(function (event) {
+        event.preventDefault();
+        console.log("Hello??")
+
+        // Validate input in quantity field
+        var qty = $("#purchase-quantity").val();
+        if (qty < 1) {
+            $("#validation-alert").text("Must be greater than 0.");
+            return;
+        }
+
+        /*
+            As of right now, clicking 'purchase' will just use the price that was populated in
+            the modal's price field. Eventually this should submit another API request for an
+            up-to-date price. This up-to-date price may not match what the user saw when they clicked
+            'purchase', but there will be a disclaimer about this.
+        */
+        var price = parseFloat($("#price-value").text());
+        var receipt = {
+            symbol: selectedCoin.symbol,
+            coin: selectedCoin.name,
+            id: selectedCoin.id,
+            price: price,
+            qty: qty,
+            date: moment()._d
+        };
+        console.log(receipt);
+        if (!localStorage.getItem("receipts")) {
+            var storedReceipts = [];
+        } else {
+            var storedReceipts = JSON.parse(localStorage.getItem("receipts"));
+        }
+        storedReceipts.push(receipt);
+        localStorage.setItem("receipts", JSON.stringify(storedReceipts));
+    });
 
     /**
      * 
