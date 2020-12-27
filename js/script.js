@@ -46,6 +46,8 @@ $(document).ready(function() {
 
         // Event listener for selecting a cryptocurrency from the presented table
         $("tbody").click(function (event) {
+            event.preventDefault();
+
             // Remove any previously assigned event listener to buy/sell/watch buttons
             $("#buy-sell-watch-group").off(); 
             
@@ -89,6 +91,7 @@ $(document).ready(function() {
             // Add event listener to buy/sell/watch buttons
             $("#buy-sell-watch-group").click(function (event) {
                 event.preventDefault();
+
                 var target = $(event.target);
                 if (target.text() !== "WATCH") {
                     loadBuyOrSellModal(target.text(), { coinName: name, coinSymbol: symbol, coinID: cryptoId });
@@ -108,7 +111,6 @@ $(document).ready(function() {
      * @param {coinName, coinSymbol, coinId}    coinInfo      Object containing selected currency's name, symbol, and currency ID number
      */
     function loadBuyOrSellModal(method, coinInfo) {
-        console.log(coinInfo.coinID);
         // Reset fields
         var purchaseQuantityField = $("#purchase-quantity");
         purchaseQuantityField.val("1");
@@ -121,14 +123,16 @@ $(document).ready(function() {
                 $("#modal-form-header").text(`${method} ${coinInfo.coinName} (${coinInfo.coinSymbol})`);
             },
             onOpenEnd: function (modal, trigger) {
-                console.log(modal, trigger);
                 $(".modal-form-close-btn").click(function (event) {
                     $("#buysell-form").modal('close');
                 });
             }
         });
 
+        // Event listener for purchase button
         $("#purchase-btn").click(function(event) {
+            event.preventDefault();
+            
             var qty = $("#purchase-quantity").val();
             if (qty < 1) {
                 $("#validation-alert").text("Must be greater than 0.");
