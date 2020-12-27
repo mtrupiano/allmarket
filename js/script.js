@@ -16,6 +16,9 @@ $(document).ready(function() {
         localStorage.setItem("watchList", JSON.stringify(watchList));
     }
 
+    var selectedCoin;
+    var purchaseQuantityField = $("#purchase-quantity");
+
     var coinLoreURL = "https://api.coinlore.net/api/tickers/";
     var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE";
 
@@ -47,9 +50,6 @@ $(document).ready(function() {
         // Event listener for selecting a cryptocurrency from the presented table
         $("tbody").click(function (event) {
             event.preventDefault();
-
-            // Remove any previously assigned event listener to buy/sell/watch buttons
-            $("#buy-sell-watch-group").off(); 
             
             // Get selected table row from event
             var target = $(event.target);
@@ -64,6 +64,7 @@ $(document).ready(function() {
             var symbol = $(selectedRow.children()[0]).text();
             var name = $(selectedRow.children()[1]).text();
             var cryptoId = selectedRow.attr("data-crypto-id");
+            selectedCoin = { symbol: symbol, name: name, id: cryptoId };
 
             // Add coin symbol and name as headers in chart area
             $("#coin-chart-header").children("h3").text(symbol);
@@ -88,31 +89,31 @@ $(document).ready(function() {
             // Un-hide the chart area div
             $("#chart-div").attr("style", "");
 
-            // Add event listener to buy/sell/watch buttons
-            $("#buy-sell-watch-group").click(function (event) {
-                event.preventDefault();
-
-                var target = $(event.target);
-                if (target.text() !== "WATCH") {
-                    loadBuyOrSellModal(target.text(), { coinName: name, coinSymbol: symbol, coinID: cryptoId });
-                } else {
-                    addToWatchList({ coinName: name, coinSymbol: symbol });
-                }
-            });
-
         });
 
+    });
+
+    // Event listener for buy/sell/watch buttons
+    $("#buy-sell-watch-group").click(function (event) {
+        event.preventDefault();
+
+        var target = $(event.target);
+        if (target.text() !== "WATCH") {
+            loadBuyOrSellModal(target.text(), selectedCoin);
+        } else {
+            addToWatchList(selectedCoin);
+        }
     });
 
     /** 
      * Load modal pane content for buying or selling a currency
      * 
-     * @param                                   method        BUY or SELL (dictates content presented in modal pane)
-     * @param {coinName, coinSymbol, coinId}    coinInfo      Object containing selected currency's name, symbol, and currency ID number
+     * @param                       method          BUY or SELL (dictates content presented in modal pane)
+     * @param {name, symbol, id}    coinInfo        Object containing selected currency's name, symbol,
+     *                                              and currency ID number
      */
     function loadBuyOrSellModal(method, coinInfo) {
         // Reset fields
-        var purchaseQuantityField = $("#purchase-quantity");
         purchaseQuantityField.val("1");
         $("#validation-alert").hide();
 
@@ -120,59 +121,85 @@ $(document).ready(function() {
         $("#buysell-form").modal({
             dismissible: false,
             onOpenStart: function (modal, trigger) {
-                $("#modal-form-header").text(`${method} ${coinInfo.coinName} (${coinInfo.coinSymbol})`);
-            },
-            onOpenEnd: function (modal, trigger) {
-                $(".modal-form-close-btn").click(function (event) {
-                    $("#buysell-form").modal('close');
-                });
+                $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
             }
         });
-
-        // Event listener for purchase button
-        $("#purchase-btn").click(function(event) {
-            event.preventDefault();
-            
-            var qty = $("#purchase-quantity").val();
-            if (qty < 1) {
-                $("#validation-alert").text("Must be greater than 0.");
-                return;
-            }
-        });
-
-        // Toggle validation alert on change if value in quantity field < 0
-        purchaseQuantityField.change(function(event) {
-            if (purchaseQuantityField.val() <= 0) {
-                $("#validation-alert").show();
-            } else {
-                $("#validation-alert").hide();
-            }
-        });
-
-        // Event listener for cancel button
-        $("#cancel-purchase-btn").click(function(event) {
-            $("#buysell-form").modal('close');
-        });
+        
     }
+
+    // Event listener for modal form close button
+    $(".modal-form-close-btn").click(function (event) {
+        $("#buysell-form").modal('close');
+    });
+
+    // Toggle validation alert on change if value in quantity field < 0
+    purchaseQuantityField.change(function(event) {
+        if (purchaseQuantityField.val() <= 0) {
+            $("#validation-alert").show();
+        } else {
+            $("#validation-alert").hide();
+        }
+    });
+
+    // Event listener for modal form cancel button
+    $("#cancel-purchase-btn").click(function(event) {
+        $("#buysell-form").modal('close');
+    });
+
+    // Event listener for modal form purchase button
+    $("#purchase-btn").click(function (event) {
+        event.preventDefault();
+
+        // Validate input in quantity field
+        var qty = $("#purchase-quantity").val();
+        if (qty < 1) {
+            $("#validation-alert").text("Must be greater than 0.");
+            return;
+        }
+
+        /*
+            As of right now, clicking 'purchase' will just use the price that was populated in
+            the modal's price field. Eventually this should submit another API request for an
+            up-to-date price. This up-to-date price may not match what the user saw when they clicked
+            'purchase', but there will be a disclaimer about this.
+        */
+        var price = parseFloat($("#price-value").text());
+        var receipt = {
+            symbol: selectedCoin.symbol,
+            coin: selectedCoin.name,
+            id: selectedCoin.id,
+            price: price,
+            qty: qty,
+            date: moment()._d
+        };
+        console.log(receipt);
+        if (!localStorage.getItem("receipts")) {
+            var storedReceipts = [];
+        } else {
+            var storedReceipts = JSON.parse(localStorage.getItem("receipts"));
+        }
+        storedReceipts.push(receipt);
+        localStorage.setItem("receipts", JSON.stringify(storedReceipts));
+    });
 
     /**
      * 
      * 
-     * @param {coinName, coinSymbol} coinInfo 
+     * @param {name, symbol, id} coinInfo   Object containing info about coin to watch
      */
-    function addToWatchList(coinInfo) {
-        if (!watchList.find(c => c.coinSymbol === coinInfo.coinSymbol)) {
-            watchList.push(coinInfo);
+    function addToWatchList(selectedCoin) {
+        if (!watchList.find(c => c.symbol === selectedCoin.symbol)) {
+            watchList.push(selectedCoin);
             localStorage.setItem("watchList", JSON.stringify(watchList));
             M.Toast.dismissAll();
             M.toast({
-                html: `Added ${coinInfo.coinName} (${coinInfo.coinSymbol}) to your watch list.`,
+                html: `Added ${selectedCoin.name} (${selectedCoin.symbol}) to your watch list.`,
                 displayLength: 2000
             });
         } else {
             M.Toast.dismissAll();
             M.toast({ 
-                html: `${coinInfo.coinName} (${coinInfo.coinSymbol}) is already on your watch list`,
+                html: `${selectedCoin.name} (${selectedCoin.symbol}) is already on your watch list`,
                 displayLength: 2000
             });
         }
