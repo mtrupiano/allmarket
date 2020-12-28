@@ -107,6 +107,14 @@ $(document).ready(function() {
             // Un-hide the chart area div
             $("#chart-div").attr("style", "");
 
+            // Disable 'Sell' button if user does not own any of this currency
+            if (!ownedCurrencies.find(e => e.id === selectedCoin.id) ||
+                (ownedCurrencies.find(e => e.id === selectedCoin.id)).ownedQuantity === 0) {
+                $(".sell-btn").addClass("disabled");
+            } else {
+                $(".sell-btn").removeClass("disabled");
+            }
+
         });
 
     });
