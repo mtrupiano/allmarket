@@ -190,6 +190,7 @@ $(document).ready(function() {
             availableFunds = availableFunds - price;
             localStorage.setItem("availableFunds", availableFunds);
 
+            // Generate transaction receipt info and store in transaction history (local storage)
             var receipt = {
                 pricePer:   price/qty,
                 total:      price,
