@@ -211,12 +211,14 @@ $(document).ready(function() {
                     id:                 selectedCoin.id,
                     name:               selectedCoin.name,
                     currentEquity:      price,
+                    ownedQuantity:      qty,
                     transactionsList:   [receipt]
                 });
             } else {
                 var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id)
                 ownedCurrencies[idx].transactionsList.push(receipt);
                 ownedCurrencies[idx].currentEquity += price;
+                ownedCurrencies[idx].ownedQuantity += qty;
             }
 
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
