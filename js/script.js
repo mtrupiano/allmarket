@@ -9,13 +9,23 @@
 
 $(document).ready(function() {
 
+    // Initialize materialize tabs
     $(".tabs").tabs();
 
+    // Load watch list from local storage
     if (localStorage.getItem("watchList")) {
         var watchList = JSON.parse(localStorage.getItem("watchList"));
     } else {
         var watchList = [];
         localStorage.setItem("watchList", JSON.stringify(watchList));
+    }
+
+    // Load user's available funds
+    if (localStorage.getItem("availableFunds")) {
+        var availableFunds = JSON.parse(localStorage.getItem("availableFunds"));
+    } else {
+        var availableFunds = 2000;
+        localStorage.setItem("availableFunds", availableFunds);
     }
 
     var selectedCoin;
@@ -171,6 +181,12 @@ $(document).ready(function() {
             method: "GET"
         }).then(function (response) {
             var price = response[0].price_usd * qty;
+            if (price > availableFunds) {
+                // Transaction fails, insufficient funds
+                return;
+            }
+            availableFunds = availableFunds - price;
+            localStorage.setItem("availableFunds", availableFunds);
             var receipt = {
                 symbol: selectedCoin.symbol,
                 coin: selectedCoin.name,
