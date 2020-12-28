@@ -150,6 +150,7 @@ $(document).ready(function() {
             onOpenStart: function (modal, trigger) {
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
                 $("#qty-display").text(purchaseQuantityField.val());
+                $("#available-funds").text(availableFunds.toFixed(2));
 
                 $.ajax({
                     url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
