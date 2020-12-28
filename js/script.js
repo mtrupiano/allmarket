@@ -188,21 +188,34 @@ $(document).ready(function() {
             availableFunds = availableFunds - price;
             localStorage.setItem("availableFunds", availableFunds);
             var receipt = {
-                symbol: selectedCoin.symbol,
-                coin: selectedCoin.name,
-                id: selectedCoin.id,
-                price: price,
-                qty: qty,
-                date: moment()._d
+                pricePer:   price/qty,
+                total:      price,
+                qty:        qty,
+                date:       moment()._d
             };
             console.log(receipt);
-            if (!localStorage.getItem("receipts")) {
-                var storedReceipts = [];
+            if (!localStorage.getItem("transactions")) {
+                var transactions = [];
             } else {
-                var storedReceipts = JSON.parse(localStorage.getItem("receipts"));
+                var transactions = JSON.parse(localStorage.getItem("transactions"));
             }
-            storedReceipts.push(receipt);
-            localStorage.setItem("receipts", JSON.stringify(storedReceipts));
+
+            if (!transactions.find(e => e.id === selectedCoin.id)) {
+                transactions.push({
+                    symbol:             selectedCoin.symbol,
+                    id:                 selectedCoin.id,
+                    name:               selectedCoin.name,
+                    currentEquity:      price,
+                    transactionsList:   [receipt]
+                });
+            } else {
+                console.log(transactions.find(e => e.id === selectedCoin.id));
+                var idx = transactions.findIndex(e => e.id === selectedCoin.id)
+                transactions[idx].transactionsList.push(receipt);
+                transactions[idx].currentEquity += price;
+            }
+
+            localStorage.setItem("transactions", JSON.stringify(transactions));
         });
     });
 
