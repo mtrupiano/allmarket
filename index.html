@@ -81,57 +81,69 @@
                             <i class="material-icons">close</i>
                         </button>
 
-                        <!-- Layout for modal buy/sell form -->
-                        <div class="modal" id="buysell-form">
-                            <div class="modal-content">
-
-                                <div class="row">
-                                    <div class="col s11">
-                                        <h2 id="modal-form-header"></h2>
-                                    </div>
-                                    <div class="col s1">
-                                        <button class="btn-flat modal-form-close-btn">
-                                            <i class="material-icons">close</i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="row valign-wrapper">
-                                    <div class="col s2 input-field" id="quantity-input-column">
-                                        <input type="number" min="1" value="1" id="purchase-quantity">
-                                    </div>
-                                    <div class="col s4" id="validation-alert-column">
-                                        <span id="validation-alert" style="display: none;">Must be greater than 0.</span>
-                                    </div>
-                                    <div class="col s6">
-                                        <div class="row">Available funds: <span id="available-funds"></span></div>
-                                        <div class="row">
-                                            <h3 class="center-align" id="price-display">
-                                                Price per: 
-                                                <span id="currency-icon">$</span>
-                                                <span id="price-value"></span>
-                                                <span id="currency-acronym">(USD)</span>
-                                            </h3>
-                                        </div>
-                                        <div class="row">
-                                            qty: <span id="qty-display"></span>
-                                        </div>
-                                        <div class="row">
-                                            total: <span id="total-price-display"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col s8">
-                                        <button class="btn btn-large disabled" id="purchase-btn">Purchase</button>
-                                    </div>
-                                    <div class="col s4">
-                                        <button class="btn btn-large" id="cancel-purchase-btn">Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Layout for modal buy/sell form -->
+                <div class="modal" id="buysell-form">
+                <div class="modal-content">
+                    <div class="row">
+                        <div class="col s11">
+                            <h2 id="modal-form-header"></h2>
                         </div>
-                        
+                        <div class="col s1">
+                            <button class="btn-flat modal-form-close-btn">
+                                <i class="material-icons">close</i>
+                            </button>
+                        </div>
                     </div>
+                    <hr>
+                    <div class="row">
+                        <h4 class="modal-form-fields">
+                            <div class="col">Available funds:</div>
+                            <div class="col">
+                                <span class="currency-icon">$</span>
+                                <span id="available-funds"></span>
+                                <span class="currency-acronym">(USD)</span>
+                            </div>
+                        </h4>
+                    </div>
+                    <div class="row">
+                        <h4 class="modal-form-fields" id="price-display">
+                            <div class="col">Price per:</div>
+                            <div class="col">
+                                <span class="currency-icon">$</span>
+                                <span id="price-value"></span>
+                                <span class="currency-acronym">(USD)</span>
+                            </div>
+                        </h4>
+                    </div>
+                    <div class="row valign-wrapper modal-form-fields">
+                        <h4 class="col s4">Quantity:</h4>
+                        <div class="col s6" id="validation-alert-column">
+                            <span id="validation-alert" style="display: none;">Must be greater than 0.</span>
+                        </div>
+                        <div class="col s2" id="quantity-input-column">
+                            <input type="number" min="1" value="1" id="purchase-quantity">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h4 class="modal-form-fields" id="price-display">
+                            <div class="col">Total:</div>
+                            <div class="col">
+                                <span class="currency-icon">$</span>
+                                <span id="total-price-display"></span>
+                                <span class="currency-acronym">(USD)</span>
+                            </div>
+                        </h4>
+                    </div>
+
+                    <div class="row">
+                        <div class="col s8">
+                            <button class="btn btn-large disabled" id="purchase-btn">Purchase</button>
+                        </div>
+                        <div class="col s4">
+                            <button class="btn btn-large" id="cancel-purchase-btn">Cancel</button>
+                        </div>
+                    </div>        
+                </div>
                 </div>
             </div>
         </div>

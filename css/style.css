@@ -47,9 +47,18 @@ table {
     background-color: yellow;
 }
 
+.modal-form-fields {
+    display: flex;
+    justify-content: space-between;
+}
+
 /* Highlight color for selected table row */
 tr.active {
     background-color: indianred;
+}
+
+.currency-acronym {
+    font-size: 12pt;
 }
 
 #chart-div {
@@ -74,8 +83,4 @@ tr.active {
     background-color: rgba(255, 100, 100, 0.6);
     border-radius: 2px;
     color: rgba(48, 48, 48, 0.6);
-}
-
-#currency-acronym {
-    font-size: 12pt;
 }

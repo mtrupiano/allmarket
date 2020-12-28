@@ -149,7 +149,6 @@ $(document).ready(function() {
             dismissible: false,
             onOpenStart: function (modal, trigger) {
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
-                $("#qty-display").text(purchaseQuantityField.val());
                 $("#available-funds").text(availableFunds.toFixed(2));
 
                 $.ajax({
@@ -172,7 +171,6 @@ $(document).ready(function() {
             $("#purchase-btn").addClass("disabled");
         } else {
             $("#validation-alert").hide();
-            $("#qty-display").text(purchaseQuantityField.val());
             $.ajax({
                 url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
                 method: "GET"
