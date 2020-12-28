@@ -28,6 +28,13 @@ $(document).ready(function() {
         localStorage.setItem("availableFunds", availableFunds);
     }
 
+    // Load list of owned currencies
+    if (localStorage.getItem("ownedCurrencies")) {
+        var ownedCurrencies = JSON.parse(localStorage.getItem("ownedCurrencies"));
+    } else {
+        var ownedCurrencies = [];
+    }
+
     var selectedCoin;
     var purchaseQuantityField = $("#purchase-quantity");
 
@@ -198,14 +205,8 @@ $(document).ready(function() {
                 date:       moment()._d
             };
 
-            if (localStorage.getItem("transactions")) {
-                var transactions = JSON.parse(localStorage.getItem("transactions"));
-            } else {
-                var transactions = [];
-            }
-
-            if (!transactions.find(e => e.id === selectedCoin.id)) {
-                transactions.push({
+            if (!ownedCurrencies.find(e => e.id === selectedCoin.id)) {
+                ownedCurrencies.push({
                     symbol:             selectedCoin.symbol,
                     id:                 selectedCoin.id,
                     name:               selectedCoin.name,
@@ -213,12 +214,12 @@ $(document).ready(function() {
                     transactionsList:   [receipt]
                 });
             } else {
-                var idx = transactions.findIndex(e => e.id === selectedCoin.id)
-                transactions[idx].transactionsList.push(receipt);
-                transactions[idx].currentEquity += price;
+                var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id)
+                ownedCurrencies[idx].transactionsList.push(receipt);
+                ownedCurrencies[idx].currentEquity += price;
             }
 
-            localStorage.setItem("transactions", JSON.stringify(transactions));
+            localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
         });
     });
 
