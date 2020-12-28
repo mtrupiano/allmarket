@@ -181,23 +181,26 @@ $(document).ready(function() {
             method: "GET"
         }).then(function (response) {
             var price = response[0].price_usd * qty;
+
+            // Check and update available funds
             if (price > availableFunds) {
                 // Transaction fails, insufficient funds
                 return;
             }
             availableFunds = availableFunds - price;
             localStorage.setItem("availableFunds", availableFunds);
+
             var receipt = {
                 pricePer:   price/qty,
                 total:      price,
                 qty:        qty,
                 date:       moment()._d
             };
-            console.log(receipt);
-            if (!localStorage.getItem("transactions")) {
-                var transactions = [];
-            } else {
+
+            if (localStorage.getItem("transactions")) {
                 var transactions = JSON.parse(localStorage.getItem("transactions"));
+            } else {
+                var transactions = [];
             }
 
             if (!transactions.find(e => e.id === selectedCoin.id)) {
@@ -209,7 +212,6 @@ $(document).ready(function() {
                     transactionsList:   [receipt]
                 });
             } else {
-                console.log(transactions.find(e => e.id === selectedCoin.id));
                 var idx = transactions.findIndex(e => e.id === selectedCoin.id)
                 transactions[idx].transactionsList.push(receipt);
                 transactions[idx].currentEquity += price;
