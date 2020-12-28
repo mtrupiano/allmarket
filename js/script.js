@@ -139,11 +139,6 @@ $(document).ready(function() {
         
     }
 
-    // Event listener for modal form close button
-    $(".modal-form-close-btn").click(function (event) {
-        $("#buysell-form").modal('close');
-    });
-
     // Toggle validation alert on change if value in quantity field < 0
     purchaseQuantityField.change(function(event) {
         if (purchaseQuantityField.val() <= 0) {
@@ -161,11 +156,6 @@ $(document).ready(function() {
                 $("#total-price-display").text((purchaseQuantityField.val() * response[0].price_usd).toFixed(2));
             });
         }
-    });
-
-    // Event listener for modal form cancel button
-    $("#cancel-purchase-btn").click(function(event) {
-        $("#buysell-form").modal('close');
     });
 
     // Event listener for modal form purchase button
@@ -236,6 +226,16 @@ $(document).ready(function() {
 
         // Remove highlight from selected row 
         ($("tbody").find(".active")).removeClass("active");
+    });
+
+    // Event listener for modal form cancel button
+    $("#cancel-purchase-btn").click(function (event) {
+        $("#buysell-form").modal('close');
+    });
+
+    // Event listener for modal form close button
+    $(".modal-form-close-btn").click(function (event) {
+        $("#buysell-form").modal('close');
     });
 
 });
