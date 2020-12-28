@@ -181,28 +181,44 @@ $(document).ready(function() {
             method: "GET"
         }).then(function (response) {
             var price = response[0].price_usd * qty;
+
+            // Check and update available funds
             if (price > availableFunds) {
                 // Transaction fails, insufficient funds
                 return;
             }
             availableFunds = availableFunds - price;
             localStorage.setItem("availableFunds", availableFunds);
+
+            // Generate transaction receipt info and store in transaction history (local storage)
             var receipt = {
-                symbol: selectedCoin.symbol,
-                coin: selectedCoin.name,
-                id: selectedCoin.id,
-                price: price,
-                qty: qty,
-                date: moment()._d
+                pricePer:   price/qty,
+                total:      price,
+                qty:        qty,
+                date:       moment()._d
             };
-            console.log(receipt);
-            if (!localStorage.getItem("receipts")) {
-                var storedReceipts = [];
+
+            if (localStorage.getItem("transactions")) {
+                var transactions = JSON.parse(localStorage.getItem("transactions"));
             } else {
-                var storedReceipts = JSON.parse(localStorage.getItem("receipts"));
+                var transactions = [];
             }
-            storedReceipts.push(receipt);
-            localStorage.setItem("receipts", JSON.stringify(storedReceipts));
+
+            if (!transactions.find(e => e.id === selectedCoin.id)) {
+                transactions.push({
+                    symbol:             selectedCoin.symbol,
+                    id:                 selectedCoin.id,
+                    name:               selectedCoin.name,
+                    currentEquity:      price,
+                    transactionsList:   [receipt]
+                });
+            } else {
+                var idx = transactions.findIndex(e => e.id === selectedCoin.id)
+                transactions[idx].transactionsList.push(receipt);
+                transactions[idx].currentEquity += price;
+            }
+
+            localStorage.setItem("transactions", JSON.stringify(transactions));
         });
     });
 
