@@ -152,7 +152,8 @@ $(document).ready(function() {
             }
         }
 
-        var ownedTbodyEl = $("#watching tbody");
+        var watchingTbodyEl = $("#watching tbody");
+        watchingTbodyEl.text(""); // Clear watching table
         if (watchList.length === 0) {
             // Show message in table body saying "You're not currently watching any currencies!"
         } else {
@@ -163,7 +164,7 @@ $(document).ready(function() {
                 newTableRow.append($("<td>").text(watchList[i].symbol));
                 newTableRow.append($("<td>").text(watchList[i].name));
                 newTableRow.append($("<td>").text(""))
-                ownedTbodyEl.append(newTableRow);
+                watchingTbodyEl.append(newTableRow);
             }
         }
     });
