@@ -1,5 +1,9 @@
 nav {
-    background-color: rgb(39, 70, 39);
+    background-color: rgb(0, 0, 0);
+}
+
+#logo {
+    height: 4rem;
 }
 
 tbody {
@@ -48,7 +52,7 @@ table {
 }
 
 .active {
-    background-color: indianred;
+    background-color: #8E24AA;
 }
 
 #chart-div {
@@ -77,4 +81,8 @@ table {
 
 #currency-acronym {
     font-size: 12pt;
+}
+
+footer {
+    background-color: rgb(0, 0, 0);
 }
