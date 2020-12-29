@@ -15,13 +15,18 @@ thead, tbody tr {
 }
 
 thead {
-    width: calc(100% - 1em)
+    width: 100%
 }
 
 table {
     width: 100%;
     margin-top: 10px;
     border-radius: 10px;
+}
+
+td, th {
+    padding-top: 7px;
+    padding-bottom: 7px;
 }
 
 .tabs .tab a {
@@ -32,9 +37,9 @@ table {
     width:100%;
 }
 
-#tabs-nav {
+#tabs-div, #tabs-div nav{
     height: 30px;
-}
+} 
 
 #tabs-nav ul {
     height: 100%;
@@ -64,6 +69,10 @@ tr.active {
     background-color: indianred;
 }
 
+.table-row {
+    height: 80px;
+}
+
 #chart-div {
     margin-top: 10px;
 }
@@ -91,3 +100,16 @@ tr.active {
 #currency-acronym {
     font-size: 12pt;
 }
+
+#coins-view {
+    padding-top: 40px;
+}
+
+#wallet-view h3 {
+    margin-top: 12px;
+}
+
+#wallet-view tbody {
+    height: 30vh;
+}
+
