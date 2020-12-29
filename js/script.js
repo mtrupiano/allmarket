@@ -285,7 +285,7 @@ $(document).ready(function() {
     });
 
     // Event listener for modal form purchase button
-    $("#purchase-btn").click(function (event) {
+    $("#purchase-sell-btn").click(function (event) {
         event.preventDefault();
 
         // Validate input in quantity field
