@@ -61,6 +61,14 @@ tr.active {
     font-size: 12pt;
 }
 
+.validation-alert {
+    display: none;
+    padding: 3px 8px;
+    background-color: rgba(255, 100, 100, 0.6);
+    border-radius: 2px;
+    color: rgba(48, 48, 48, 0.6);
+}
+
 #chart-div {
     margin-top: 10px;
 }
@@ -76,11 +84,4 @@ tr.active {
 
 #quantity-input-column, #validation-alert-column {
     margin-left: 0;
-}
-
-#validation-alert {
-    padding: 3px 8px;
-    background-color: rgba(255, 100, 100, 0.6);
-    border-radius: 2px;
-    color: rgba(48, 48, 48, 0.6);
 }
