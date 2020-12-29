@@ -155,9 +155,17 @@ $(document).ready(function() {
                     url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
                     method: "GET"
                 }).then(function (response) {
+                    $("#purchase-btn").removeClass("disabled");
+                    var totalPrice = (purchaseQuantityField.val() * response[0].price_usd).toFixed(2);
                     $("#price-value").text(response[0].price_usd);
                     $("#purchase-btn").removeClass("disabled");
-                    $("#total-price-display").text((purchaseQuantityField.val() * response[0].price_usd).toFixed(2));
+                    $("#total-price-display").text(totalPrice);
+                    if (totalPrice > availableFunds) {
+                        $("#alert-insuf-funds").show();
+                        $("#purchase-btn").addClass("disabled");
+                    } else {
+                        $("#alert-insuf-funds").hide();
+                    }
                 });
             }
         });
@@ -167,17 +175,26 @@ $(document).ready(function() {
     // Toggle validation alert on change if value in quantity field < 0
     purchaseQuantityField.change(function(event) {
         if (purchaseQuantityField.val() <= 0) {
-            $("#validation-alert").show();
+            $("#alert-qty-zero").show();
             $("#purchase-btn").addClass("disabled");
         } else {
-            $("#validation-alert").hide();
+            $("#alert-qty-zero").hide();
             $.ajax({
                 url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
                 method: "GET"
             }).then(function (response) {
+                $("#purchase-btn").removeClass("disabled");
+                var totalPrice = (purchaseQuantityField.val() * response[0].price_usd).toFixed(2);
                 $("#price-value").text(response[0].price_usd);
                 $("#purchase-btn").removeClass("disabled");
-                $("#total-price-display").text((purchaseQuantityField.val() * response[0].price_usd).toFixed(2));
+                $("#total-price-display").text(totalPrice);
+                // Check for sufficient funds
+                if (totalPrice > availableFunds) {
+                    $("#alert-insuf-funds").show();
+                    $("#purchase-btn").addClass("disabled");
+                } else {
+                    $("#alert-insuf-funds").hide();
+                }
             });
         }
     });
@@ -194,20 +211,20 @@ $(document).ready(function() {
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
             method: "GET"
         }).then(function (response) {
-            var price = response[0].price_usd * qty;
+            var totalPrice = response[0].price_usd * qty;
 
-            // Check and update available funds
-            if (price > availableFunds) {
-                // Transaction fails, insufficient funds
+            if (totalPrice > availableFunds) {
+                $("#alert-insuf-funds").show();
                 return;
             }
-            availableFunds = availableFunds - price;
+
+            availableFunds = availableFunds - totalPrice;
             localStorage.setItem("availableFunds", availableFunds);
 
             // Generate transaction receipt info and store in transaction history (local storage)
             var receipt = {
-                pricePer:   price/qty,
-                total:      price,
+                pricePer:   totalPrice/qty,
+                total:      totalPrice,
                 qty:        qty,
                 date:       moment()._d
             };
@@ -224,7 +241,7 @@ $(document).ready(function() {
             } else {
                 var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id)
                 ownedCurrencies[idx].transactionsList.push(receipt);
-                ownedCurrencies[idx].currentEquity += price;
+                ownedCurrencies[idx].currentEquity += totalPrice;
                 ownedCurrencies[idx].ownedQuantity += qty;
             }
 
