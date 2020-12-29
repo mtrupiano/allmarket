@@ -117,8 +117,9 @@
                     </div>
                     <div class="row valign-wrapper modal-form-fields">
                         <h4 class="col s4">Quantity:</h4>
-                        <div class="col s6" id="validation-alert-column">
-                            <span id="validation-alert" style="display: none;">Must be greater than 0.</span>
+                        <div class="col s6 validation-alert-column">
+                            <span class="validation-alert" 
+                                id="alert-qty-zero">Must be greater than 0.</span>
                         </div>
                         <div class="col s2" id="quantity-input-column">
                             <input type="number" min="1" value="1" id="purchase-quantity">
@@ -126,7 +127,12 @@
                     </div>
                     <div class="row">
                         <h4 class="modal-form-fields" id="price-display">
-                            <div class="col">Total:</div>
+                            <div class="col s4">Total:</div>
+                            <div class="col s6 validation-alert-column">
+                                <span class="validation-alert" id="alert-insuf-funds">
+                                    Insufficient funds!
+                                </span>
+                            </div>
                             <div class="col">
                                 <span class="currency-icon">$</span>
                                 <span id="total-price-display"></span>

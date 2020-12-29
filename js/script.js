@@ -150,15 +150,7 @@ $(document).ready(function() {
             onOpenStart: function (modal, trigger) {
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
                 $("#available-funds").text(availableFunds.toFixed(2));
-
-                $.ajax({
-                    url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
-                    method: "GET"
-                }).then(function (response) {
-                    $("#price-value").text(response[0].price_usd);
-                    $("#purchase-btn").removeClass("disabled");
-                    $("#total-price-display").text((purchaseQuantityField.val() * response[0].price_usd).toFixed(2));
-                });
+                updatePrice();
             }
         });
         
@@ -167,20 +159,40 @@ $(document).ready(function() {
     // Toggle validation alert on change if value in quantity field < 0
     purchaseQuantityField.change(function(event) {
         if (purchaseQuantityField.val() <= 0) {
-            $("#validation-alert").show();
+            $("#alert-qty-zero").show();
             $("#purchase-btn").addClass("disabled");
         } else {
-            $("#validation-alert").hide();
-            $.ajax({
-                url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
-                method: "GET"
-            }).then(function (response) {
-                $("#price-value").text(response[0].price_usd);
-                $("#purchase-btn").removeClass("disabled");
-                $("#total-price-display").text((purchaseQuantityField.val() * response[0].price_usd).toFixed(2));
-            });
+            $("#alert-qty-zero").hide();
+            updatePrice();
         }
     });
+
+    function updatePrice() {
+        // Disable purchase button until price updates
+        $("#purchase-btn").addClass("disabled");
+        $.ajax({
+            url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
+            method: "GET",
+            error: function() {
+                M.toast({
+                    html: "Error: failed to update price (timeout)"
+                });
+            },
+            timeout: 2000
+        }).then(function (response) {
+            var totalPrice = (purchaseQuantityField.val() * response[0].price_usd).toFixed(2);
+            $("#price-value").text(response[0].price_usd);
+            $("#total-price-display").text(totalPrice);
+            // Check for sufficient funds
+            if (totalPrice > availableFunds) {
+                $("#alert-insuf-funds").show();
+                $("#purchase-btn").addClass("disabled");
+            } else {
+                $("#alert-insuf-funds").hide();
+            }
+            $("#purchase-btn").removeClass("disabled");
+        });
+    }
 
     // Event listener for modal form purchase button
     $("#purchase-btn").click(function (event) {
@@ -194,20 +206,28 @@ $(document).ready(function() {
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
             method: "GET"
         }).then(function (response) {
-            var price = response[0].price_usd * qty;
-
-            // Check and update available funds
-            if (price > availableFunds) {
-                // Transaction fails, insufficient funds
+            if (totalPrice > availableFunds) {
+                $("#alert-insuf-funds").show();
                 return;
             }
-            availableFunds = availableFunds - price;
+
+            // Close form and show confirmation toast
+            $("#buysell-form").modal('close');
+            M.toast({
+                html: `Purchased ${qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
+                displayLength: 2000
+            })
+            var totalPrice = response[0].price_usd * qty;
+
+
+            // Debit price from available funds
+            availableFunds = availableFunds - totalPrice;
             localStorage.setItem("availableFunds", availableFunds);
 
             // Generate transaction receipt info and store in transaction history (local storage)
             var receipt = {
-                pricePer:   price/qty,
-                total:      price,
+                pricePer:   totalPrice/qty,
+                total:      totalPrice,
                 qty:        qty,
                 date:       moment()._d
             };
@@ -217,18 +237,19 @@ $(document).ready(function() {
                     symbol:             selectedCoin.symbol,
                     id:                 selectedCoin.id,
                     name:               selectedCoin.name,
-                    currentEquity:      price,
-                    ownedQuantity:      qty,
+                    currentEquity:      totalPrice,
+                    ownedQuantity:      parseFloat(qty),
                     transactionsList:   [receipt]
                 });
             } else {
                 var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id)
                 ownedCurrencies[idx].transactionsList.push(receipt);
-                ownedCurrencies[idx].currentEquity += price;
-                ownedCurrencies[idx].ownedQuantity += qty;
+                ownedCurrencies[idx].currentEquity += totalPrice;
+                ownedCurrencies[idx].ownedQuantity += parseFloat(qty);
             }
 
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
+            
         });
     });
 
