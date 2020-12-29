@@ -135,7 +135,7 @@ $(document).ready(function() {
         } else {
             for (var i = 0; i < ownedCurrencies.length; i++) {
                 var element = ownedCurrencies[i];
-                
+
                 var newTableRow = $("<tr>");
                 newTableRow.attr("data-crypto-id", element.id);
                 newTableRow.append($("<td>").text(element.symbol));
@@ -268,6 +268,9 @@ $(document).ready(function() {
         }
     }
 
+    /**
+     * Hide the chart area and re-size primary tables
+     */
     function resetChartArea() {
         // Hide chart area div
         $("#chart-div").attr("style", "display: none;");
@@ -276,7 +279,9 @@ $(document).ready(function() {
         $("#coins-view").addClass("s12");
     }
 
-    // Toggle validation alert on change if value in quantity field < 0
+    /**
+     * Toggle validation alert on change if value in quantity field < 0
+     */
     purchaseQuantityField.change(function (event) {
         if (purchaseQuantityField.val() <= 0) {
             $("#alert-qty-zero").show();
@@ -287,7 +292,9 @@ $(document).ready(function() {
         }
     });
 
-    // Event listener for modal form purchase button
+    /**
+     * Event listener for modal form purchase button
+     */
     $("#purchase-sell-btn").click(function (event) {
         event.preventDefault();
 
@@ -345,7 +352,10 @@ $(document).ready(function() {
         });
     });
 
-    // Event listener for chart area close button
+    /** 
+     * Event listener for chart area close button
+     */
+    // 
     $("#chart-close-btn").click(function(event) {
         // Hide chart area div
         $("#chart-div").attr("style", "display: none;");
@@ -359,12 +369,16 @@ $(document).ready(function() {
         ($("tbody").find(".active")).removeClass("active");
     });
 
-    // Event listener for modal form cancel button
+    /** 
+     * Event listener for modal form cancel button
+     */
     $("#cancel-transaction-btn").click(function (event) {
         $("#buysell-form").modal('close');
     });
 
-    // Event listener for modal form close button
+    /**
+     * Event listener for modal form close button
+     */
     $(".modal-form-close-btn").click(function (event) {
         $("#buysell-form").modal('close');
     });
