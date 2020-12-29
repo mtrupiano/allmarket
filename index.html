@@ -21,16 +21,25 @@
                 </div>
             </nav>
         </div>
-        <div class="row">
-            <div class="col s8">
-                <ul class="tabs">
-                    <li class="tab col s3"><a href="#">Learn</a></li>
-                    <li class="tab col s3"><a href="#">Coins</a></li>
-                    <li class="tab col s3"><a href="#">My Wallet</a></li>
+
+        <!-- Tabs -->
+        <div class="navbar-fixed" id="tabs-div">
+            <nav id="tabs-nav">
+                <ul class="tabs tabs-fixed-width valign-wrapper">
+                    <li class="tab col s3"><a href="#learn-view">Education</a></li>
+                    <li class="tab col s3"><a href='#coins-view'>Coins</a></li>
+                    <li class="tab col s3"><a href="#wallet-view">My Wallet</a></li>
                 </ul>
-            </div>
+            </nav>
         </div>
-        <div class="container" id="table-container">
+
+        <!-- Education tab content -->
+        <div class="container" id="learn-view">
+            <h1>LEARN ABOUT CRYPTOCURRENCY</h1>
+        </div>
+
+        <!-- Coins tab content -->
+        <div class="container" id="coins-view">
             <div class="row">
                 <div class="col s12" id="table-column">
                     <table class="highlight centered z-depth-2">
@@ -41,9 +50,8 @@
                                 <th>Price (USD)</th>
                             </tr>
                         </thead>
-                        <tbody>
-        
-                        </tbody>
+
+                        <tbody></tbody>
                     </table>
                 </div>
 
@@ -52,10 +60,12 @@
                     <div class="row">
                         <div class="btn-group" id="buy-sell-watch-group">
                             <div class="col">
-                                <a href="#buysell-form" class="waves-effect waves-light btn-large buy-btn modal-trigger">BUY!</a>
+                                <a href="#buysell-form" 
+                                    class="waves-effect waves-light btn-large buy-btn modal-trigger">BUY</a>
                             </div>
                             <div class="col">
-                                <a href="#buysell-form" class="waves-effect waves-light btn sell-btn modal-trigger">SELL</a>
+                                <a href="#buysell-form" 
+                                    class="waves-effect waves-light btn sell-btn modal-trigger">SELL</a>
                             </div>
                             <div class="col">
                                 <a href="#" class="waves-effect waves-light btn watch-btn">WATCH</a>
@@ -70,47 +80,112 @@
                         <button class="btn-floating btn-large waves-effect waves-light red accent-3" id="chart-close-btn">
                             <i class="material-icons">close</i>
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                        <!-- Layout for modal buy/sell form -->
-                        <div class="modal" id="buysell-form">
-                            <div class="modal-content">
-
-                                <div class="row">
-                                    <div class="col s11">
-                                        <h2 id="modal-form-header"></h2>
-                                    </div>
-                                    <div class="col s1">
-                                        <button class="btn-floating btn-large waves-effect waves-light red accent-3 modal-form-close-btn">
-                                            <i class="material-icons">close</i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="row valign-wrapper">
-                                    <div class="col s2 input-field" id="quantity-input-column">
-                                        <input type="number" min="1" value="1" id="purchase-quantity">
-                                    </div>
-                                    <div class="col s4" id="validation-alert-column">
-                                        <span id="validation-alert" style="display: none;">Must be greater than 0.</span>
-                                    </div>
-                                    <div class="col s6">
-                                        <h3 class="center-align" id="price-display">
-                                            <span id="currency-icon">$</span>
-                                            <span id="price-value">000.00</span>
-                                            <span id="currency-acronym">(USD)</span>
-                                        </h3>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col s8">
-                                        <button class="btn btn-large" id="purchase-btn">Purchase</button>
-                                    </div>
-                                    <div class="col s4">
-                                        <button class="btn btn-large" id="cancel-purchase-btn">Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
+        <!-- Wallet tab content -->
+        <div class="container" id="wallet-view">
+            <div class="row table-row">
+                <div class="col s12">
+                    <table class="highlight centered z-depth-2" id="owned">
+                        <h3>Owned</h3>
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Name</th>
+                                <th>Qty</th>
+                                <th>Equity</th>
+                            </tr>
+                        </thead>
+            
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 table-column">
+                    <table class="highlight centered z-depth-2" id="watching">
+                        <h3>Watching</h3>
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Name</th>
+                                <th>Price (USD)</th>
+                            </tr>
+                        </thead>
+            
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Layout for modal buy/sell form -->
+        <div class="modal" id="buysell-form">
+            <div class="modal-content">
+                <div class="row">
+                    <div class="col s11">
+                        <h2 id="modal-form-header"></h2>
+                    </div>
+                    <div class="col s1">
+                        <button class="btn-flat modal-form-close-btn">
+                            <i class="material-icons">close</i>
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <h4 class="modal-form-fields">
+                        <div class="col">Available funds:</div>
+                        <div class="col">
+                            <span class="currency-icon">$</span>
+                            <span id="available-funds"></span>
+                            <span class="currency-acronym">(USD)</span>
                         </div>
-                        
+                    </h4>
+                </div>
+                <div class="row">
+                    <h4 class="modal-form-fields" id="price-display">
+                        <div class="col">Price per:</div>
+                        <div class="col">
+                            <span class="currency-icon">$</span>
+                            <span id="price-value"></span>
+                            <span class="currency-acronym">(USD)</span>
+                        </div>
+                    </h4>
+                </div>
+                <div class="row valign-wrapper modal-form-fields">
+                    <h4 class="col s4">Quantity:</h4>
+                    <div class="col s6 validation-alert-column">
+                        <span class="validation-alert" id="alert-qty-zero">Must be greater than 0.</span>
+                    </div>
+                    <div class="col s2" id="quantity-input-column">
+                        <input type="number" min="1" value="1" id="purchase-quantity">
+                    </div>
+                </div>
+                <div class="row">
+                    <h4 class="modal-form-fields" id="price-display">
+                        <div class="col s4">Total:</div>
+                        <div class="col s6 validation-alert-column">
+                            <span class="validation-alert" id="alert-insuf-funds">
+                                Insufficient funds!
+                            </span>
+                        </div>
+                        <div class="col">
+                            <span class="currency-icon">$</span>
+                            <span id="total-price-display"></span>
+                            <span class="currency-acronym">(USD)</span>
+                        </div>
+                    </h4>
+                </div>
+        
+                <div class="row">
+                    <div class="col s8">
+                        <button class="btn btn-large disabled" id="purchase-btn">Purchase</button>
+                    </div>
+                    <div class="col s4">
+                        <button class="btn btn-large" id="cancel-purchase-btn">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -129,7 +204,9 @@
         <!-- Chart.js CDN -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 
-
+        <!-- Moment.js CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+        
         <script src="./js/script.js"></script>
     </body>
 </html>
