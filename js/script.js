@@ -36,7 +36,7 @@ $(document).ready(function() {
     }
 
     var selectedCoin;
-    var purchaseQuantityField = $("#purchase-quantity");
+    var quantityField = $("#quantity");
 
     var coinLoreURL = "https://api.coinlore.net/api/tickers/";
     var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE/";
@@ -57,16 +57,13 @@ $(document).ready(function() {
             var tbodyEl = $("div#coins-view tbody");
             var responseArr = response.data;
             for (var i = 0; i < response.data.length; i++) {
-                var symbol = responseArr[i].symbol;
-                var name = responseArr[i].name;
-                var price = responseArr[i].price_usd;
-                var id = responseArr[i].id;
+                var element = responseArr[i];
 
                 var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", id);
-                newTableRow.append($("<td>").text(symbol));
-                newTableRow.append($("<td>").text(name));
-                newTableRow.append($("<td>").text(price));
+                newTableRow.attr("data-crypto-id", element.id);
+                newTableRow.append($("<td>").text(element.symbol));
+                newTableRow.append($("<td>").text(element.name));
+                newTableRow.append($("<td>").text(element.price_usd));
                 tbodyEl.append(newTableRow);
             }
 
@@ -94,9 +91,10 @@ $(document).ready(function() {
                 $("#coin-chart-header").children("h4").text(name);
 
                 // Shrink table to the left of the page
-                $("#coins-view").removeClass("container");
-                $("#coins-view").removeClass("s12");
-                $("#coins-view").addClass("s6");
+                var coinsViewEl = $("#coins-view");
+                coinsViewEl.removeClass("container");
+                coinsViewEl.removeClass("s12");
+                coinsViewEl.addClass("s6");
 
                 // Submit API request to CryptoCompare for history of selected coin's value
                 var cryptoCompareURL = 
@@ -136,18 +134,14 @@ $(document).ready(function() {
             // Show message in table area saying "You don't own any currencies"
         } else {
             for (var i = 0; i < ownedCurrencies.length; i++) {
-                var symbol = ownedCurrencies[i].symbol;
-                var name = ownedCurrencies[i].name;
-                var id = ownedCurrencies[i].id;
-                var qty = ownedCurrencies[i].ownedQuantity;
-                var equity = ownedCurrencies[i].currentEquity;
-
+                var element = ownedCurrencies[i];
+                
                 var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", id);
-                newTableRow.append($("<td>").text(symbol));
-                newTableRow.append($("<td>").text(name));
-                newTableRow.append($("<td>").text(qty.toFixed(2)));
-                newTableRow.append($("<td>").text(equity.toFixed(2)));
+                newTableRow.attr("data-crypto-id", element.id);
+                newTableRow.append($("<td>").text(element.symbol));
+                newTableRow.append($("<td>").text(element.name));
+                newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
+                newTableRow.append($("<td>").text(element.currentEquity.toFixed(2)));
                 ownedTbodyEl.append(newTableRow);
             }
         }
@@ -192,7 +186,7 @@ $(document).ready(function() {
      */
     function loadBuyOrSellModal(method, coinInfo) {
         // Reset fields
-        purchaseQuantityField.val("1");
+        quantityField.val("1");
         $(".validation-alert").hide();
         $("#purchase-sell-btn").addClass("disabled");
 
@@ -202,14 +196,11 @@ $(document).ready(function() {
             onOpenStart: function (modal, trigger) {
                 if (method === "SELL") {
                     // Hide top available funds row
-                    // Show bottom available funds row
                     // Show debit parenthesis
-                    $("#available-funds-display-buy").hide();
-                    $("#available-funds-display-sell").show();
+                    $("#available-funds-display").hide();
                     $(".debit").show();
                 } else {
-                    $("#available-funds-display-buy").show();
-                    $("#available-funds-display-sell").hide();
+                    $("#available-funds-display").show();
                     $(".debit").hide();
                 }
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
@@ -238,7 +229,7 @@ $(document).ready(function() {
             },
             timeout: 2000
         }).then(function (response) {
-            var totalPrice = (purchaseQuantityField.val() * response[0].price_usd).toFixed(2);
+            var totalPrice = (quantityField.val() * response[0].price_usd).toFixed(2);
             $("#price-value").text(response[0].price_usd);
             $("#total-price-display").text(totalPrice);
 

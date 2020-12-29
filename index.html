@@ -128,8 +128,8 @@
                 </div>
                 <hr>
 
-                <!-- Available funds BUY display -->
-                <div class="row modal-form-row" id="available-funds-display-buy">
+                <!-- Available funds display -->
+                <div class="row modal-form-row" id="available-funds-display">
                     <h4 class="modal-form-fields">
                         <div class="col">Available funds:</div>
                         <div class="col">
@@ -159,7 +159,7 @@
                         <span class="validation-alert" id="alert-qty-zero">Must be greater than 0.</span>
                     </div>
                     <div class="col s2" id="quantity-input-column">
-                        <input type="number" min="1" value="1" id="purchase-quantity">
+                        <input type="number" min="1" value="1" id="quantity">
                     </div>
                 </div>
 
@@ -178,18 +178,6 @@
                             <span id="total-price-display"></span>
                             <span class="currency-acronym">(USD)</span>
                             <span class="debit" style="display: none;">)</span>
-                        </div>
-                    </h4>
-                </div>
-
-                <!-- Available funds SELL display -->
-                <div class="row modal-form-row" id="available-funds-display-sell" style="display:none;">
-                    <h4 class="modal-form-fields">
-                        <div class="col">Available funds after sale:</div>
-                        <div class="col">
-                            <span class="currency-icon">$</span>
-                            <span id="available-funds"></span>
-                            <span class="currency-acronym">(USD)</span>
                         </div>
                     </h4>
                 </div>
