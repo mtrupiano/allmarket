@@ -46,7 +46,9 @@ $(document).ready(function() {
     var nomicsKey = "fa8abceb3eb222b8e323180022446677";
     var nomicsURL = "https://api.nomics.com/v1/currencies?key=" + nomicsKey + "&ids=BTC,ETH,XRP&attributes=id,name,logo_url";
 
-
+    /**
+     * Render full currency table when 'Coins' tab is clicked
+     */
     $("a[href='#coins-view']").click(function(event) {
         $.ajax({
             url: coinLoreURL,
@@ -124,6 +126,9 @@ $(document).ready(function() {
         });
     });
 
+    /**
+     * Render owned and watching tables when 'My Wallet' tab is clicked
+     */
     $("a[href='#wallet-view']").click(function (event) {
         var ownedTbodyEl = $("#owned tbody");
         ownedTbodyEl.text("");
@@ -163,7 +168,9 @@ $(document).ready(function() {
         }
     });
 
-    // Event listener for buy/sell/watch buttons
+    /**
+     * Take appropriate action when button in 'buy-sell-watch-group' is clicked
+     */
     $("#buy-sell-watch-group").click(function (event) {
         event.preventDefault();
 
@@ -200,20 +207,13 @@ $(document).ready(function() {
         
     }
 
-    // Toggle validation alert on change if value in quantity field < 0
-    purchaseQuantityField.change(function(event) {
-        if (purchaseQuantityField.val() <= 0) {
-            $("#alert-qty-zero").show();
-            $("#purchase-btn").addClass("disabled");
-        } else {
-            $("#alert-qty-zero").hide();
-            updatePrice();
-        }
-    });
-
+    /** 
+     * Update price in buy/sell modal form with new ajax request
+     */ 
     function updatePrice() {
         // Disable purchase button until price updates
         $("#purchase-btn").addClass("disabled");
+
         $.ajax({
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
             method: "GET",
@@ -227,6 +227,7 @@ $(document).ready(function() {
             var totalPrice = (purchaseQuantityField.val() * response[0].price_usd).toFixed(2);
             $("#price-value").text(response[0].price_usd);
             $("#total-price-display").text(totalPrice);
+
             // Check for sufficient funds
             if (totalPrice > availableFunds) {
                 $("#alert-insuf-funds").show();
@@ -234,9 +235,44 @@ $(document).ready(function() {
             } else {
                 $("#alert-insuf-funds").hide();
             }
+
             $("#purchase-btn").removeClass("disabled");
         });
     }
+
+    /**
+     * Adds selected currency to user's watch list
+     * 
+     * @param {name, symbol, id} coinInfo   Object containing info about coin to watch
+     */
+    function addToWatchList(selectedCoin) {
+        if (!watchList.find(c => c.symbol === selectedCoin.symbol)) {
+            watchList.push(selectedCoin);
+            localStorage.setItem("watchList", JSON.stringify(watchList));
+            M.Toast.dismissAll();
+            M.toast({
+                html: `Added ${selectedCoin.name} (${selectedCoin.symbol}) to your watch list.`,
+                displayLength: 2000
+            });
+        } else {
+            M.Toast.dismissAll();
+            M.toast({
+                html: `${selectedCoin.name} (${selectedCoin.symbol}) is already on your watch list`,
+                displayLength: 2000
+            });
+        }
+    }
+
+    // Toggle validation alert on change if value in quantity field < 0
+    purchaseQuantityField.change(function (event) {
+        if (purchaseQuantityField.val() <= 0) {
+            $("#alert-qty-zero").show();
+            $("#purchase-btn").addClass("disabled");
+        } else {
+            $("#alert-qty-zero").hide();
+            updatePrice();
+        }
+    });
 
     // Event listener for modal form purchase button
     $("#purchase-btn").click(function (event) {
@@ -262,7 +298,6 @@ $(document).ready(function() {
                 displayLength: 2000
             })
             var totalPrice = response[0].price_usd * qty;
-
 
             // Debit price from available funds
             availableFunds = availableFunds - totalPrice;
@@ -296,29 +331,6 @@ $(document).ready(function() {
             
         });
     });
-
-    /**
-     * 
-     * 
-     * @param {name, symbol, id} coinInfo   Object containing info about coin to watch
-     */
-    function addToWatchList(selectedCoin) {
-        if (!watchList.find(c => c.symbol === selectedCoin.symbol)) {
-            watchList.push(selectedCoin);
-            localStorage.setItem("watchList", JSON.stringify(watchList));
-            M.Toast.dismissAll();
-            M.toast({
-                html: `Added ${selectedCoin.name} (${selectedCoin.symbol}) to your watch list.`,
-                displayLength: 2000
-            });
-        } else {
-            M.Toast.dismissAll();
-            M.toast({ 
-                html: `${selectedCoin.name} (${selectedCoin.symbol}) is already on your watch list`,
-                displayLength: 2000
-            });
-        }
-    }
 
     // Event listener for chart area close button
     $("#chart-close-btn").click(function(event) {
