@@ -28,6 +28,10 @@ table {
     color:rgb(39, 70, 39);
 }
 
+.tabs {
+    width:100%;
+}
+
 .btn-large {
     width: 200px;
 }

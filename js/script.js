@@ -125,8 +125,8 @@ $(document).ready(function() {
     });
 
     $("a[href='#wallet-view']").click(function (event) {
-        var tbodyEl = $("div#wallet-view tbody");
-        tbodyEl.text("");
+        var ownedTbodyEl = $("#owned tbody");
+        ownedTbodyEl.text("");
         if (ownedCurrencies.length === 0) {
             // Show message in table area saying "You don't own any currencies"
         } else {
@@ -143,7 +143,22 @@ $(document).ready(function() {
                 newTableRow.append($("<td>").text(name));
                 newTableRow.append($("<td>").text(qty.toFixed(2)));
                 newTableRow.append($("<td>").text(equity.toFixed(2)));
-                tbodyEl.append(newTableRow);
+                ownedTbodyEl.append(newTableRow);
+            }
+        }
+
+        var ownedTbodyEl = $("#watching tbody");
+        if (watchList.length === 0) {
+            // Show message in table body saying "You're not currently watching any currencies!"
+        } else {
+            var quotesStr = "";
+            for (var i = 0; i < watchList.length; i++) {
+                var newTableRow = $("<tr>");
+                newTableRow.attr("data-crypto-id", watchList[i].id);
+                newTableRow.append($("<td>").text(watchList[i].symbol));
+                newTableRow.append($("<td>").text(watchList[i].name));
+                newTableRow.append($("<td>").text(""))
+                ownedTbodyEl.append(newTableRow);
             }
         }
     });

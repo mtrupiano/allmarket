@@ -23,14 +23,14 @@
         </div>
 
         <!-- Tabs -->
-        <div class="row">
-            <div class="col s8">
+        <div class="navbar-fixed">
+            <nav>
                 <ul class="tabs">
                     <li class="tab col s3"><a href="#learn-view">Education</a></li>
                     <li class="tab col s3"><a href='#coins-view'>Coins</a></li>
                     <li class="tab col s3"><a href="#wallet-view">My Wallet</a></li>
                 </ul>
-            </div>
+            </nav>
         </div>
 
         <!-- Education tab content -->
@@ -90,7 +90,7 @@
             <h1>My Wallet</h1>
             <div class="row">
                 <div class="col s12">
-                    <table class="highlight centered z-depth-2">
+                    <table class="highlight centered z-depth-2" id="owned">
                         <h4>Owned</h4>
                         <thead>
                             <tr>
@@ -98,6 +98,22 @@
                                 <th>Name</th>
                                 <th>Qty</th>
                                 <th>Equity</th>
+                            </tr>
+                        </thead>
+            
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <table class="highlight centered z-depth-2" id="watching">
+                        <h4>Watching</h4>
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Name</th>
+                                <th>Price (USD)</th>
                             </tr>
                         </thead>
             
