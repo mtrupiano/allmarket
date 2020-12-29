@@ -1,5 +1,9 @@
 nav {
-    background-color: rgb(39, 70, 39);
+    background-color: rgb(0, 0, 0);
+}
+
+#logo {
+    height: 4rem;
 }
 
 tbody {
@@ -15,7 +19,7 @@ thead, tbody tr {
 }
 
 thead {
-    width: calc(100% - 1em)
+    width: 100%
 }
 
 table {
@@ -24,8 +28,25 @@ table {
     border-radius: 10px;
 }
 
+td, th {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
 .tabs .tab a {
     color:rgb(39, 70, 39);
+}
+
+.tabs {
+    width:100%;
+}
+
+#tabs-div, #tabs-div nav{
+    height: 30px;
+} 
+
+#tabs-nav ul {
+    height: 100%;
 }
 
 .btn-large {
@@ -47,9 +68,12 @@ table {
     background-color: yellow;
 }
 
-/* Highlight color for selected table row */
 tr.active {
-    background-color: indianred;
+    background-color: #8E24AA;
+}
+
+.table-row {
+    height: 80px;
 }
 
 #chart-div {
@@ -79,3 +103,21 @@ tr.active {
 #currency-acronym {
     font-size: 12pt;
 }
+
+
+footer {
+    background-color: rgb(0, 0, 0);
+}
+
+#coins-view {
+    padding-top: 40px;
+}
+
+#wallet-view h3 {
+    margin-top: 12px;
+}
+
+#wallet-view tbody {
+    height: 30vh;
+}
+

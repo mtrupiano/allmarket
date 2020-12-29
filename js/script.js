@@ -27,6 +27,13 @@ $(document).ready(function() {
         localStorage.setItem("availableFunds", availableFunds);
     }
 
+    // Load list of owned currencies
+    if (localStorage.getItem("ownedCurrencies")) {
+        var ownedCurrencies = JSON.parse(localStorage.getItem("ownedCurrencies"));
+    } else {
+        var ownedCurrencies = [];
+    }
+
     var selectedCoin;
     var purchaseQuantityField = $("#purchase-quantity");
 
@@ -38,72 +45,132 @@ $(document).ready(function() {
     var nomicsKey = "fa8abceb3eb222b8e323180022446677";
     var nomicsURL = "https://api.nomics.com/v1/currencies?key=" + nomicsKey + "&ids=BTC,ETH,XRP&attributes=id,name,logo_url";
 
-    $.ajax({
-        url: coinLoreURL,
-        method: "GET"
-    }).then(function(response) {
-        var responseArr = response.data;
-        for (var i = 0; i < response.data.length; i++) {
-            var symbol = responseArr[i].symbol;
-            var name = responseArr[i].name;
-            var price = responseArr[i].price_usd;
-            var id = responseArr[i].id;
+    /**
+     * Render full currency table when 'Coins' tab is clicked
+     */
+    $("a[href='#coins-view']").click(function(event) {
+        $.ajax({
+            url: coinLoreURL,
+            method: "GET"
+        }).then(function(response) {
+            var tbodyEl = $("div#coins-view tbody");
 
-            var newTableRow = $("<tr>");
-            newTableRow.attr("data-crypto-id", id);
-            newTableRow.append($("<td>").text(symbol));
-            newTableRow.append($("<td>").text(name));
-            newTableRow.append($("<td>").text(price));
-            $("tbody").append(newTableRow);
-        }
+            var responseArr = response.data;
+            for (var i = 0; i < response.data.length; i++) {
+                var symbol = responseArr[i].symbol;
+                var name = responseArr[i].name;
+                var price = responseArr[i].price_usd;
+                var id = responseArr[i].id;
 
-        // Event listener for selecting a cryptocurrency from the presented table
-        $("tbody").click(function (event) {
-            event.preventDefault();
-            
-            // Get selected table row from event
-            var target = $(event.target);
-            var selectedRow = target.parent();
+                var newTableRow = $("<tr>");
+                newTableRow.attr("data-crypto-id", id);
+                newTableRow.append($("<td>").text(symbol));
+                newTableRow.append($("<td>").text(name));
+                newTableRow.append($("<td>").text(price));
+                tbodyEl.append(newTableRow);
+            }
 
-            // Remove highlight from any previously selected row
-            ($("tbody").find(".active")).removeClass("active");
-            // Add highlight to selected row
-            selectedRow.addClass("active");
+            // Event listener for selecting a cryptocurrency from the presented table
+            tbodyEl.click(function (event) {
+                event.preventDefault();
+                
+                // Get selected table row from event
+                var target = $(event.target);
+                var selectedRow = target.parent();
 
-            // Extract coin symbol and name from selected row
-            var symbol = $(selectedRow.children()[0]).text();
-            var name = $(selectedRow.children()[1]).text();
-            var cryptoId = selectedRow.attr("data-crypto-id");
-            selectedCoin = { symbol: symbol, name: name, id: cryptoId };
+                // Remove highlight from any previously selected row
+                ($("tbody").find(".active")).removeClass("active");
+                // Add highlight to selected row
+                selectedRow.addClass("active");
 
-            // Add coin symbol and name as headers in chart area
-            $("#coin-chart-header").children("h3").text(symbol);
-            $("#coin-chart-header").children("h4").text(name);
+                // Extract coin symbol and name from selected row
+                var symbol = $(selectedRow.children()[0]).text();
+                var name = $(selectedRow.children()[1]).text();
+                var cryptoId = selectedRow.attr("data-crypto-id");
+                selectedCoin = { symbol: symbol, name: name, id: cryptoId };
 
-            // Shrink table to the left of the page
-            $("#coins-view").removeClass("container");
-            var colEl = $("#table-column");
-            colEl.removeClass("s12");
-            colEl.addClass("s6");
+                // Add coin symbol and name as headers in chart area
+                $("#coin-chart-header").children("h3").text(symbol);
+                $("#coin-chart-header").children("h4").text(name);
 
-            // Submit API request to CryptoCompare for history of selected coin's value
-            var cryptoCompareURL = 
-                `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}`;
-            $.ajax({
-                url: cryptoCompareURL,
-                method: "GET"
-            }).then(function (response) {
-                console.log(response);
+                // Shrink table to the left of the page
+                $("#coins-view").removeClass("container");
+                $("#coins-view").removeClass("s12");
+                $("#coins-view").addClass("s6");
+
+                // Submit API request to CryptoCompare for history of selected coin's value
+                var cryptoCompareURL = 
+                    `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}`;
+                $.ajax({
+                    url: cryptoCompareURL,
+                    method: "GET"
+                }).then(function (response) {
+                    console.log(response);
+                });
+
+                // Un-hide the chart area div
+                $("#chart-div").attr("style", "");
+
+                // Disable 'Sell' button if user does not own any of this currency
+                if (!ownedCurrencies.find(e => e.id === selectedCoin.id) ||
+                    (ownedCurrencies.find(e => e.id === selectedCoin.id)).ownedQuantity === 0) {
+                    $(".sell-btn").addClass("disabled");
+                } else {
+                    $(".sell-btn").removeClass("disabled");
+                }
+
             });
 
-            // Un-hide the chart area div
-            $("#chart-div").attr("style", "");
-
         });
-
     });
 
-    // Event listener for buy/sell/watch buttons
+    /**
+     * Render owned and watching tables when 'My Wallet' tab is clicked
+     */
+    $("a[href='#wallet-view']").click(function (event) {
+        resetChartArea();
+        
+        var ownedTbodyEl = $("#owned tbody");
+        ownedTbodyEl.text("");
+        if (ownedCurrencies.length === 0) {
+            // Show message in table area saying "You don't own any currencies"
+        } else {
+            for (var i = 0; i < ownedCurrencies.length; i++) {
+                var symbol = ownedCurrencies[i].symbol;
+                var name = ownedCurrencies[i].name;
+                var id = ownedCurrencies[i].id;
+                var qty = ownedCurrencies[i].ownedQuantity;
+                var equity = ownedCurrencies[i].currentEquity;
+
+                var newTableRow = $("<tr>");
+                newTableRow.attr("data-crypto-id", id);
+                newTableRow.append($("<td>").text(symbol));
+                newTableRow.append($("<td>").text(name));
+                newTableRow.append($("<td>").text(qty.toFixed(2)));
+                newTableRow.append($("<td>").text(equity.toFixed(2)));
+                ownedTbodyEl.append(newTableRow);
+            }
+        }
+
+        var ownedTbodyEl = $("#watching tbody");
+        if (watchList.length === 0) {
+            // Show message in table body saying "You're not currently watching any currencies!"
+        } else {
+            var quotesStr = "";
+            for (var i = 0; i < watchList.length; i++) {
+                var newTableRow = $("<tr>");
+                newTableRow.attr("data-crypto-id", watchList[i].id);
+                newTableRow.append($("<td>").text(watchList[i].symbol));
+                newTableRow.append($("<td>").text(watchList[i].name));
+                newTableRow.append($("<td>").text(""))
+                ownedTbodyEl.append(newTableRow);
+            }
+        }
+    });
+
+    /**
+     * Take appropriate action when button in 'buy-sell-watch-group' is clicked
+     */
     $("#buy-sell-watch-group").click(function (event) {
         event.preventDefault();
 
@@ -133,37 +200,85 @@ $(document).ready(function() {
             dismissible: false,
             onOpenStart: function (modal, trigger) {
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
-                $("#qty-display").text(purchaseQuantityField.val());
-
-                $.ajax({
-                    url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
-                    method: "GET"
-                }).then(function (response) {
-                    $("#price-value").text(response[0].price_usd);
-                    $("#purchase-btn").removeClass("disabled");
-                    $("#total-price-display").text((purchaseQuantityField.val() * response[0].price_usd).toFixed(2));
-                });
+                $("#available-funds").text(availableFunds.toFixed(2));
+                updatePrice();
             }
         });
         
     }
 
+    /** 
+     * Update price in buy/sell modal form with new ajax request
+     */ 
+    function updatePrice() {
+        // Disable purchase button until price updates
+        $("#purchase-btn").addClass("disabled");
+
+        $.ajax({
+            url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
+            method: "GET",
+            error: function() {
+                M.toast({
+                    html: "Error: failed to update price (timeout)"
+                });
+            },
+            timeout: 2000
+        }).then(function (response) {
+            var totalPrice = (purchaseQuantityField.val() * response[0].price_usd).toFixed(2);
+            $("#price-value").text(response[0].price_usd);
+            $("#total-price-display").text(totalPrice);
+
+            // Check for sufficient funds
+            if (totalPrice > availableFunds) {
+                $("#alert-insuf-funds").show();
+                $("#purchase-btn").addClass("disabled");
+            } else {
+                $("#alert-insuf-funds").hide();
+            }
+
+            $("#purchase-btn").removeClass("disabled");
+        });
+    }
+
+    /**
+     * Adds selected currency to user's watch list
+     * 
+     * @param {name, symbol, id} coinInfo   Object containing info about coin to watch
+     */
+    function addToWatchList(selectedCoin) {
+        if (!watchList.find(c => c.symbol === selectedCoin.symbol)) {
+            watchList.push(selectedCoin);
+            localStorage.setItem("watchList", JSON.stringify(watchList));
+            M.Toast.dismissAll();
+            M.toast({
+                html: `Added ${selectedCoin.name} (${selectedCoin.symbol}) to your watch list.`,
+                displayLength: 2000
+            });
+        } else {
+            M.Toast.dismissAll();
+            M.toast({
+                html: `${selectedCoin.name} (${selectedCoin.symbol}) is already on your watch list`,
+                displayLength: 2000
+            });
+        }
+    }
+
+    function resetChartArea() {
+        // Hide chart area div
+        $("#chart-div").attr("style", "display: none;");
+
+        $("#coins-view").removeClass("s6");
+        $("#coins-view").addClass("s12");
+    }
+
     // Toggle validation alert on change if value in quantity field < 0
-    purchaseQuantityField.change(function(event) {
+    purchaseQuantityField.change(function (event) {
         if (purchaseQuantityField.val() <= 0) {
-            $("#validation-alert").show();
+            $("#alert-qty-zero").show();
             $("#purchase-btn").addClass("disabled");
         } else {
-            $("#validation-alert").hide();
-            $("#qty-display").text(purchaseQuantityField.val());
-            $.ajax({
-                url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
-                method: "GET"
-            }).then(function (response) {
-                $("#price-value").text(response[0].price_usd);
-                $("#purchase-btn").removeClass("disabled");
-                $("#total-price-display").text((purchaseQuantityField.val() * response[0].price_usd).toFixed(2));
-            });
+            $("#alert-qty-zero").hide();
+            updatePrice();
         }
     });
 
@@ -179,70 +294,51 @@ $(document).ready(function() {
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
             method: "GET"
         }).then(function (response) {
-            var price = response[0].price_usd * qty;
-
-            // Check and update available funds
-            if (price > availableFunds) {
-                // Transaction fails, insufficient funds
+            if (totalPrice > availableFunds) {
+                $("#alert-insuf-funds").show();
                 return;
             }
-            availableFunds = availableFunds - price;
+
+            // Close form and show confirmation toast
+            $("#buysell-form").modal('close');
+            M.toast({
+                html: `Purchased ${qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
+                displayLength: 2000
+            })
+            var totalPrice = response[0].price_usd * qty;
+
+            // Debit price from available funds
+            availableFunds = availableFunds - totalPrice;
             localStorage.setItem("availableFunds", availableFunds);
 
             // Generate transaction receipt info and store in transaction history (local storage)
             var receipt = {
-                pricePer:   price/qty,
-                total:      price,
+                pricePer:   totalPrice/qty,
+                total:      totalPrice,
                 qty:        qty,
                 date:       moment()._d
             };
 
-            if (localStorage.getItem("transactions")) {
-                var transactions = JSON.parse(localStorage.getItem("transactions"));
-            } else {
-                var transactions = [];
-            }
-
-            if (!transactions.find(e => e.id === selectedCoin.id)) {
-                transactions.push({
+            if (!ownedCurrencies.find(e => e.id === selectedCoin.id)) {
+                ownedCurrencies.push({
                     symbol:             selectedCoin.symbol,
                     id:                 selectedCoin.id,
                     name:               selectedCoin.name,
-                    currentEquity:      price,
+                    currentEquity:      totalPrice,
+                    ownedQuantity:      parseFloat(qty),
                     transactionsList:   [receipt]
                 });
             } else {
-                var idx = transactions.findIndex(e => e.id === selectedCoin.id)
-                transactions[idx].transactionsList.push(receipt);
-                transactions[idx].currentEquity += price;
+                var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id)
+                ownedCurrencies[idx].transactionsList.push(receipt);
+                ownedCurrencies[idx].currentEquity += totalPrice;
+                ownedCurrencies[idx].ownedQuantity += parseFloat(qty);
             }
 
-            localStorage.setItem("transactions", JSON.stringify(transactions));
+            localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
+            
         });
     });
-
-    /**
-     * 
-     * 
-     * @param {name, symbol, id} coinInfo   Object containing info about coin to watch
-     */
-    function addToWatchList(selectedCoin) {
-        if (!watchList.find(c => c.symbol === selectedCoin.symbol)) {
-            watchList.push(selectedCoin);
-            localStorage.setItem("watchList", JSON.stringify(watchList));
-            M.Toast.dismissAll();
-            M.toast({
-                html: `Added ${selectedCoin.name} (${selectedCoin.symbol}) to your watch list.`,
-                displayLength: 2000
-            });
-        } else {
-            M.Toast.dismissAll();
-            M.toast({ 
-                html: `${selectedCoin.name} (${selectedCoin.symbol}) is already on your watch list`,
-                displayLength: 2000
-            });
-        }
-    }
 
     // Event listener for chart area close button
     $("#chart-close-btn").click(function(event) {
@@ -251,9 +347,8 @@ $(document).ready(function() {
 
         // Re-size table
         $("#coins-view").addClass("container");
-        var colEl = $("#table-column");
-        colEl.removeClass("s6");
-        colEl.addClass("s12");
+        $("#coins-view").removeClass("s6");
+        $("#coins-view").addClass("s12");
 
         // Remove highlight from selected row 
         ($("tbody").find(".active")).removeClass("active");
