@@ -150,23 +150,7 @@ $(document).ready(function() {
             onOpenStart: function (modal, trigger) {
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
                 $("#available-funds").text(availableFunds.toFixed(2));
-
-                $.ajax({
-                    url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
-                    method: "GET"
-                }).then(function (response) {
-                    $("#purchase-btn").removeClass("disabled");
-                    var totalPrice = (purchaseQuantityField.val() * response[0].price_usd).toFixed(2);
-                    $("#price-value").text(response[0].price_usd);
-                    $("#purchase-btn").removeClass("disabled");
-                    $("#total-price-display").text(totalPrice);
-                    if (totalPrice > availableFunds) {
-                        $("#alert-insuf-funds").show();
-                        $("#purchase-btn").addClass("disabled");
-                    } else {
-                        $("#alert-insuf-funds").hide();
-                    }
-                });
+                updatePrice();
             }
         });
         
@@ -179,25 +163,36 @@ $(document).ready(function() {
             $("#purchase-btn").addClass("disabled");
         } else {
             $("#alert-qty-zero").hide();
-            $.ajax({
-                url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
-                method: "GET"
-            }).then(function (response) {
-                $("#purchase-btn").removeClass("disabled");
-                var totalPrice = (purchaseQuantityField.val() * response[0].price_usd).toFixed(2);
-                $("#price-value").text(response[0].price_usd);
-                $("#purchase-btn").removeClass("disabled");
-                $("#total-price-display").text(totalPrice);
-                // Check for sufficient funds
-                if (totalPrice > availableFunds) {
-                    $("#alert-insuf-funds").show();
-                    $("#purchase-btn").addClass("disabled");
-                } else {
-                    $("#alert-insuf-funds").hide();
-                }
-            });
+            updatePrice();
         }
     });
+
+    function updatePrice() {
+        // Disable purchase button until price updates
+        $("#purchase-btn").addClass("disabled");
+        $.ajax({
+            url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
+            method: "GET",
+            error: function() {
+                M.toast({
+                    html: "Error: failed to update price (timeout)"
+                });
+            },
+            timeout: 2000
+        }).then(function (response) {
+            var totalPrice = (purchaseQuantityField.val() * response[0].price_usd).toFixed(2);
+            $("#price-value").text(response[0].price_usd);
+            $("#total-price-display").text(totalPrice);
+            // Check for sufficient funds
+            if (totalPrice > availableFunds) {
+                $("#alert-insuf-funds").show();
+                $("#purchase-btn").addClass("disabled");
+            } else {
+                $("#alert-insuf-funds").hide();
+            }
+            $("#purchase-btn").removeClass("disabled");
+        });
+    }
 
     // Event listener for modal form purchase button
     $("#purchase-btn").click(function (event) {
@@ -211,6 +206,11 @@ $(document).ready(function() {
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
             method: "GET"
         }).then(function (response) {
+            $("#buysell-form").modal('close');
+            M.toast({
+                html: `Purchased ${qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
+                displayLength: 2000
+            })
             var totalPrice = response[0].price_usd * qty;
 
             if (totalPrice > availableFunds) {
@@ -246,12 +246,8 @@ $(document).ready(function() {
             }
 
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
+            
         });
-        $("#buysell-form").modal('close');
-        M.toast({
-            html: `Purchased ${qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
-            displayLength: 2000
-        })
     });
 
     /**
