@@ -82,6 +82,6 @@ tr.active {
     background-color: red;
 }
 
-#quantity-input-column, #validation-alert-column {
+#quantity-input-column, .validation-alert-column {
     margin-left: 0;
 }

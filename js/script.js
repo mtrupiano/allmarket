@@ -234,7 +234,7 @@ $(document).ready(function() {
                     symbol:             selectedCoin.symbol,
                     id:                 selectedCoin.id,
                     name:               selectedCoin.name,
-                    currentEquity:      price,
+                    currentEquity:      totalPrice,
                     ownedQuantity:      qty,
                     transactionsList:   [receipt]
                 });
@@ -247,6 +247,11 @@ $(document).ready(function() {
 
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
         });
+        $("#buysell-form").modal('close');
+        M.toast({
+            html: `Purchased ${qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
+            displayLength: 2000
+        })
     });
 
     /**
