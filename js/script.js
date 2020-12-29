@@ -200,6 +200,18 @@ $(document).ready(function() {
         $("#buysell-form").modal({
             dismissible: false,
             onOpenStart: function (modal, trigger) {
+                if (method === "SELL") {
+                    // Hide top available funds row
+                    // Show bottom available funds row
+                    // Show debit parenthesis
+                    $("#available-funds-display-buy").hide();
+                    $("#available-funds-display-sell").show();
+                    $(".debit").show();
+                } else {
+                    $("#available-funds-display-buy").show();
+                    $("#available-funds-display-sell").hide();
+                    $(".debit").hide();
+                }
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
                 $("#purchase-sell-btn").text(method === "BUY" ? "PURCHASE" : "SELL");
                 $("#available-funds").text(availableFunds.toFixed(2));
