@@ -245,7 +245,7 @@ $(document).ready(function() {
     /**
      * Adds selected currency to user's watch list
      * 
-     * @param {name, symbol, id} coinInfo   Object containing info about coin to watch
+     * @param {name, symbol, id} selectedCoin   Object containing info about coin to watch
      */
     function addToWatchList(selectedCoin) {
         if (!watchList.find(c => c.symbol === selectedCoin.symbol)) {
