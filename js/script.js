@@ -235,14 +235,14 @@ $(document).ready(function() {
                     id:                 selectedCoin.id,
                     name:               selectedCoin.name,
                     currentEquity:      totalPrice,
-                    ownedQuantity:      qty,
+                    ownedQuantity:      parseFloat(qty),
                     transactionsList:   [receipt]
                 });
             } else {
                 var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id)
                 ownedCurrencies[idx].transactionsList.push(receipt);
                 ownedCurrencies[idx].currentEquity += totalPrice;
-                ownedCurrencies[idx].ownedQuantity += qty;
+                ownedCurrencies[idx].ownedQuantity += parseFloat(qty);
             }
 
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
