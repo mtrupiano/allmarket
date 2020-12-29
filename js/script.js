@@ -206,6 +206,12 @@ $(document).ready(function() {
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
             method: "GET"
         }).then(function (response) {
+            if (totalPrice > availableFunds) {
+                $("#alert-insuf-funds").show();
+                return;
+            }
+
+            // Close form and show confirmation toast
             $("#buysell-form").modal('close');
             M.toast({
                 html: `Purchased ${qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
@@ -213,11 +219,8 @@ $(document).ready(function() {
             })
             var totalPrice = response[0].price_usd * qty;
 
-            if (totalPrice > availableFunds) {
-                $("#alert-insuf-funds").show();
-                return;
-            }
 
+            // Debit price from available funds
             availableFunds = availableFunds - totalPrice;
             localStorage.setItem("availableFunds", availableFunds);
 
