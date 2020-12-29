@@ -38,54 +38,10 @@
             <h1>LEARN ABOUT CRYPTOCURRENCY</h1>
         </div>
 
-        <!-- Coins tab content -->
-        <div class="container" id="coins-view">
-            <div class="row">
-                <div class="col s12" id="table-column">
-                    <table class="highlight centered z-depth-2">
-                        <thead>
-                            <tr>
-                                <th>Symbol</th>
-                                <th>Name</th>
-                                <th>Price (USD)</th>
-                            </tr>
-                        </thead>
-
-                        <tbody></tbody>
-                    </table>
-                </div>
-
-                <!-- Column containing chart view -->
-                <div class="col s6" id="chart-div" style="display: none;">
-                    <div class="row">
-                        <div class="btn-group" id="buy-sell-watch-group">
-                            <div class="col">
-                                <a href="#buysell-form" 
-                                    class="waves-effect waves-light btn-large buy-btn modal-trigger">BUY</a>
-                            </div>
-                            <div class="col">
-                                <a href="#buysell-form" 
-                                    class="waves-effect waves-light btn sell-btn modal-trigger">SELL</a>
-                            </div>
-                            <div class="col">
-                                <a href="#" class="waves-effect waves-light btn watch-btn">WATCH</a>
-                            </div>
-                        </div>
-
-                        <div class="col" id="coin-chart-header"><h3></h3><h4></h4></div>
-
-                        <button class="btn-floating btn-large waves-effect waves-light red accent-3" id="chart-close-btn">
-                            <i class="material-icons">close</i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Wallet tab content -->
-        <div class="container" id="wallet-view">
-            <div class="row table-row">
-                <div class="col s12">
+        <div class="row container">
+            <div class="col s12" id="wallet-view">
+                <div class="row">
                     <table class="highlight centered z-depth-2" id="owned">
                         <h3>Owned</h3>
                         <thead>
@@ -100,9 +56,7 @@
                         <tbody></tbody>
                     </table>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s12 table-column">
+                <div class="row">
                     <table class="highlight centered z-depth-2" id="watching">
                         <h3>Watching</h3>
                         <thead>
@@ -112,12 +66,51 @@
                                 <th>Price (USD)</th>
                             </tr>
                         </thead>
-            
+                    
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
+
+            <!-- Layout for coins view -->
+            <div class="col s12" id="coins-view">
+                <table class="highlight centered z-depth-2">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Name</th>
+                            <th>Price (USD)</th>
+                        </tr>
+                    </thead>
+            
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Layout for chart view -->
+            <div class="col s6" id="chart-div" style="display: none;">
+                <div class="row">
+                    <div class="btn-group" id="buy-sell-watch-group">
+                        <div class="col">
+                            <a href="#buysell-form" class="waves-effect waves-light btn-large buy-btn modal-trigger">BUY</a>
+                        </div>
+                        <div class="col">
+                            <a href="#buysell-form" class="waves-effect waves-light btn sell-btn modal-trigger">SELL</a>
+                        </div>
+                        <div class="col">
+                            <a href="#" class="waves-effect waves-light btn watch-btn">WATCH</a>
+                        </div>
+                    </div>
+            
+                    <div class="col" id="coin-chart-header"><h3></h3><h4></h4></div>
+            
+                    <button class="btn-floating btn-large waves-effect waves-light red accent-3" id="chart-close-btn">
+                        <i class="material-icons">close</i>
+                    </button>
+                </div>
+            </div>
         </div>
+
 
         <!-- Layout for modal buy/sell form -->
         <div class="modal" id="buysell-form">

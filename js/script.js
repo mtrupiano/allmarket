@@ -96,9 +96,8 @@ $(document).ready(function() {
 
                 // Shrink table to the left of the page
                 $("#coins-view").removeClass("container");
-                var colEl = $("#table-column");
-                colEl.removeClass("s12");
-                colEl.addClass("s6");
+                $("#coins-view").removeClass("s12");
+                $("#coins-view").addClass("s6");
 
                 // Submit API request to CryptoCompare for history of selected coin's value
                 var cryptoCompareURL = 
@@ -130,6 +129,8 @@ $(document).ready(function() {
      * Render owned and watching tables when 'My Wallet' tab is clicked
      */
     $("a[href='#wallet-view']").click(function (event) {
+        resetChartArea();
+        
         var ownedTbodyEl = $("#owned tbody");
         ownedTbodyEl.text("");
         if (ownedCurrencies.length === 0) {
@@ -263,6 +264,14 @@ $(document).ready(function() {
         }
     }
 
+    function resetChartArea() {
+        // Hide chart area div
+        $("#chart-div").attr("style", "display: none;");
+
+        $("#coins-view").removeClass("s6");
+        $("#coins-view").addClass("s12");
+    }
+
     // Toggle validation alert on change if value in quantity field < 0
     purchaseQuantityField.change(function (event) {
         if (purchaseQuantityField.val() <= 0) {
@@ -339,9 +348,8 @@ $(document).ready(function() {
 
         // Re-size table
         $("#coins-view").addClass("container");
-        var colEl = $("#table-column");
-        colEl.removeClass("s6");
-        colEl.addClass("s12");
+        $("#coins-view").removeClass("s6");
+        $("#coins-view").addClass("s12");
 
         // Remove highlight from selected row 
         ($("tbody").find(".active")).removeClass("active");
