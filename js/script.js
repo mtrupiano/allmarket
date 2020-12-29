@@ -55,7 +55,6 @@ $(document).ready(function() {
             method: "GET"
         }).then(function(response) {
             var tbodyEl = $("div#coins-view tbody");
-
             var responseArr = response.data;
             for (var i = 0; i < response.data.length; i++) {
                 var symbol = responseArr[i].symbol;
