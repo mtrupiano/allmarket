@@ -192,14 +192,15 @@ $(document).ready(function() {
     function loadBuyOrSellModal(method, coinInfo) {
         // Reset fields
         purchaseQuantityField.val("1");
-        $("#validation-alert").hide();
-        $("#purchase-btn").addClass("disabled");
+        $(".validation-alert").hide();
+        $("#purchase-sell-btn").addClass("disabled");
 
         // Initialize modal pane
         $("#buysell-form").modal({
             dismissible: false,
             onOpenStart: function (modal, trigger) {
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
+                $("#purchase-sell-btn").text(method === "BUY" ? "PURCHASE" : "SELL");
                 $("#available-funds").text(availableFunds.toFixed(2));
                 updatePrice();
             }
@@ -236,7 +237,7 @@ $(document).ready(function() {
                 $("#alert-insuf-funds").hide();
             }
 
-            $("#purchase-btn").removeClass("disabled");
+            $("#purchase-sell-btn").removeClass("disabled");
         });
     }
 
@@ -355,7 +356,7 @@ $(document).ready(function() {
     });
 
     // Event listener for modal form cancel button
-    $("#cancel-purchase-btn").click(function (event) {
+    $("#cancel-transaction-btn").click(function (event) {
         $("#buysell-form").modal('close');
     });
 

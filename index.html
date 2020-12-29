@@ -129,7 +129,7 @@
                 <hr>
 
                 <!-- Available funds display -->
-                <div class="row">
+                <div class="row modal-form-row">
                     <h4 class="modal-form-fields">
                         <div class="col">Available funds:</div>
                         <div class="col">
@@ -141,7 +141,7 @@
                 </div>
 
                 <!-- Price per unit display -->
-                <div class="row">
+                <div class="row modal-form-row">
                     <h4 class="modal-form-fields" id="price-display">
                         <div class="col">Price per:</div>
                         <div class="col">
@@ -153,7 +153,7 @@
                 </div>
 
                 <!-- Quantity row -->
-                <div class="row valign-wrapper modal-form-fields">
+                <div class="row modal-form-row valign-wrapper modal-form-fields">
                     <h4 class="col s4">Quantity:</h4>
                     <div class="col s6 validation-alert-column">
                         <span class="validation-alert" id="alert-qty-zero">Must be greater than 0.</span>
@@ -164,10 +164,10 @@
                 </div>
 
                 <!-- Total price display -->
-                <div class="row">
+                <div class="row modal-form-row">
                     <h4 class="modal-form-fields" id="price-display">
-                        <div class="col s4">Total:</div>
-                        <div class="col s6 validation-alert-column">
+                        <div class="col">Total:</div>
+                        <div class="col validation-alert-column">
                             <span class="validation-alert" id="alert-insuf-funds">
                                 Insufficient funds!
                             </span>
@@ -182,10 +182,10 @@
         
                 <div class="row">
                     <div class="col s8">
-                        <button class="btn btn-large disabled" id="purchase-btn">Purchase</button>
+                        <button class="btn btn-large disabled" id="purchase-sell-btn"></button>
                     </div>
                     <div class="col s4">
-                        <button class="btn btn-large" id="cancel-purchase-btn">Cancel</button>
+                        <button class="btn btn-large" id="cancel-transaction-btn">Cancel</button>
                     </div>
                 </div>
             </div>

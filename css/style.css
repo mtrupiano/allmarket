@@ -68,6 +68,10 @@ td, th {
     background-color: yellow;
 }
 
+.currency-acronym {
+    font-size: 14px;
+}
+
 tr.active {
     background-color: #8E24AA;
 }
@@ -76,15 +80,24 @@ tr.active {
     height: 80px;
 }
 
+#buysell-form .row h4 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-form-row {
+    width: 80%;
+}
+
 #chart-div {
     margin-top: 10px;
 }
 
-#purchase-btn {
+#purchase-sell-btn {
     width: 100%;
 }
 
-#cancel-purchase-btn {
+#cancel-transaction-btn {
     width: 90%;
     background-color: red;
 }
@@ -93,7 +106,8 @@ tr.active {
     margin-left: 0;
 }
 
-#validation-alert {
+.validation-alert {
+    display: none;
     padding: 3px 8px;
     background-color: rgba(255, 100, 100, 0.6);
     border-radius: 2px;
