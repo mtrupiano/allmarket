@@ -31,6 +31,7 @@ $(document).ready(function() {
     // Elements of chart area
     var chartAreaBtnGroup = $("#buy-sell-watch-group");
     var chartAreaCloseBtn = $("#chart-close-btn");
+    var chartAreaHeader   = $("#coin-chart-header");
     
     // Elements of buy/sell modal form
     var modalForm =                 $("#buysell-form");
@@ -76,56 +77,7 @@ $(document).ready(function() {
             }
 
             // Event listener for selecting a cryptocurrency from the presented table
-            tbodyEl.click(function (event) {
-                event.preventDefault();
-                
-                // Get selected table row from event
-                var target = $(event.target);
-                var selectedRow = target.parent();
-
-                // Remove highlight from any previously selected row
-                ($("tbody").find(".active")).removeClass("active");
-                // Add highlight to selected row
-                selectedRow.addClass("active");
-
-                // Extract coin symbol and name from selected row
-                var symbol = $(selectedRow.children()[0]).text();
-                var name = $(selectedRow.children()[1]).text();
-                var cryptoId = selectedRow.attr("data-crypto-id");
-                selectedCoin = { symbol: symbol, name: name, id: cryptoId };
-
-                // Add coin symbol and name as headers in chart area
-                $("#coin-chart-header").children("h3").text(symbol);
-                $("#coin-chart-header").children("h4").text(name);
-
-                // Shrink table to the left of the page
-                var coinsViewEl = $("#coins-view");
-                coinsViewEl.removeClass("container");
-                coinsViewEl.removeClass("s12");
-                coinsViewEl.addClass("s6");
-
-                // Submit API request to CryptoCompare for history of selected coin's value
-                var cryptoCompareURL = 
-                    `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}`;
-                $.ajax({
-                    url: cryptoCompareURL,
-                    method: "GET"
-                }).then(function (response) {
-                    console.log(response);
-                });
-
-                // Un-hide the chart area div
-                $("#chart-div").attr("style", "");
-
-                // Disable 'Sell' button if user does not own any of this currency
-                if (!ownedCurrencies.find(e => e.id === selectedCoin.id) ||
-                    (ownedCurrencies.find(e => e.id === selectedCoin.id)).ownedQuantity === 0) {
-                    $(".sell-btn").addClass("disabled");
-                } else {
-                    $(".sell-btn").removeClass("disabled");
-                }
-
-            });
+            tbodyEl.click(showChartArea);
 
         });
     });
@@ -155,6 +107,12 @@ $(document).ready(function() {
             }
         }
 
+        ownedTbodyEl.click(function(event) {
+            showChartArea(event);
+
+            // Show header with available funds and equity..?
+        });
+
         var watchingTbodyEl = $("#watching tbody");
         watchingTbodyEl.text(""); // Clear watching table
         if (watchList.length === 0) {
@@ -170,7 +128,62 @@ $(document).ready(function() {
                 watchingTbodyEl.append(newTableRow);
             }
         }
+
+        watchingTbodyEl.click(function(event) {
+            showChartArea(event);
+        });
     });
+
+    function showChartArea(event) {
+        event.preventDefault();
+
+        // Get selected table row from event
+        var target = $(event.target);
+        var selectedRow = target.parent();
+
+        // Remove highlight from any previously selected row
+        ($("tbody").find(".active")).removeClass("active");
+        // Add highlight to selected row
+        selectedRow.addClass("active");
+
+        // Extract coin symbol and name from selected row
+        var symbol = $(selectedRow.children()[0]).text();
+        var name = $(selectedRow.children()[1]).text();
+        var cryptoId = selectedRow.attr("data-crypto-id");
+        selectedCoin = { symbol: symbol, name: name, id: cryptoId };
+
+        // Add coin symbol and name as headers in chart area
+        chartAreaHeader.children("h3").text(symbol);
+        chartAreaHeader.children("h4").text(name);
+
+        // Shrink table to the left of the page
+        // var coinsViewEl = $("#coins-view");
+        var coinsViewEl = selectedRow.parent().parent().parent().parent();
+        coinsViewEl.removeClass("container");
+        coinsViewEl.removeClass("s12");
+        coinsViewEl.addClass("s6");
+
+        // Submit API request to CryptoCompare for history of selected coin's value
+        var cryptoCompareURL =
+            `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}`;
+        $.ajax({
+            url: cryptoCompareURL,
+            method: "GET"
+        }).then(function (response) {
+            console.log(response);
+        });
+
+        // Un-hide the chart area div
+        $("#chart-div").show();
+
+        // Disable 'Sell' button if user does not own any of this currency
+        if (!ownedCurrencies.find(e => e.id === selectedCoin.id) ||
+            (ownedCurrencies.find(e => e.id === selectedCoin.id)).ownedQuantity === 0) {
+            $(".sell-btn").addClass("disabled");
+        } else {
+            $(".sell-btn").removeClass("disabled");
+        }
+    }
 
     /**
      * Take appropriate action when button in 'buy-sell-watch-group' is clicked
