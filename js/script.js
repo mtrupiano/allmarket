@@ -303,9 +303,10 @@ $(document).ready(function() {
             qty: qty
         };
 
-        if ($("#purchase-sell-btn").text() === "BUY") {
+        if ($("#purchase-sell-btn").text() === "PURCHASE") {
             executeBuy(receipt);
         } else {
+            console.log("hello")
             executeSell(receipt);
         }
 
@@ -326,16 +327,16 @@ $(document).ready(function() {
             // Close form and show confirmation toast
             $("#buysell-form").modal('close');
             M.toast({
-                html: `Purchased ${qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
+                html: `Purchased ${receipt.qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
                 displayLength: 2000
             })
-            var totalPrice = response[0].price_usd * qty;
+            var totalPrice = response[0].price_usd * receipt.qty;
 
             // Debit price from available funds
             localStorage.setItem("availableFunds", availableFunds - totalPrice);
 
             // Generate transaction receipt info and store in transaction history (local storage)
-            receipt.pricePer = totalPrice / qty;
+            receipt.pricePer = totalPrice / receipt.qty;
             receipt.total = totalPrice;
             receipt.date = moment()._d;
 
@@ -345,15 +346,15 @@ $(document).ready(function() {
                     id: selectedCoin.id,
                     name: selectedCoin.name,
                     currentEquity: totalPrice,
-                    ownedQuantity: parseFloat(qty),
+                    ownedQuantity: parseFloat(receipt.qty),
                     purchaseTransactions: [receipt],
                     saleTransactions: []
                 });
             } else {
-                var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id)
-                ownedCurrencies[idx].purchaseTransactions.push(receipt);
-                ownedCurrencies[idx].currentEquity += totalPrice;
-                ownedCurrencies[idx].ownedQuantity += parseFloat(qty);
+                var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id)
+                ownedCurrency.purchaseTransactions.push(receipt);
+                ownedCurrency.currentEquity += totalPrice;
+                ownedCurrency.ownedQuantity += parseFloat(receipt.qty);
             }
 
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
@@ -370,27 +371,28 @@ $(document).ready(function() {
             // Close form and show confirmation toast
             $("#buysell-form").modal('close');
             M.toast({
-                html: `Sold ${qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
+                html: `Sold ${receipt.qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
                 displayLength: 2500
             })
-            var totalPrice = response[0].price_usd * qty;
+            var totalPrice = response[0].price_usd * receipt.qty;
 
             // Credit price to available funds
             localStorage.setItem("availableFunds", availableFunds + totalPrice);
 
             // Generate transaction receipt info and store in transaction history (local storage)
-            receipt.pricePer = totalPrice / qty;
+            receipt.pricePer = totalPrice / receipt.qty;
             receipt.total = totalPrice;
             receipt.date = moment()._d;
 
-            var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id);
-            if (ownedCurrencies[idx].ownedQuantity < qty) {
+            var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id);
+            console.log(ownedCurrency);
+            if (ownedCurrency.ownedQuantity < receipt.qty) {
                 // Show error
             }
-            ownedCurrencies[idx].saleTransactions.push(receipt);
-            ownedCurrencies[idx].currentEquity -= totalPrice;
-            ownedCurrencies[idx].ownedQuantity -= parseFloat(qty);
-
+            ownedCurrency.saleTransactions.push(receipt);
+            ownedCurrency.currentEquity -= totalPrice;
+            ownedCurrency.ownedQuantity -= parseFloat(receipt.qty);
+            localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
         });
     }
 
