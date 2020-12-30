@@ -1,12 +1,3 @@
-
-// Coin info
-// Related news
-// chart.JS
-
-// user opens allmarket and wants to explore cryptocurrencies that fall within a price range. they buy one that has a high market cap
-// user comes to allmarket to check for news and upon seeing a negative sentiment they want to "sell" their fake bitcoin
-// user on their first visit to allmarket wants to add several currencies to their watch list.
-
 $(document).ready(function() {
 
     // Initialize materialize tabs
@@ -36,7 +27,21 @@ $(document).ready(function() {
     }
 
     var selectedCoin;
-    var purchaseQuantityField = $("#purchase-quantity");
+
+    // Elements of chart area
+    var chartAreaBtnGroup = $("#buy-sell-watch-group");
+    var chartAreaCloseBtn = $("#chart-close-btn");
+    
+    // Elements of buy/sell modal form
+    var modalForm =                 $("#buysell-form");
+    var executeTransactionButton =  $("#purchase-sell-btn");
+    var pricePerDisplay =           $("#price-value");
+    var availableFundsDisplay =     $("#available-funds-display");
+    var quantityField =             $("#quantity");
+    var totalPriceDisplay =         $("#total-price-display");
+    var loadingAlertMsg =           $("#loading-alert");
+    var insufficientFundsAlert =    $("#alert-insuf-funds");
+    var quantityZeroAlert =         $("#alert-qty-zero");
 
     var coinLoreURL = "https://api.coinlore.net/api/tickers/";
     var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE/";
@@ -50,23 +55,23 @@ $(document).ready(function() {
      * Render full currency table when 'Coins' tab is clicked
      */
     $("a[href='#coins-view']").click(function(event) {
+        // Empty table
+        var tbodyEl = $("div#coins-view tbody");
+        tbodyEl.text("");
+
         $.ajax({
             url: coinLoreURL,
             method: "GET"
         }).then(function(response) {
-            var tbodyEl = $("div#coins-view tbody");
             var responseArr = response.data;
             for (var i = 0; i < response.data.length; i++) {
-                var symbol = responseArr[i].symbol;
-                var name = responseArr[i].name;
-                var price = responseArr[i].price_usd;
-                var id = responseArr[i].id;
+                var element = responseArr[i];
 
                 var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", id);
-                newTableRow.append($("<td>").text(symbol));
-                newTableRow.append($("<td>").text(name));
-                newTableRow.append($("<td>").text(price));
+                newTableRow.attr("data-crypto-id", element.id);
+                newTableRow.append($("<td>").text(element.symbol));
+                newTableRow.append($("<td>").text(element.name));
+                newTableRow.append($("<td>").text(element.price_usd));
                 tbodyEl.append(newTableRow);
             }
 
@@ -94,9 +99,10 @@ $(document).ready(function() {
                 $("#coin-chart-header").children("h4").text(name);
 
                 // Shrink table to the left of the page
-                $("#coins-view").removeClass("container");
-                $("#coins-view").removeClass("s12");
-                $("#coins-view").addClass("s6");
+                var coinsViewEl = $("#coins-view");
+                coinsViewEl.removeClass("container");
+                coinsViewEl.removeClass("s12");
+                coinsViewEl.addClass("s6");
 
                 // Submit API request to CryptoCompare for history of selected coin's value
                 var cryptoCompareURL = 
@@ -136,19 +142,16 @@ $(document).ready(function() {
             // Show message in table area saying "You don't own any currencies"
         } else {
             for (var i = 0; i < ownedCurrencies.length; i++) {
-                var symbol = ownedCurrencies[i].symbol;
-                var name = ownedCurrencies[i].name;
-                var id = ownedCurrencies[i].id;
-                var qty = ownedCurrencies[i].ownedQuantity;
-                var equity = ownedCurrencies[i].currentEquity;
-
-                var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", id);
-                newTableRow.append($("<td>").text(symbol));
-                newTableRow.append($("<td>").text(name));
-                newTableRow.append($("<td>").text(qty.toFixed(2)));
-                newTableRow.append($("<td>").text(equity.toFixed(2)));
-                ownedTbodyEl.append(newTableRow);
+                var element = ownedCurrencies[i];
+                if (element.ownedQuantity !== 0) {
+                    var newTableRow = $("<tr>");
+                    newTableRow.attr("data-crypto-id", element.id);
+                    newTableRow.append($("<td>").text(element.symbol));
+                    newTableRow.append($("<td>").text(element.name));
+                    newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
+                    newTableRow.append($("<td>").text(element.currentEquity.toFixed(2)));
+                    ownedTbodyEl.append(newTableRow);
+                }
             }
         }
 
@@ -172,7 +175,7 @@ $(document).ready(function() {
     /**
      * Take appropriate action when button in 'buy-sell-watch-group' is clicked
      */
-    $("#buy-sell-watch-group").click(function (event) {
+    chartAreaBtnGroup.click(function (event) {
         event.preventDefault();
 
         var target = $(event.target);
@@ -192,17 +195,28 @@ $(document).ready(function() {
      */
     function loadBuyOrSellModal(method, coinInfo) {
         // Reset fields
-        purchaseQuantityField.val("1");
+        quantityField.val("1");
         $(".validation-alert").hide();
-        $("#purchase-sell-btn").addClass("disabled");
+        executeTransactionButton.addClass("disabled");
+        totalPriceDisplay.text("");
+        pricePerDisplay.text("");
 
         // Initialize modal pane
         $("#buysell-form").modal({
             dismissible: false,
             onOpenStart: function (modal, trigger) {
+                if (method === "SELL") {
+                    // Hide top available funds row
+                    // Show debit parenthesis
+                    availableFundsDisplay.hide();
+                    $(".debit").show();
+                } else {
+                    availableFundsDisplay.show();
+                    $(".debit").hide();
+                }
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
-                $("#purchase-sell-btn").text(method === "BUY" ? "PURCHASE" : "SELL");
-                $("#available-funds").text(availableFunds.toFixed(2));
+                executeTransactionButton.text(method === "BUY" ? "PURCHASE" : "SELL");
+                availableFundsDisplay.text(availableFunds.toFixed(2));
                 updatePrice();
             }
         });
@@ -214,38 +228,37 @@ $(document).ready(function() {
      */ 
     function updatePrice() {
         // Disable purchase button until price updates
-        $("#purchase-btn").addClass("disabled");
+        executeTransactionButton.addClass("disabled");
+
+        // Toggle loading message
+        loadingAlertMsg.show();
 
         $.ajax({
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
             method: "GET",
-            error: function() {
-                M.toast({
-                    html: "Error: failed to update price (timeout)"
-                });
-            },
-            timeout: 2000
         }).then(function (response) {
-            var totalPrice = (purchaseQuantityField.val() * response[0].price_usd).toFixed(2);
-            $("#price-value").text(response[0].price_usd);
-            $("#total-price-display").text(totalPrice);
+            var totalPrice = (quantityField.val() * response[0].price_usd).toFixed(2);
+            pricePerDisplay.text(response[0].price_usd);
+            totalPriceDisplay.text(totalPrice);
 
             // Check for sufficient funds
             if (totalPrice > availableFunds) {
-                $("#alert-insuf-funds").show();
-                $("#purchase-btn").addClass("disabled");
+                insufficientFundsAlert.show();
+                executeTransactionButton.addClass("disabled");
             } else {
-                $("#alert-insuf-funds").hide();
+                insufficientFundsAlert.hide();
+                executeTransactionButton.removeClass("disabled");
             }
 
-            $("#purchase-sell-btn").removeClass("disabled");
+            loadingAlertMsg.hide();
         });
+        
     }
 
     /**
      * Adds selected currency to user's watch list
      * 
-     * @param {name, symbol, id} coinInfo   Object containing info about coin to watch
+     * @param {name, symbol, id} selectedCoin   Object containing info about coin to watch
      */
     function addToWatchList(selectedCoin) {
         if (!watchList.find(c => c.symbol === selectedCoin.symbol)) {
@@ -265,6 +278,9 @@ $(document).ready(function() {
         }
     }
 
+    /**
+     * Hide the chart area and re-size primary tables
+     */
     function resetChartArea() {
         // Hide chart area div
         $("#chart-div").attr("style", "display: none;");
@@ -273,77 +289,134 @@ $(document).ready(function() {
         $("#coins-view").addClass("s12");
     }
 
-    // Toggle validation alert on change if value in quantity field < 0
-    purchaseQuantityField.change(function (event) {
-        if (purchaseQuantityField.val() <= 0) {
-            $("#alert-qty-zero").show();
-            $("#purchase-btn").addClass("disabled");
+    /**
+     * Toggle validation alert on change if value in quantity field < 0
+     */
+    quantityField.change(function (event) {
+        if (executeTransactionButton.text() === "SELL") {
+            var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id);
+            if (ownedCurrency.ownedQuantity < quantityField.val()) {
+                executeTransactionButton.addClass("disabled");
+                return;
+            } else {
+                executeTransactionButton.removeClass("disabled");
+            }
+        }
+        if (quantityField.val() <= 0) {
+            quantityZeroAlert.show();
+            totalPriceDisplay.text("0.00");
+            executeTransactionButton.addClass("disabled");
         } else {
-            $("#alert-qty-zero").hide();
+            quantityZeroAlert.hide();
             updatePrice();
         }
     });
 
-    // Event listener for modal form purchase button
-    $("#purchase-sell-btn").click(function (event) {
+    /**
+     * Event listener for modal form purchase button
+     */
+    executeTransactionButton.click(function (event) {
         event.preventDefault();
 
-        // Validate input in quantity field
-        var qty = $("#purchase-quantity").val();
+        var qty = quantityField.val();
+        var receipt = {
+            qty: qty
+        };
 
+        if (executeTransactionButton.text() === "PURCHASE") {
+            executeBuy(receipt);
+        } else {
+            executeSell(receipt);
+        }
+    });
+
+    function executeBuy(receipt) {
         // Submit another API request to get most up-to-date price
         $.ajax({
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
             method: "GET"
         }).then(function (response) {
             if (totalPrice > availableFunds) {
-                $("#alert-insuf-funds").show();
+                insufficientFundsAlert.show();
                 return;
             }
 
             // Close form and show confirmation toast
-            $("#buysell-form").modal('close');
+            modalForm.modal('close');
             M.toast({
-                html: `Purchased ${qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
+                html: `Purchased ${receipt.qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
                 displayLength: 2000
-            })
-            var totalPrice = response[0].price_usd * qty;
+            });
+            var totalPrice = response[0].price_usd * receipt.qty;
 
             // Debit price from available funds
-            availableFunds = availableFunds - totalPrice;
-            localStorage.setItem("availableFunds", availableFunds);
+            localStorage.setItem("availableFunds", availableFunds - totalPrice);
 
             // Generate transaction receipt info and store in transaction history (local storage)
-            var receipt = {
-                pricePer:   totalPrice/qty,
-                total:      totalPrice,
-                qty:        qty,
-                date:       moment()._d
-            };
+            receipt.pricePer = totalPrice / receipt.qty;
+            receipt.total = totalPrice;
+            receipt.date = moment()._d;
 
             if (!ownedCurrencies.find(e => e.id === selectedCoin.id)) {
                 ownedCurrencies.push({
-                    symbol:             selectedCoin.symbol,
-                    id:                 selectedCoin.id,
-                    name:               selectedCoin.name,
-                    currentEquity:      totalPrice,
-                    ownedQuantity:      parseFloat(qty),
-                    transactionsList:   [receipt]
+                    symbol: selectedCoin.symbol,
+                    id: selectedCoin.id,
+                    name: selectedCoin.name,
+                    currentEquity: totalPrice,
+                    ownedQuantity: parseFloat(receipt.qty),
+                    purchaseTransactions: [receipt],
+                    saleTransactions: []
                 });
             } else {
-                var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id)
-                ownedCurrencies[idx].transactionsList.push(receipt);
-                ownedCurrencies[idx].currentEquity += totalPrice;
-                ownedCurrencies[idx].ownedQuantity += parseFloat(qty);
+                var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id)
+                ownedCurrency.purchaseTransactions.push(receipt);
+                ownedCurrency.currentEquity += totalPrice;
+                ownedCurrency.ownedQuantity += parseFloat(receipt.qty);
             }
 
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
-            
-        });
-    });
 
-    // Event listener for chart area close button
-    $("#chart-close-btn").click(function(event) {
+        });
+    }
+
+    function executeSell(receipt) {
+        // Submit another API request to get most up-to-date price
+        $.ajax({
+            url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
+            method: "GET"
+        }).then(function (response) {
+            // Close form and show confirmation toast
+            modalForm.modal('close');
+            M.toast({
+                html: `Sold ${receipt.qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
+                displayLength: 2500
+            })
+            var totalPrice = response[0].price_usd * receipt.qty;
+
+            // Credit price to available funds
+            localStorage.setItem("availableFunds", availableFunds + totalPrice);
+
+            // Generate transaction receipt info and store in transaction history (local storage)
+            receipt.pricePer = totalPrice / receipt.qty;
+            receipt.total = totalPrice;
+            receipt.date = moment()._d;
+
+            var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id);
+
+            ownedCurrency.saleTransactions.push(receipt);
+            ownedCurrency.currentEquity -= totalPrice;
+            if (ownedCurrency.currentEquity < 0) {
+                ownedCurrency.currentEquity = 0;
+            }
+            ownedCurrency.ownedQuantity -= parseFloat(receipt.qty);
+            localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
+        });
+    }
+
+    /** 
+     * Event listener for chart area close button
+     */
+    chartAreaCloseBtn.click(function(event) {
         // Hide chart area div
         $("#chart-div").attr("style", "display: none;");
 
@@ -356,14 +429,18 @@ $(document).ready(function() {
         ($("tbody").find(".active")).removeClass("active");
     });
 
-    // Event listener for modal form cancel button
+    /** 
+     * Event listener for modal form cancel button
+     */
     $("#cancel-transaction-btn").click(function (event) {
-        $("#buysell-form").modal('close');
+        modalForm.modal('close');
     });
 
-    // Event listener for modal form close button
-    $(".modal-form-close-btn").click(function (event) {
-        $("#buysell-form").modal('close');
+    /**
+     * Event listener for modal form close button
+     */
+    $("#modal-form-close-btn").click(function (event) {
+        modalForm.modal('close');
     });
 
 });

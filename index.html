@@ -121,7 +121,7 @@
                         <h2 id="modal-form-header"></h2>
                     </div>
                     <div class="col s1">
-                        <button class="btn-flat modal-form-close-btn">
+                        <button class="btn-flat" id="modal-form-close-btn">
                             <i class="material-icons">close</i>
                         </button>
                     </div>
@@ -129,7 +129,7 @@
                 <hr>
 
                 <!-- Available funds display -->
-                <div class="row modal-form-row">
+                <div class="row modal-form-row" id="available-funds-display">
                     <h4 class="modal-form-fields">
                         <div class="col">Available funds:</div>
                         <div class="col">
@@ -159,7 +159,7 @@
                         <span class="validation-alert" id="alert-qty-zero">Must be greater than 0.</span>
                     </div>
                     <div class="col s2" id="quantity-input-column">
-                        <input type="number" min="1" value="1" id="purchase-quantity">
+                        <input type="number" min="1" value="1" id="quantity">
                     </div>
                 </div>
 
@@ -173,19 +173,29 @@
                             </span>
                         </div>
                         <div class="col">
+                            <span class="debit" style="display: none;">(</span>
                             <span class="currency-icon">$</span>
                             <span id="total-price-display"></span>
                             <span class="currency-acronym">(USD)</span>
+                            <span class="debit" style="display: none;">)</span>
                         </div>
                     </h4>
                 </div>
-        
+                
+                <!-- Buttons row -->
                 <div class="row">
                     <div class="col s8">
-                        <button class="btn btn-large disabled" id="purchase-sell-btn"></button>
+                        <button class="btn btn-large " id="purchase-sell-btn"></button>
                     </div>
                     <div class="col s4">
                         <button class="btn btn-large" id="cancel-transaction-btn">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- Updating prices alert -->
+                <div class="row">
+                    <div class="col" id="loading-alert" style="display: none;">
+                        Updating prices...
                     </div>
                 </div>
             </div>
