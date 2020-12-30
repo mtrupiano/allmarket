@@ -282,7 +282,7 @@ $(document).ready(function() {
     /**
      * Toggle validation alert on change if value in quantity field < 0
      */
-    purchaseQuantityField.change(function (event) {
+    quantityField.change(function (event) {
         if (purchaseQuantityField.val() <= 0) {
             $("#alert-qty-zero").show();
             $("#purchase-btn").addClass("disabled");
@@ -298,9 +298,18 @@ $(document).ready(function() {
     $("#purchase-sell-btn").click(function (event) {
         event.preventDefault();
 
-        // Validate input in quantity field
-        var qty = $("#purchase-quantity").val();
+        var qty = $("#quantity").val();
 
+        if ($("#purchase-sell-btn").text() === "BUY") {
+            executeBuy(qty);
+        } else {
+            executeSell(qty);
+        }
+
+        
+    });
+
+    function executeBuy(qty) {
         // Submit another API request to get most up-to-date price
         $.ajax({
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
@@ -325,32 +334,37 @@ $(document).ready(function() {
 
             // Generate transaction receipt info and store in transaction history (local storage)
             var receipt = {
-                pricePer:   totalPrice/qty,
-                total:      totalPrice,
-                qty:        qty,
-                date:       moment()._d
+                pricePer: totalPrice / qty,
+                total: totalPrice,
+                qty: qty,
+                date: moment()._d
             };
 
             if (!ownedCurrencies.find(e => e.id === selectedCoin.id)) {
                 ownedCurrencies.push({
-                    symbol:             selectedCoin.symbol,
-                    id:                 selectedCoin.id,
-                    name:               selectedCoin.name,
-                    currentEquity:      totalPrice,
-                    ownedQuantity:      parseFloat(qty),
-                    transactionsList:   [receipt]
+                    symbol: selectedCoin.symbol,
+                    id: selectedCoin.id,
+                    name: selectedCoin.name,
+                    currentEquity: totalPrice,
+                    ownedQuantity: parseFloat(qty),
+                    purchaseTransactions: [receipt],
+                    saleTransactions: []
                 });
             } else {
                 var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id)
-                ownedCurrencies[idx].transactionsList.push(receipt);
+                ownedCurrencies[idx].purchaseTransactions.push(receipt);
                 ownedCurrencies[idx].currentEquity += totalPrice;
                 ownedCurrencies[idx].ownedQuantity += parseFloat(qty);
             }
 
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
-            
+
         });
-    });
+    }
+
+    function executeSell(qty) {
+
+    }
 
     /** 
      * Event listener for chart area close button
