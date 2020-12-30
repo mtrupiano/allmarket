@@ -86,7 +86,7 @@ $(document).ready(function() {
      * Render owned and watching tables when 'My Wallet' tab is clicked
      */
     $("a[href='#wallet-view']").click(function (event) {
-        resetChartArea();
+        resetChartArea($("#wallet-view"));
         
         var ownedTbodyEl = $("#owned tbody");
         ownedTbodyEl.text("");
@@ -312,12 +312,14 @@ $(document).ready(function() {
     /**
      * Hide the chart area and re-size primary tables
      */
-    function resetChartArea() {
+    function resetChartArea(viewContainer) {
         // Hide chart area div
-        $("#chart-div").attr("style", "display: none;");
+        $("#chart-div").hide();
 
-        $("#coins-view").removeClass("s6");
-        $("#coins-view").addClass("s12");
+        viewContainer.removeClass("s6");
+        viewContainer.addClass("s12");
+        viewContainer.parent().attr("style", "");
+        viewContainer.parent().addClass("container")
     }
 
     /**
