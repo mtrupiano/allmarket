@@ -136,16 +136,17 @@ $(document).ready(function() {
         if (ownedCurrencies.length === 0) {
             // Show message in table area saying "You don't own any currencies"
         } else {
-            for (var i = 0; i < ownedCurrencies.length && ownedCurrencies[i].qty > 0; i++) {
+            for (var i = 0; i < ownedCurrencies.length; i++) {
                 var element = ownedCurrencies[i];
-
-                var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", element.id);
-                newTableRow.append($("<td>").text(element.symbol));
-                newTableRow.append($("<td>").text(element.name));
-                newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
-                newTableRow.append($("<td>").text(element.currentEquity.toFixed(2)));
-                ownedTbodyEl.append(newTableRow);
+                if (element.ownedQuantity !== 0) {
+                    var newTableRow = $("<tr>");
+                    newTableRow.attr("data-crypto-id", element.id);
+                    newTableRow.append($("<td>").text(element.symbol));
+                    newTableRow.append($("<td>").text(element.name));
+                    newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
+                    newTableRow.append($("<td>").text(element.currentEquity.toFixed(2)));
+                    ownedTbodyEl.append(newTableRow);
+                }
             }
         }
 
@@ -220,7 +221,7 @@ $(document).ready(function() {
      */ 
     function updatePrice() {
         // Disable purchase button until price updates
-        $("#purchase-btn").addClass("disabled");
+        $("#purchase-sell-btn").addClass("disabled");
 
         $.ajax({
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
@@ -239,13 +240,13 @@ $(document).ready(function() {
             // Check for sufficient funds
             if (totalPrice > availableFunds) {
                 $("#alert-insuf-funds").show();
-                $("#purchase-btn").addClass("disabled");
+                $("#purchase-sell-btn").addClass("disabled");
             } else {
                 $("#alert-insuf-funds").hide();
             }
-
-            $("#purchase-sell-btn").removeClass("disabled");
         });
+
+        $("#purchase-sell-btn").removeClass("disabled");
     }
 
     /**
@@ -286,9 +287,20 @@ $(document).ready(function() {
      * Toggle validation alert on change if value in quantity field < 0
      */
     quantityField.change(function (event) {
+        if ($("#purchase-sell-btn").text() === "SELL") {
+            var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id);
+            if (ownedCurrency.ownedQuantity < quantityField.val()) {
+                $("#purchase-sell-btn").addClass("disabled");
+                return;
+            } else {
+                console.log("Line 298 remove disabled");
+                $("#purchase-sell-btn").removeClass("disabled");
+            }
+        }
         if (quantityField.val() <= 0) {
             $("#alert-qty-zero").show();
-            $("#purchase-btn").addClass("disabled");
+            console.log("Line 303 set disabled");
+            // $("#purchase-sell-btn").addClass("disabled");
         } else {
             $("#alert-qty-zero").hide();
             updatePrice();
@@ -312,8 +324,6 @@ $(document).ready(function() {
             console.log("hello")
             executeSell(receipt);
         }
-
-        
     });
 
     function executeBuy(receipt) {
@@ -332,7 +342,7 @@ $(document).ready(function() {
             M.toast({
                 html: `Purchased ${receipt.qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
                 displayLength: 2000
-            })
+            });
             var totalPrice = response[0].price_usd * receipt.qty;
 
             // Debit price from available funds
@@ -388,12 +398,14 @@ $(document).ready(function() {
             receipt.date = moment()._d;
 
             var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id);
-            console.log(ownedCurrency);
             if (ownedCurrency.ownedQuantity < receipt.qty) {
                 // Show error
             }
             ownedCurrency.saleTransactions.push(receipt);
             ownedCurrency.currentEquity -= totalPrice;
+            if (ownedCurrency.currentEquity < 0) {
+                ownedCurrency.currentEquity = 0;
+            }
             ownedCurrency.ownedQuantity -= parseFloat(receipt.qty);
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
         });
