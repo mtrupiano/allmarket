@@ -36,7 +36,11 @@ $(document).ready(function() {
     }
 
     var selectedCoin;
+    
+    // Elements of buy/sell modal form
+    var executeTransactionButton = $("#purchase-sell-btn");
     var quantityField = $("#quantity");
+    var totalPriceDisplay = $("#total-price-display");
 
     var coinLoreURL = "https://api.coinlore.net/api/tickers/";
     var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE/";
@@ -192,7 +196,9 @@ $(document).ready(function() {
         // Reset fields
         quantityField.val("1");
         $(".validation-alert").hide();
-        $("#purchase-sell-btn").addClass("disabled");
+        executeTransactionButton.addClass("disabled");
+        totalPriceDisplay.text("");
+        $("#price-value").text("");
 
         // Initialize modal pane
         $("#buysell-form").modal({
@@ -208,7 +214,7 @@ $(document).ready(function() {
                     $(".debit").hide();
                 }
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
-                $("#purchase-sell-btn").text(method === "BUY" ? "PURCHASE" : "SELL");
+                executeTransactionButton.text(method === "BUY" ? "PURCHASE" : "SELL");
                 $("#available-funds").text(availableFunds.toFixed(2));
                 updatePrice();
             }
@@ -221,32 +227,34 @@ $(document).ready(function() {
      */ 
     function updatePrice() {
         // Disable purchase button until price updates
-        $("#purchase-sell-btn").addClass("disabled");
+        executeTransactionButton.addClass("disabled");
+
+        // Toggle loading message
+        var loadingAlertMsg = $("#loading-alert");
+        loadingAlertMsg.show();
+
+        var insufficientFundsAlert = $("#alert-insuf-funds");
 
         $.ajax({
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
             method: "GET",
-            error: function() {
-                M.toast({
-                    html: "Error: failed to update price (timeout)"
-                });
-            },
-            timeout: 2000
         }).then(function (response) {
             var totalPrice = (quantityField.val() * response[0].price_usd).toFixed(2);
             $("#price-value").text(response[0].price_usd);
-            $("#total-price-display").text(totalPrice);
+            totalPriceDisplay.text(totalPrice);
 
             // Check for sufficient funds
             if (totalPrice > availableFunds) {
-                $("#alert-insuf-funds").show();
-                $("#purchase-sell-btn").addClass("disabled");
+                insufficientFundsAlert.show();
+                executeTransactionButton.addClass("disabled");
             } else {
-                $("#alert-insuf-funds").hide();
+                insufficientFundsAlert.hide();
+                executeTransactionButton.removeClass("disabled");
             }
-        });
 
-        $("#purchase-sell-btn").removeClass("disabled");
+            loadingAlertMsg.hide();
+        });
+        
     }
 
     /**
@@ -287,20 +295,19 @@ $(document).ready(function() {
      * Toggle validation alert on change if value in quantity field < 0
      */
     quantityField.change(function (event) {
-        if ($("#purchase-sell-btn").text() === "SELL") {
+        if (executeTransactionButton.text() === "SELL") {
             var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id);
             if (ownedCurrency.ownedQuantity < quantityField.val()) {
-                $("#purchase-sell-btn").addClass("disabled");
+                executeTransactionButton.addClass("disabled");
                 return;
             } else {
-                console.log("Line 298 remove disabled");
-                $("#purchase-sell-btn").removeClass("disabled");
+                executeTransactionButton.removeClass("disabled");
             }
         }
         if (quantityField.val() <= 0) {
             $("#alert-qty-zero").show();
-            console.log("Line 303 set disabled");
-            // $("#purchase-sell-btn").addClass("disabled");
+            totalPriceDisplay.text("0.00");
+            executeTransactionButton.addClass("disabled");
         } else {
             $("#alert-qty-zero").hide();
             updatePrice();
@@ -310,15 +317,15 @@ $(document).ready(function() {
     /**
      * Event listener for modal form purchase button
      */
-    $("#purchase-sell-btn").click(function (event) {
+    executeTransactionButton.click(function (event) {
         event.preventDefault();
 
-        var qty = $("#quantity").val();
+        var qty = quantityField.val();
         var receipt = {
             qty: qty
         };
 
-        if ($("#purchase-sell-btn").text() === "PURCHASE") {
+        if (executeTransactionButton.text() === "PURCHASE") {
             executeBuy(receipt);
         } else {
             console.log("hello")
@@ -414,7 +421,6 @@ $(document).ready(function() {
     /** 
      * Event listener for chart area close button
      */
-    // 
     $("#chart-close-btn").click(function(event) {
         // Hide chart area div
         $("#chart-div").attr("style", "display: none;");
