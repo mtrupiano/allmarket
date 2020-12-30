@@ -439,7 +439,7 @@ $(document).ready(function() {
     /**
      * Event listener for modal form close button
      */
-    $(".modal-form-close-btn").click(function (event) {
+    $("#modal-form-close-btn").click(function (event) {
         modalForm.modal('close');
     });
 
