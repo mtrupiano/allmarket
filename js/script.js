@@ -405,9 +405,7 @@ $(document).ready(function() {
             receipt.date = moment()._d;
 
             var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id);
-            if (ownedCurrency.ownedQuantity < receipt.qty) {
-                // Show error
-            }
+
             ownedCurrency.saleTransactions.push(receipt);
             ownedCurrency.currentEquity -= totalPrice;
             if (ownedCurrency.currentEquity < 0) {
