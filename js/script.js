@@ -133,7 +133,7 @@ $(document).ready(function() {
         if (ownedCurrencies.length === 0) {
             // Show message in table area saying "You don't own any currencies"
         } else {
-            for (var i = 0; i < ownedCurrencies.length; i++) {
+            for (var i = 0; i < ownedCurrencies.length && ownedCurrencies[i].qty > 0; i++) {
                 var element = ownedCurrencies[i];
 
                 var newTableRow = $("<tr>");
@@ -299,17 +299,20 @@ $(document).ready(function() {
         event.preventDefault();
 
         var qty = $("#quantity").val();
+        var receipt = {
+            qty: qty
+        };
 
         if ($("#purchase-sell-btn").text() === "BUY") {
-            executeBuy(qty);
+            executeBuy(receipt);
         } else {
-            executeSell(qty);
+            executeSell(receipt);
         }
 
         
     });
 
-    function executeBuy(qty) {
+    function executeBuy(receipt) {
         // Submit another API request to get most up-to-date price
         $.ajax({
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
@@ -329,16 +332,12 @@ $(document).ready(function() {
             var totalPrice = response[0].price_usd * qty;
 
             // Debit price from available funds
-            availableFunds = availableFunds - totalPrice;
-            localStorage.setItem("availableFunds", availableFunds);
+            localStorage.setItem("availableFunds", availableFunds - totalPrice);
 
             // Generate transaction receipt info and store in transaction history (local storage)
-            var receipt = {
-                pricePer: totalPrice / qty,
-                total: totalPrice,
-                qty: qty,
-                date: moment()._d
-            };
+            receipt.pricePer = totalPrice / qty;
+            receipt.total = totalPrice;
+            receipt.date = moment()._d;
 
             if (!ownedCurrencies.find(e => e.id === selectedCoin.id)) {
                 ownedCurrencies.push({
@@ -362,8 +361,37 @@ $(document).ready(function() {
         });
     }
 
-    function executeSell(qty) {
+    function executeSell(receipt) {
+        // Submit another API request to get most up-to-date price
+        $.ajax({
+            url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
+            method: "GET"
+        }).then(function (response) {
+            // Close form and show confirmation toast
+            $("#buysell-form").modal('close');
+            M.toast({
+                html: `Sold ${qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
+                displayLength: 2500
+            })
+            var totalPrice = response[0].price_usd * qty;
 
+            // Credit price to available funds
+            localStorage.setItem("availableFunds", availableFunds + totalPrice);
+
+            // Generate transaction receipt info and store in transaction history (local storage)
+            receipt.pricePer = totalPrice / qty;
+            receipt.total = totalPrice;
+            receipt.date = moment()._d;
+
+            var idx = ownedCurrencies.findIndex(e => e.id === selectedCoin.id);
+            if (ownedCurrencies[idx].ownedQuantity < qty) {
+                // Show error
+            }
+            ownedCurrencies[idx].saleTransactions.push(receipt);
+            ownedCurrencies[idx].currentEquity -= totalPrice;
+            ownedCurrencies[idx].ownedQuantity -= parseFloat(qty);
+
+        });
     }
 
     /** 
