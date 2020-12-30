@@ -157,11 +157,11 @@ $(document).ready(function() {
         chartAreaHeader.children("h4").text(name);
 
         // Shrink table to the left of the page
-        // var coinsViewEl = $("#coins-view");
-        var coinsViewEl = selectedRow.parent().parent().parent().parent();
-        coinsViewEl.removeClass("container");
-        coinsViewEl.removeClass("s12");
-        coinsViewEl.addClass("s6");
+        var viewEl = selectedRow.parent().parent().parent().parent();
+        viewEl.parent().removeClass("container");
+        viewEl.parent().attr("style", "margin-left: 30px;")
+        viewEl.removeClass("s12");
+        viewEl.addClass("s6");
 
         // Submit API request to CryptoCompare for history of selected coin's value
         var cryptoCompareURL =
@@ -183,6 +183,24 @@ $(document).ready(function() {
         } else {
             $(".sell-btn").removeClass("disabled");
         }
+
+        /** 
+         * Event listener for chart area close button
+         */
+        chartAreaCloseBtn.click(function (event) {
+            // Hide chart area div
+            $("#chart-div").hide();
+
+            // Re-size table
+            viewEl.parent().addClass("container");
+            viewEl.parent().attr("style", "");
+            viewEl.removeClass("s6");
+            viewEl.addClass("s12");
+
+            // Remove highlight from selected row 
+            selectedRow.removeClass("active");
+            chartAreaCloseBtn.off();
+        });
     }
 
     /**
@@ -425,22 +443,6 @@ $(document).ready(function() {
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
         });
     }
-
-    /** 
-     * Event listener for chart area close button
-     */
-    chartAreaCloseBtn.click(function(event) {
-        // Hide chart area div
-        $("#chart-div").attr("style", "display: none;");
-
-        // Re-size table
-        $("#coins-view").addClass("container");
-        $("#coins-view").removeClass("s6");
-        $("#coins-view").addClass("s12");
-
-        // Remove highlight from selected row 
-        ($("tbody").find(".active")).removeClass("active");
-    });
 
     /** 
      * Event listener for modal form cancel button
