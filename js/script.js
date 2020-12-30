@@ -50,11 +50,14 @@ $(document).ready(function() {
      * Render full currency table when 'Coins' tab is clicked
      */
     $("a[href='#coins-view']").click(function(event) {
+        // Empty table
+        var tbodyEl = $("div#coins-view tbody");
+        tbodyEl.text("");
+
         $.ajax({
             url: coinLoreURL,
             method: "GET"
         }).then(function(response) {
-            var tbodyEl = $("div#coins-view tbody");
             var responseArr = response.data;
             for (var i = 0; i < response.data.length; i++) {
                 var element = responseArr[i];
