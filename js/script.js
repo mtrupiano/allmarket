@@ -36,11 +36,21 @@ $(document).ready(function() {
     }
 
     var selectedCoin;
+
+    // Elements of chart area
+    var chartAreaBtnGroup = $("#buy-sell-watch-group");
+    var chartAreaCloseBtn = $("#chart-close-btn");
     
     // Elements of buy/sell modal form
-    var executeTransactionButton = $("#purchase-sell-btn");
-    var quantityField = $("#quantity");
-    var totalPriceDisplay = $("#total-price-display");
+    var modalForm =                 $("#buysell-form");
+    var executeTransactionButton =  $("#purchase-sell-btn");
+    var pricePerDisplay =           $("#price-value");
+    var availableFundsDisplay =     $("#available-funds-display");
+    var quantityField =             $("#quantity");
+    var totalPriceDisplay =         $("#total-price-display");
+    var loadingAlertMsg =           $("#loading-alert");
+    var insufficientFundsAlert =    $("#alert-insuf-funds");
+    var quantityZeroAlert =         $("#alert-qty-zero");
 
     var coinLoreURL = "https://api.coinlore.net/api/tickers/";
     var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE/";
@@ -174,7 +184,7 @@ $(document).ready(function() {
     /**
      * Take appropriate action when button in 'buy-sell-watch-group' is clicked
      */
-    $("#buy-sell-watch-group").click(function (event) {
+    chartAreaBtnGroup.click(function (event) {
         event.preventDefault();
 
         var target = $(event.target);
@@ -198,7 +208,7 @@ $(document).ready(function() {
         $(".validation-alert").hide();
         executeTransactionButton.addClass("disabled");
         totalPriceDisplay.text("");
-        $("#price-value").text("");
+        pricePerDisplay.text("");
 
         // Initialize modal pane
         $("#buysell-form").modal({
@@ -207,15 +217,15 @@ $(document).ready(function() {
                 if (method === "SELL") {
                     // Hide top available funds row
                     // Show debit parenthesis
-                    $("#available-funds-display").hide();
+                    availableFundsDisplay.hide();
                     $(".debit").show();
                 } else {
-                    $("#available-funds-display").show();
+                    availableFundsDisplay.show();
                     $(".debit").hide();
                 }
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
                 executeTransactionButton.text(method === "BUY" ? "PURCHASE" : "SELL");
-                $("#available-funds").text(availableFunds.toFixed(2));
+                availableFundsDisplay.text(availableFunds.toFixed(2));
                 updatePrice();
             }
         });
@@ -230,17 +240,14 @@ $(document).ready(function() {
         executeTransactionButton.addClass("disabled");
 
         // Toggle loading message
-        var loadingAlertMsg = $("#loading-alert");
         loadingAlertMsg.show();
-
-        var insufficientFundsAlert = $("#alert-insuf-funds");
 
         $.ajax({
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
             method: "GET",
         }).then(function (response) {
             var totalPrice = (quantityField.val() * response[0].price_usd).toFixed(2);
-            $("#price-value").text(response[0].price_usd);
+            pricePerDisplay.text(response[0].price_usd);
             totalPriceDisplay.text(totalPrice);
 
             // Check for sufficient funds
@@ -305,11 +312,11 @@ $(document).ready(function() {
             }
         }
         if (quantityField.val() <= 0) {
-            $("#alert-qty-zero").show();
+            quantityZeroAlert.show();
             totalPriceDisplay.text("0.00");
             executeTransactionButton.addClass("disabled");
         } else {
-            $("#alert-qty-zero").hide();
+            quantityZeroAlert.hide();
             updatePrice();
         }
     });
@@ -340,12 +347,12 @@ $(document).ready(function() {
             method: "GET"
         }).then(function (response) {
             if (totalPrice > availableFunds) {
-                $("#alert-insuf-funds").show();
+                insufficientFundsAlert.show();
                 return;
             }
 
             // Close form and show confirmation toast
-            $("#buysell-form").modal('close');
+            modalForm.modal('close');
             M.toast({
                 html: `Purchased ${receipt.qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
                 displayLength: 2000
@@ -389,7 +396,7 @@ $(document).ready(function() {
             method: "GET"
         }).then(function (response) {
             // Close form and show confirmation toast
-            $("#buysell-form").modal('close');
+            modalForm.modal('close');
             M.toast({
                 html: `Sold ${receipt.qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
                 displayLength: 2500
@@ -419,7 +426,7 @@ $(document).ready(function() {
     /** 
      * Event listener for chart area close button
      */
-    $("#chart-close-btn").click(function(event) {
+    chartAreaCloseBtn.click(function(event) {
         // Hide chart area div
         $("#chart-div").attr("style", "display: none;");
 
@@ -436,14 +443,14 @@ $(document).ready(function() {
      * Event listener for modal form cancel button
      */
     $("#cancel-transaction-btn").click(function (event) {
-        $("#buysell-form").modal('close');
+        modalForm.modal('close');
     });
 
     /**
      * Event listener for modal form close button
      */
     $(".modal-form-close-btn").click(function (event) {
-        $("#buysell-form").modal('close');
+        modalForm.modal('close');
     });
 
 });
