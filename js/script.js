@@ -335,7 +335,6 @@ $(document).ready(function() {
         if (executeTransactionButton.text() === "PURCHASE") {
             executeBuy(receipt);
         } else {
-            console.log("hello")
             executeSell(receipt);
         }
     });
