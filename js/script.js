@@ -283,7 +283,7 @@ $(document).ready(function() {
      * Toggle validation alert on change if value in quantity field < 0
      */
     quantityField.change(function (event) {
-        if (purchaseQuantityField.val() <= 0) {
+        if (quantityField.val() <= 0) {
             $("#alert-qty-zero").show();
             $("#purchase-btn").addClass("disabled");
         } else {
