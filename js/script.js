@@ -79,7 +79,6 @@ $(document).ready(function() {
 
             // Event listener for selecting a cryptocurrency from the presented table
             tbodyEl.click(showChartArea);
-
         });
     });
 
@@ -381,9 +380,9 @@ $(document).ready(function() {
                 html: `Purchased ${receipt.qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
                 displayLength: 2000
             });
-            var totalPrice = response[0].price_usd * receipt.qty;
-
+            
             // Debit price from available funds
+            var totalPrice = response[0].price_usd * receipt.qty;
             localStorage.setItem("availableFunds", availableFunds - totalPrice);
 
             // Generate transaction receipt info and store in transaction history (local storage)
