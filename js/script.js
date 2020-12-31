@@ -337,6 +337,8 @@ $(document).ready(function() {
             });
             watchBtn.text("WATCH");
         }
+
+        renderWatchTable();
     }
 
     /**
