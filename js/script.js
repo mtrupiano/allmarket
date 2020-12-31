@@ -32,6 +32,7 @@ $(document).ready(function() {
     var chartAreaBtnGroup = $("#buy-sell-watch-group");
     var chartAreaCloseBtn = $("#chart-close-btn");
     var chartAreaHeader   = $("#coin-chart-header");
+    var watchBtn          = $("#watch-btn");
     
     // Elements of buy/sell modal form
     var modalForm =                 $("#buysell-form");
@@ -150,6 +151,12 @@ $(document).ready(function() {
             console.log(response);
         });
 
+        if (watchList.find(e => e.id === selectedCoin.id)) {
+            watchBtn.text("UNWATCH");
+        } else {
+            watchBtn.text("WATCH");
+        }
+
         // Un-hide the chart area div
         $("#chart-div").show();
 
@@ -187,9 +194,9 @@ $(document).ready(function() {
         event.preventDefault();
 
         var target = $(event.target);
-        if (target.text() !== "WATCH") {
+        if (target.text() === "BUY" || target.text() === "SELL") {
             loadBuyOrSellModal(target.text(), selectedCoin);
-        } else {
+        } else if (target.text() === "UNWATCH" || target.text() === "WATCH") {
             addToWatchList(selectedCoin);
         }
     });
@@ -307,7 +314,7 @@ $(document).ready(function() {
      * @param {name, symbol, id} selectedCoin   Object containing info about coin to watch
      */
     function addToWatchList(selectedCoin) {
-        if (!watchList.find(c => c.symbol === selectedCoin.symbol)) {
+        if (!watchList.find(c => c.id === selectedCoin.id)) {
             watchList.push(selectedCoin);
             localStorage.setItem("watchList", JSON.stringify(watchList));
             M.Toast.dismissAll();
@@ -315,12 +322,17 @@ $(document).ready(function() {
                 html: `Added ${selectedCoin.name} (${selectedCoin.symbol}) to your watch list.`,
                 displayLength: 2000
             });
+            watchBtn.text("UNWATCH");
         } else {
+            // Remove coin from watch list
+            watchList.splice(watchList.findIndex(e => e.id === selectedCoin.id), 1);
+            localStorage.setItem("watchList", JSON.stringify(watchList));
             M.Toast.dismissAll();
             M.toast({
-                html: `${selectedCoin.name} (${selectedCoin.symbol}) is already on your watch list`,
+                html: `${selectedCoin.name} (${selectedCoin.symbol}) removed from watch list.`,
                 displayLength: 2000
             });
+            watchBtn.text("WATCH");
         }
     }
 

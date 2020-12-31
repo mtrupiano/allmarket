@@ -58,12 +58,12 @@ td, th {
 }
 
 .sell-btn {
-    width: 80px;
+    width: 100px;
     background-color: red;
 }
 
-.watch-btn {
-    width: 80px;
+#watch-btn {
+    width: 100px;
     color: black;
     background-color: yellow;
 }
