@@ -90,26 +90,7 @@ $(document).ready(function() {
         resetChartArea($("#wallet-view"));
         
         renderOwnedTable();
-
-        var watchingTbodyEl = $("#watching tbody");
-        watchingTbodyEl.text(""); // Clear watching table
-        if (watchList.length === 0) {
-            // Show message in table body saying "You're not currently watching any currencies!"
-        } else {
-            var quotesStr = "";
-            for (var i = 0; i < watchList.length; i++) {
-                var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", watchList[i].id);
-                newTableRow.append($("<td>").text(watchList[i].symbol));
-                newTableRow.append($("<td>").text(watchList[i].name));
-                newTableRow.append($("<td>").text(""))
-                watchingTbodyEl.append(newTableRow);
-            }
-        }
-
-        watchingTbodyEl.click(function(event) {
-            showChartArea(event);
-        });
+        renderWatchTable();
     });
 
     function showChartArea(event) {
@@ -273,6 +254,28 @@ $(document).ready(function() {
             showChartArea(event);
 
             // Show header with available funds and equity..?
+        });
+    }
+
+    function renderWatchTable() {
+        var watchingTbodyEl = $("#watching tbody");
+        watchingTbodyEl.text(""); // Clear watching table
+        if (watchList.length === 0) {
+            // Show message in table body saying "You're not currently watching any currencies!"
+        } else {
+            var quotesStr = "";
+            for (var i = 0; i < watchList.length; i++) {
+                var newTableRow = $("<tr>");
+                newTableRow.attr("data-crypto-id", watchList[i].id);
+                newTableRow.append($("<td>").text(watchList[i].symbol));
+                newTableRow.append($("<td>").text(watchList[i].name));
+                newTableRow.append($("<td>").text(""))
+                watchingTbodyEl.append(newTableRow);
+            }
+        }
+
+        watchingTbodyEl.click(function (event) {
+            showChartArea(event);
         });
     }
 
