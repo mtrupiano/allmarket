@@ -88,30 +88,7 @@ $(document).ready(function() {
     $("a[href='#wallet-view']").click(function (event) {
         resetChartArea($("#wallet-view"));
         
-        var ownedTbodyEl = $("#owned tbody");
-        ownedTbodyEl.text("");
-        if (ownedCurrencies.length === 0) {
-            // Show message in table area saying "You don't own any currencies"
-        } else {
-            for (var i = 0; i < ownedCurrencies.length; i++) {
-                var element = ownedCurrencies[i];
-                if (element.ownedQuantity !== 0) {
-                    var newTableRow = $("<tr>");
-                    newTableRow.attr("data-crypto-id", element.id);
-                    newTableRow.append($("<td>").text(element.symbol));
-                    newTableRow.append($("<td>").text(element.name));
-                    newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
-                    newTableRow.append($("<td>").text(element.currentEquity.toFixed(2)));
-                    ownedTbodyEl.append(newTableRow);
-                }
-            }
-        }
-
-        ownedTbodyEl.click(function(event) {
-            showChartArea(event);
-
-            // Show header with available funds and equity..?
-        });
+        renderOwnedTable();
 
         var watchingTbodyEl = $("#watching tbody");
         watchingTbodyEl.text(""); // Clear watching table
@@ -249,9 +226,47 @@ $(document).ready(function() {
                 executeTransactionButton.text(method === "BUY" ? "PURCHASE" : "SELL");
                 availableFundsDisplay.text(availableFunds.toFixed(2));
                 updatePrice();
-            }
+            },
+            onCloseEnd: renderOwnedTable
         });
         
+    }
+
+    /**
+     * Draw table showing "Owned" currencies
+     */
+    function renderOwnedTable() {
+        var ownedTbodyEl = $("#owned tbody");
+        var activeRow = ownedTbodyEl.find(".active");
+        ownedTbodyEl.text("");
+        if (ownedCurrencies.length === 0) {
+            // Show message in table area saying "You don't own any currencies"
+        } else {
+            for (var i = 0; i < ownedCurrencies.length; i++) {
+                var element = ownedCurrencies[i];
+                if (element.ownedQuantity !== 0) {
+                    var newTableRow = $("<tr>");
+                    newTableRow.attr("data-crypto-id", element.id);
+                    newTableRow.append($("<td>").text(element.symbol));
+                    newTableRow.append($("<td>").text(element.name));
+                    newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
+                    newTableRow.append($("<td>").text(element.currentEquity.toFixed(2)));
+
+                    // Apply "active" highlight if row was previously selected
+                    if (activeRow.length !== 0 && element.id === activeRow.attr("data-crypto-id")) {
+                        newTableRow.addClass("active");
+                    }
+                    
+                    ownedTbodyEl.append(newTableRow);
+                }
+            }
+        }
+
+        ownedTbodyEl.click(function (event) {
+            showChartArea(event);
+
+            // Show header with available funds and equity..?
+        });
     }
 
     /** 
