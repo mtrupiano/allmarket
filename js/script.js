@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-// Coin info
-// Related news
-// chart.JS
-
-// user opens allmarket and wants to explore cryptocurrencies that fall within a price range. they buy one that has a high market cap
-// user comes to allmarket to check for news and upon seeing a negative sentiment they want to "sell" their fake bitcoin
-// user on their first visit to allmarket wants to add several currencies to their watch list.
-
-=======
->>>>>>> cf8de8718dfc900110cbf708b889cc10f6953a17
 $(document).ready(function() {
 
     // Initialize materialize tabs
