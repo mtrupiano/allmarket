@@ -140,28 +140,35 @@
 
             <!-- Layout for chart view -->
             <div class="col s5" id="chart-div" style="display: none;">
-                <div class="row z-depth-2" id="border-chart>
-                    <div class="col" id="coin-chart-header"><h3></h3><h4></h4></div>
-
-                    <button class="btn-floating btn-large waves-effect waves-light red accent-3 right" id="chart-close-btn">
+                <div class="row z-depth-2" id="border-chart">
+                    <button class="btn-large waves-effect waves-light red accent-3 right" id="chart-close-btn">
                         <i class="material-icons">close</i>
                     </button>
-                    <div class="btn-group" id="buy-sell-watch-group">
-                        <div class="col">
-                            <a href="#buysell-form" 
-                                class="waves-effect waves-light btn-large buy-btn modal-trigger cyan darken-2" id="buy-button">BUY</a>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col" id="coin-chart-header"><h3></h3></div>
                         </div>
-                        <div class="col">
-                            <a href="#buysell-form" 
-                                class="waves-effect waves-light btn sell-btn modal-trigger" id="sell-button">SELL</a>
+                        <div class="row center-align">
+                            <div class="btn-group valign-wrapper" id="buy-sell-watch-group">
+                                <div class="col">
+                                    <a href="#buysell-form" 
+                                        class="waves-effect waves-light btn-large buy-btn modal-trigger cyan darken-2" id="buy-button">BUY</a>
+                                </div>
+                                <div class="col">
+                                    <a href="#buysell-form" 
+                                        class="waves-effect waves-light btn sell-btn modal-trigger" id="sell-button">SELL</a>
+                                </div>
+                                <div class="col">
+                                    <a href="#" 
+                                        class="waves-effect waves-light btn black" id="watch-btn">WATCH</a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col">
-                            <a href="#" 
-                                class="waves-effect waves-light btn black" id="watch-btn">WATCH</a>
+    
+                        <div class="row" height="400px" width="380px">
+                            <canvas id="chart"></canvas>
                         </div>
                     </div>
-
-                    <canvas id="chart" width="300" height="300"></canvas>
                     
                 </div>
             </div>

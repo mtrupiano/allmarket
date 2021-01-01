@@ -62,6 +62,11 @@ td, th {
     background-color: red;
 }
 
+.canvas {
+    max-height: 380px;
+    max-width: 380px;
+}
+
 #watch-btn {
     width: 100px;
 }
@@ -104,6 +109,10 @@ tr.active {
 
 #purchase-sell-btn {
     width: 100%;
+}
+
+#buy-sell-watch-group {
+    margin-bottom: 15px;
 }
 
 #cancel-transaction-btn {
@@ -158,10 +167,13 @@ tr.active {
 
 #chart-div {
     padding-top: 40px;
+    margin-left: 20px;
 }
 
 #border-chart {
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
 }
 .row {
     margin-bottom: 0;
@@ -171,4 +183,15 @@ tr.active {
 }
 #chart-close-btn {
     margin: 5px;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    position: absolute;
+    right: 7%;
+}
+
+i {
+    position: relative;
+    top: 1px;
+    right: 12px;
 }
