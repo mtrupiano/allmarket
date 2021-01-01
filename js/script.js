@@ -61,6 +61,10 @@ $(document).ready(function() {
      * Render full currency table when 'Coins' tab is clicked
      */
     $("a[href='#coins-view']").click(function(event) {
+        if ($("div#coins-view").hasClass("active")) {
+            return;
+        }
+
         resetChartArea($("#coins-view"));
         // Empty table
         var tbodyEl = $("div#coins-view tbody");
@@ -91,6 +95,9 @@ $(document).ready(function() {
      * Render owned and watching tables when 'My Wallet' tab is clicked
      */
     $("a[href='#wallet-view']").click(function (event) {
+        if ($("div#wallet-view").hasClass("active")) {
+            return;
+        }
         resetChartArea($("#wallet-view"));
         
         renderOwnedTable();
