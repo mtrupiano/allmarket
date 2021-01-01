@@ -265,7 +265,7 @@ $(document).ready(function() {
                         netEntry.removeClass("loss");
                         netEntry.addClass("gain");
                     }
-                    
+
                     newTableRow.append(netEntry);
 
                     // Apply "active" highlight if row was previously selected
@@ -280,7 +280,9 @@ $(document).ready(function() {
 
 
         ownedTbodyEl.click(function (event) {
-            showChartArea(event);
+            if ($(event.target).prop("tagName").toLowerCase() === "td") {
+                showChartArea(event);
+            }
 
             // Show header with available funds and equity..?
         });
@@ -324,7 +326,9 @@ $(document).ready(function() {
         });
 
         watchingTbodyEl.click(function (event) {
-            showChartArea(event);
+            if ($(event.target).prop("tagName").toLowerCase() === "td") {
+                showChartArea(event);
+            }
         });
     }
 
