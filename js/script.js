@@ -227,9 +227,26 @@ $(document).ready(function() {
         var ownedTbodyEl = $("#owned tbody");
         var activeRow = ownedTbodyEl.find(".active");
         ownedTbodyEl.text("");
+
         if (ownedCurrencies.length === 0) {
             // Show message in table area saying "You don't own any currencies"
-        } else {
+            return;
+        }
+
+        var symList = "";
+        for (var i = 0; i < ownedCurrencies.length; i++) {
+            symList += ownedCurrencies[i].symbol;
+            if (i !== ownedCurrencies.length - 1) {
+                symList += ","
+            }
+        }
+
+        var url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}&tsyms=USD`;
+
+        $.ajax({
+            url: url,
+            method: "GET"
+        }).then(function (response) {
             for (var i = 0; i < ownedCurrencies.length; i++) {
                 var element = ownedCurrencies[i];
                 if (element.ownedQuantity !== 0) {
@@ -238,7 +255,18 @@ $(document).ready(function() {
                     newTableRow.append($("<td>").text(element.symbol));
                     newTableRow.append($("<td>").text(element.name));
                     newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
-                    newTableRow.append($("<td>").text(element.currentEquity.toFixed(2)));
+                    newTableRow.append($("<td>").text(response[element.symbol].USD.toFixed(2)));
+                    var net = (response[element.symbol].USD * element.ownedQuantity) - element.spent;
+                    var netEntry = $("<td>").text(net.toFixed(2));
+                    if (net < 0) {
+                        netEntry.removeClass("gain");
+                        netEntry.addClass("loss");
+                    } else {
+                        netEntry.removeClass("loss");
+                        netEntry.addClass("gain");
+                    }
+                    
+                    newTableRow.append(netEntry);
 
                     // Apply "active" highlight if row was previously selected
                     if (activeRow.length !== 0 && element.id === activeRow.attr("data-crypto-id")) {
@@ -248,7 +276,8 @@ $(document).ready(function() {
                     ownedTbodyEl.append(newTableRow);
                 }
             }
-        }
+        });
+
 
         ownedTbodyEl.click(function (event) {
             showChartArea(event);
@@ -260,19 +289,39 @@ $(document).ready(function() {
     function renderWatchTable() {
         var watchingTbodyEl = $("#watching tbody");
         watchingTbodyEl.text(""); // Clear watching table
+
         if (watchList.length === 0) {
             // Show message in table body saying "You're not currently watching any currencies!"
-        } else {
-            var quotesStr = "";
-            for (var i = 0; i < watchList.length; i++) {
-                var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", watchList[i].id);
-                newTableRow.append($("<td>").text(watchList[i].symbol));
-                newTableRow.append($("<td>").text(watchList[i].name));
-                newTableRow.append($("<td>").text(""))
-                watchingTbodyEl.append(newTableRow);
+            return;
+        }
+
+        // Show message saying "updating watch list"
+
+        var symList = "";
+        for (var i = 0; i < watchList.length; i++) {
+            symList += watchList[i].symbol;
+            if (i !== watchList.length-1) {
+                symList += ","
             }
         }
+
+        var url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}&tsyms=USD`;
+
+        $.ajax({
+            url: url,
+            method: "GET"
+        }).then(function(response) {
+            console.log(response);
+            for (var i = 0; i < watchList.length; i++) {
+                var newTableRow = $("<tr>");
+                var symbol = watchList[i].symbol;
+                newTableRow.attr("data-crypto-id", watchList[i].id);
+                newTableRow.append($("<td>").text(symbol));
+                newTableRow.append($("<td>").text(watchList[i].name));
+                newTableRow.append($("<td>").text(response[symbol].USD));
+                watchingTbodyEl.append(newTableRow);
+            }
+        });
 
         watchingTbodyEl.click(function (event) {
             showChartArea(event);
@@ -427,7 +476,7 @@ $(document).ready(function() {
                     symbol: selectedCoin.symbol,
                     id: selectedCoin.id,
                     name: selectedCoin.name,
-                    currentEquity: totalPrice,
+                    spent: totalPrice,
                     ownedQuantity: parseFloat(receipt.qty),
                     purchaseTransactions: [receipt],
                     saleTransactions: []
@@ -435,7 +484,7 @@ $(document).ready(function() {
             } else {
                 var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id)
                 ownedCurrency.purchaseTransactions.push(receipt);
-                ownedCurrency.currentEquity += totalPrice;
+                ownedCurrency.spent += totalPrice;
                 ownedCurrency.ownedQuantity += parseFloat(receipt.qty);
             }
 
@@ -469,9 +518,9 @@ $(document).ready(function() {
             var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id);
 
             ownedCurrency.saleTransactions.push(receipt);
-            ownedCurrency.currentEquity -= totalPrice;
-            if (ownedCurrency.currentEquity < 0) {
-                ownedCurrency.currentEquity = 0;
+            ownedCurrency.spent -= totalPrice;
+            if (ownedCurrency.spent < 0) {
+                ownedCurrency.spent = 0;
             }
             ownedCurrency.ownedQuantity -= parseFloat(receipt.qty);
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
