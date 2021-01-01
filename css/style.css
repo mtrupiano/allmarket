@@ -42,7 +42,7 @@ td, th {
 }
 
 #tabs-div, #tabs-div nav{
-    height: 30px;
+    height: 40px;
 } 
 
 #tabs-nav ul {
@@ -64,8 +64,6 @@ td, th {
 
 #watch-btn {
     width: 100px;
-    color: black;
-    background-color: yellow;
 }
 
 .currency-acronym {
@@ -73,7 +71,10 @@ td, th {
 }
 
 tr.active {
-    background-color: #8E24AA;
+    border: solid;
+    border-color: #8E24AA;
+    border-width: 3px;
+    background-color: #dacfddc4;
 }
 
 .table-row {
@@ -87,6 +88,14 @@ tr.active {
 
 .modal-form-row {
     width: 80%;
+}
+
+.loss {
+    background-color: rgba(192, 8, 8, 0.5);
+}
+
+.gain {
+    background-color: rgba(18, 155, 18, 0.5);
 }
 
 #chart-div {
