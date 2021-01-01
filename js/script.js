@@ -53,6 +53,7 @@ $(document).ready(function() {
     var nomicsKey = "fa8abceb3eb222b8e323180022446677";
     var nomicsURL = "https://api.nomics.com/v1/currencies?key=" + nomicsKey + "&ids=BTC,ETH,XRP&attributes=id,name,logo_url";
 
+    // Chart.js set up
     Chart.defaults.global.defaultFontFamily = "Inconsolata";
     var chart;
     var ctx = $("#chart");
@@ -211,7 +212,8 @@ $(document).ready(function() {
                     type: "linear",
                     scaleLabel: {
                         display: true,
-                        labelString: "Date"
+                        labelString: "Date",
+                        fontSize: 20
                     },
                     ticks: {
                         min: data[0].x
@@ -222,7 +224,8 @@ $(document).ready(function() {
                     type: "linear",
                     scaleLabel: {
                         display: true,
-                        labelString: "USD, $"
+                        labelString: "USD ($)",
+                        fontSize: 20
                     }
                 }]
             },

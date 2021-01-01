@@ -33,6 +33,10 @@ td, th {
     padding-bottom: 7px;
 }
 
+h5 {
+    margin-top: 0px;
+}
+
 .tabs .tab a {
     color:rgb(39, 70, 39);
 }
@@ -107,6 +111,10 @@ tr.active {
     margin-top: 10px;
 }
 
+#coin-chart-header-row {
+    margin-bottom: 2px;
+}
+
 #purchase-sell-btn {
     width: 100%;
 }
@@ -175,12 +183,11 @@ tr.active {
     display: flex;
     justify-content: center;
 }
-.row {
-    margin-bottom: 0;
-}
+
 #fc {
     color: #00bcd4;
 }
+
 #chart-close-btn {
     margin: 5px;
     border-radius: 50%;
@@ -190,7 +197,7 @@ tr.active {
     right: 7%;
 }
 
-i {
+#chart-close-btn i {
     position: relative;
     top: 1px;
     right: 12px;
