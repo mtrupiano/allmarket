@@ -53,6 +53,10 @@ $(document).ready(function() {
     var nomicsKey = "fa8abceb3eb222b8e323180022446677";
     var nomicsURL = "https://api.nomics.com/v1/currencies?key=" + nomicsKey + "&ids=BTC,ETH,XRP&attributes=id,name,logo_url";
 
+    Chart.defaults.global.defaultFontFamily = "Inconsolata";
+    var chart;
+    var ctx = $("#chart");
+
     /**
      * Render full currency table when 'Coins' tab is clicked
      */
@@ -129,10 +133,12 @@ $(document).ready(function() {
             url: cryptoCompareURL,
             method: "GET"
         }).then(function (response) {
+            // Extract date and price data from response and render the chart
             console.log(response);
             var dataArr = response.Data.Data;
             var data = [];
             for (var i = 0; i < dataArr.length; i++) {
+                var dateStr = (moment.unix(dataArr[i].time)).format("YYYY-MM-DD");
                 data.push({
                     x: dataArr[i].time,
                     y: dataArr[i].close
@@ -177,9 +183,14 @@ $(document).ready(function() {
         });
     }
 
+    /**
+     * Renders the price chart
+     * 
+     * @param  data     Array of points to plot
+     */
     function renderChart(data) {
         console.log(data);
-        var ctx = $("#chart");
+        
 
         var chartOptions = {
             responsive: true,
@@ -194,6 +205,9 @@ $(document).ready(function() {
                     scaleLabel: {
                         display: true,
                         labelString: "Date"
+                    },
+                    ticks: {
+                        min: data[0].x
                     }
                 }],
                 yAxes: [{
@@ -222,7 +236,11 @@ $(document).ready(function() {
             options: chartOptions
         }
 
-        var chart = new Chart(ctx, chartCfg);
+        if (chart) {
+            chart.destroy();
+        } 
+        chart = new Chart(ctx, chartCfg);
+
     }
 
     /**
