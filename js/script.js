@@ -130,6 +130,15 @@ $(document).ready(function() {
             method: "GET"
         }).then(function (response) {
             console.log(response);
+            var dataArr = response.Data.Data;
+            var data = [];
+            for (var i = 0; i < dataArr.length; i++) {
+                data.push({
+                    x: dataArr[i].time,
+                    y: dataArr[i].close
+                });
+            }
+            renderChart(data);
         });
 
         if (watchList.find(e => e.id === selectedCoin.id)) {
@@ -166,6 +175,54 @@ $(document).ready(function() {
             selectedRow.removeClass("active");
             chartAreaCloseBtn.off();
         });
+    }
+
+    function renderChart(data) {
+        console.log(data);
+        var ctx = $("#chart");
+
+        var chartOptions = {
+            responsive: true,
+            hover: {
+                mode: "nearest",
+                intersect: true
+            }, 
+            scales: {
+                xAxes: [{
+                    display: true,
+                    type: "linear",
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Date"
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    type: "linear",
+                    scaleLabel: {
+                        display: true,
+                        labelString: "USD, $"
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            }
+        }
+        var dataset = {
+            borderColor: 'rgb(148, 58, 173,1)',
+            fill: false,
+            data: data
+        }
+        var chartCfg = {
+            type: "line",
+            data: {
+                datasets: [dataset]
+            },
+            options: chartOptions
+        }
+
+        var chart = new Chart(ctx, chartCfg);
     }
 
     /**
