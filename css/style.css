@@ -1,5 +1,5 @@
 nav {
-    background-color: rgb(20, 20, 20);
+    background-color: rgb(0, 0, 0);
 }
 
 #logo {
@@ -118,9 +118,12 @@ tr.active {
     font-size: 12pt;
 }
 
-
-footer {
-    background-color: rgb(20, 20, 20);
+.page-footer {
+    background-color: rgb(0, 0, 0);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding:0%
 }
 
 #coins-view {
@@ -135,3 +138,28 @@ footer {
     height: 30vh;
 }
 
+#footer-logo {
+    height: 1.5rem;
+    margin-right: 1rem;
+}
+
+.bottom-graphic {
+    height: 75px;
+}
+
+#chart-div {
+    padding-top: 40px;
+}
+
+#border-chart {
+    border-radius: 10px;
+}
+.row {
+    margin-bottom: 0;
+}
+#fc {
+    color: #00bcd4;
+}
+#chart-close-btn {
+    margin: 5px;
+}
