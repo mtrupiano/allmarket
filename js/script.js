@@ -31,6 +31,8 @@ $(document).ready(function() {
     // Elements of chart area
     var chartAreaBtnGroup = $("#buy-sell-watch-group");
     var chartAreaCloseBtn = $("#chart-close-btn");
+    var chartAreaHeader   = $("#coin-chart-header");
+    var watchBtn          = $("#watch-btn");
     
     // Elements of buy/sell modal form
     var modalForm =                 $("#buysell-form");
@@ -55,6 +57,7 @@ $(document).ready(function() {
      * Render full currency table when 'Coins' tab is clicked
      */
     $("a[href='#coins-view']").click(function(event) {
+        resetChartArea($("#coins-view"));
         // Empty table
         var tbodyEl = $("div#coins-view tbody");
         tbodyEl.text("");
@@ -76,57 +79,7 @@ $(document).ready(function() {
             }
 
             // Event listener for selecting a cryptocurrency from the presented table
-            tbodyEl.click(function (event) {
-                event.preventDefault();
-                
-                // Get selected table row from event
-                var target = $(event.target);
-                var selectedRow = target.parent();
-
-                // Remove highlight from any previously selected row
-                ($("tbody").find(".active")).removeClass("active");
-                // Add highlight to selected row
-                selectedRow.addClass("active");
-
-                // Extract coin symbol and name from selected row
-                var symbol = $(selectedRow.children()[0]).text();
-                var name = $(selectedRow.children()[1]).text();
-                var cryptoId = selectedRow.attr("data-crypto-id");
-                selectedCoin = { symbol: symbol, name: name, id: cryptoId };
-
-                // Add coin symbol and name as headers in chart area
-                $("#coin-chart-header").children("h3").text(symbol);
-                $("#coin-chart-header").children("h4").text(name);
-
-                // Shrink table to the left of the page
-                var coinsViewEl = $("#coins-view");
-                coinsViewEl.removeClass("container");
-                coinsViewEl.removeClass("s12");
-                coinsViewEl.addClass("s6");
-
-                // Submit API request to CryptoCompare for history of selected coin's value
-                var cryptoCompareURL = 
-                    `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}`;
-                $.ajax({
-                    url: cryptoCompareURL,
-                    method: "GET"
-                }).then(function (response) {
-                    console.log(response);
-                });
-
-                // Un-hide the chart area div
-                $("#chart-div").attr("style", "");
-
-                // Disable 'Sell' button if user does not own any of this currency
-                if (!ownedCurrencies.find(e => e.id === selectedCoin.id) ||
-                    (ownedCurrencies.find(e => e.id === selectedCoin.id)).ownedQuantity === 0) {
-                    $(".sell-btn").addClass("disabled");
-                } else {
-                    $(".sell-btn").removeClass("disabled");
-                }
-
-            });
-
+            tbodyEl.click(showChartArea);
         });
     });
 
@@ -134,43 +87,86 @@ $(document).ready(function() {
      * Render owned and watching tables when 'My Wallet' tab is clicked
      */
     $("a[href='#wallet-view']").click(function (event) {
-        resetChartArea();
+        resetChartArea($("#wallet-view"));
         
-        var ownedTbodyEl = $("#owned tbody");
-        ownedTbodyEl.text("");
-        if (ownedCurrencies.length === 0) {
-            // Show message in table area saying "You don't own any currencies"
+        renderOwnedTable();
+        renderWatchTable();
+    });
+
+    function showChartArea(event) {
+        event.preventDefault();
+
+        // Get selected table row from event
+        var target = $(event.target);
+        var selectedRow = target.parent();
+
+        // Remove highlight from any previously selected row
+        ($("tbody").find(".active")).removeClass("active");
+        // Add highlight to selected row
+        selectedRow.addClass("active");
+
+        // Extract coin symbol and name from selected row
+        var symbol = $(selectedRow.children()[0]).text();
+        var name = $(selectedRow.children()[1]).text();
+        var cryptoId = selectedRow.attr("data-crypto-id");
+        selectedCoin = { symbol: symbol, name: name, id: cryptoId };
+
+        // Add coin symbol and name as headers in chart area
+        chartAreaHeader.children("h3").text(symbol);
+        chartAreaHeader.children("h4").text(name);
+
+        // Shrink table to the left of the page
+        var viewEl = selectedRow.parent().parent().parent().parent();
+        viewEl.parent().removeClass("container");
+        viewEl.parent().attr("style", "margin-left: 30px;")
+        viewEl.removeClass("s12");
+        viewEl.addClass("s6");
+
+        // Submit API request to CryptoCompare for history of selected coin's value
+        var cryptoCompareURL =
+            `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}`;
+        $.ajax({
+            url: cryptoCompareURL,
+            method: "GET"
+        }).then(function (response) {
+            console.log(response);
+        });
+
+        if (watchList.find(e => e.id === selectedCoin.id)) {
+            watchBtn.text("UNWATCH");
         } else {
-            for (var i = 0; i < ownedCurrencies.length; i++) {
-                var element = ownedCurrencies[i];
-                if (element.ownedQuantity !== 0) {
-                    var newTableRow = $("<tr>");
-                    newTableRow.attr("data-crypto-id", element.id);
-                    newTableRow.append($("<td>").text(element.symbol));
-                    newTableRow.append($("<td>").text(element.name));
-                    newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
-                    newTableRow.append($("<td>").text(element.currentEquity.toFixed(2)));
-                    ownedTbodyEl.append(newTableRow);
-                }
-            }
+            watchBtn.text("WATCH");
         }
 
-        var watchingTbodyEl = $("#watching tbody");
-        watchingTbodyEl.text(""); // Clear watching table
-        if (watchList.length === 0) {
-            // Show message in table body saying "You're not currently watching any currencies!"
+        // Un-hide the chart area div
+        $("#chart-div").show();
+
+        // Disable 'Sell' button if user does not own any of this currency
+        if (!ownedCurrencies.find(e => e.id === selectedCoin.id) ||
+            (ownedCurrencies.find(e => e.id === selectedCoin.id)).ownedQuantity === 0) {
+            $(".sell-btn").addClass("disabled");
         } else {
-            var quotesStr = "";
-            for (var i = 0; i < watchList.length; i++) {
-                var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", watchList[i].id);
-                newTableRow.append($("<td>").text(watchList[i].symbol));
-                newTableRow.append($("<td>").text(watchList[i].name));
-                newTableRow.append($("<td>").text(""))
-                watchingTbodyEl.append(newTableRow);
-            }
+            $(".sell-btn").removeClass("disabled");
         }
-    });
+
+        /** 
+         * Event listener for chart area close button
+         */
+        chartAreaCloseBtn.click(function (event) {
+            // Hide chart area div
+            $("#chart-div").hide();
+
+            // Re-size table
+            viewEl.parent().addClass("container");
+            viewEl.parent().attr("style", "");
+            viewEl.removeClass("s6");
+            viewEl.addClass("s12");
+
+            // Remove highlight from selected row 
+            selectedRow.removeClass("active");
+            chartAreaCloseBtn.off();
+        });
+    }
 
     /**
      * Take appropriate action when button in 'buy-sell-watch-group' is clicked
@@ -179,9 +175,9 @@ $(document).ready(function() {
         event.preventDefault();
 
         var target = $(event.target);
-        if (target.text() !== "WATCH") {
+        if (target.text() === "BUY" || target.text() === "SELL") {
             loadBuyOrSellModal(target.text(), selectedCoin);
-        } else {
+        } else if (target.text() === "UNWATCH" || target.text() === "WATCH") {
             addToWatchList(selectedCoin);
         }
     });
@@ -218,9 +214,69 @@ $(document).ready(function() {
                 executeTransactionButton.text(method === "BUY" ? "PURCHASE" : "SELL");
                 availableFundsDisplay.text(availableFunds.toFixed(2));
                 updatePrice();
-            }
+            },
+            onCloseEnd: renderOwnedTable
         });
         
+    }
+
+    /**
+     * Draw table showing "Owned" currencies
+     */
+    function renderOwnedTable() {
+        var ownedTbodyEl = $("#owned tbody");
+        var activeRow = ownedTbodyEl.find(".active");
+        ownedTbodyEl.text("");
+        if (ownedCurrencies.length === 0) {
+            // Show message in table area saying "You don't own any currencies"
+        } else {
+            for (var i = 0; i < ownedCurrencies.length; i++) {
+                var element = ownedCurrencies[i];
+                if (element.ownedQuantity !== 0) {
+                    var newTableRow = $("<tr>");
+                    newTableRow.attr("data-crypto-id", element.id);
+                    newTableRow.append($("<td>").text(element.symbol));
+                    newTableRow.append($("<td>").text(element.name));
+                    newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
+                    newTableRow.append($("<td>").text(element.currentEquity.toFixed(2)));
+
+                    // Apply "active" highlight if row was previously selected
+                    if (activeRow.length !== 0 && element.id === activeRow.attr("data-crypto-id")) {
+                        newTableRow.addClass("active");
+                    }
+                    
+                    ownedTbodyEl.append(newTableRow);
+                }
+            }
+        }
+
+        ownedTbodyEl.click(function (event) {
+            showChartArea(event);
+
+            // Show header with available funds and equity..?
+        });
+    }
+
+    function renderWatchTable() {
+        var watchingTbodyEl = $("#watching tbody");
+        watchingTbodyEl.text(""); // Clear watching table
+        if (watchList.length === 0) {
+            // Show message in table body saying "You're not currently watching any currencies!"
+        } else {
+            var quotesStr = "";
+            for (var i = 0; i < watchList.length; i++) {
+                var newTableRow = $("<tr>");
+                newTableRow.attr("data-crypto-id", watchList[i].id);
+                newTableRow.append($("<td>").text(watchList[i].symbol));
+                newTableRow.append($("<td>").text(watchList[i].name));
+                newTableRow.append($("<td>").text(""))
+                watchingTbodyEl.append(newTableRow);
+            }
+        }
+
+        watchingTbodyEl.click(function (event) {
+            showChartArea(event);
+        });
     }
 
     /** 
@@ -261,7 +317,7 @@ $(document).ready(function() {
      * @param {name, symbol, id} selectedCoin   Object containing info about coin to watch
      */
     function addToWatchList(selectedCoin) {
-        if (!watchList.find(c => c.symbol === selectedCoin.symbol)) {
+        if (!watchList.find(c => c.id === selectedCoin.id)) {
             watchList.push(selectedCoin);
             localStorage.setItem("watchList", JSON.stringify(watchList));
             M.Toast.dismissAll();
@@ -269,24 +325,33 @@ $(document).ready(function() {
                 html: `Added ${selectedCoin.name} (${selectedCoin.symbol}) to your watch list.`,
                 displayLength: 2000
             });
+            watchBtn.text("UNWATCH");
         } else {
+            // Remove coin from watch list
+            watchList.splice(watchList.findIndex(e => e.id === selectedCoin.id), 1);
+            localStorage.setItem("watchList", JSON.stringify(watchList));
             M.Toast.dismissAll();
             M.toast({
-                html: `${selectedCoin.name} (${selectedCoin.symbol}) is already on your watch list`,
+                html: `${selectedCoin.name} (${selectedCoin.symbol}) removed from watch list.`,
                 displayLength: 2000
             });
+            watchBtn.text("WATCH");
         }
+
+        renderWatchTable();
     }
 
     /**
      * Hide the chart area and re-size primary tables
      */
-    function resetChartArea() {
+    function resetChartArea(viewContainer) {
         // Hide chart area div
-        $("#chart-div").attr("style", "display: none;");
+        $("#chart-div").hide();
 
-        $("#coins-view").removeClass("s6");
-        $("#coins-view").addClass("s12");
+        viewContainer.removeClass("s6");
+        viewContainer.addClass("s12");
+        viewContainer.parent().attr("style", "");
+        viewContainer.parent().addClass("container")
     }
 
     /**
@@ -347,9 +412,9 @@ $(document).ready(function() {
                 html: `Purchased ${receipt.qty}x ${selectedCoin.name} (${selectedCoin.symbol})`,
                 displayLength: 2000
             });
-            var totalPrice = response[0].price_usd * receipt.qty;
-
+            
             // Debit price from available funds
+            var totalPrice = response[0].price_usd * receipt.qty;
             localStorage.setItem("availableFunds", availableFunds - totalPrice);
 
             // Generate transaction receipt info and store in transaction history (local storage)
@@ -412,22 +477,6 @@ $(document).ready(function() {
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
         });
     }
-
-    /** 
-     * Event listener for chart area close button
-     */
-    chartAreaCloseBtn.click(function(event) {
-        // Hide chart area div
-        $("#chart-div").attr("style", "display: none;");
-
-        // Re-size table
-        $("#coins-view").addClass("container");
-        $("#coins-view").removeClass("s6");
-        $("#coins-view").addClass("s12");
-
-        // Remove highlight from selected row 
-        ($("tbody").find(".active")).removeClass("active");
-    });
 
     /** 
      * Event listener for modal form cancel button
