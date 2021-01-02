@@ -117,6 +117,9 @@ $(document).ready(function() {
 
         // Get selected table row from event
         var target = $(event.target);
+        if (target.prop("tagName").toLowerCase() !== "td") {
+            return;
+        }
         var selectedRow = target.parent();
 
         // Remove highlight from any previously selected row
@@ -148,7 +151,7 @@ $(document).ready(function() {
         }).then(function (response) {
             price = response.USD;
             $("#chart-area-price-display").text(price.toFixed(2));
-            
+
             // Submit API request to CryptoCompare for history of selected coin's value
             var cryptoCompareURL =
                 `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}&extraParams="School-project"`;
