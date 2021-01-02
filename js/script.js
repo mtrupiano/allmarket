@@ -342,16 +342,22 @@ $(document).ready(function() {
             return;
         }
 
+        // Generate a string with all symbols of owned currencies to put on API request URL
         var symList = "";
         for (var i = 0; i < ownedCurrencies.length; i++) {
-            symList += ownedCurrencies[i].symbol;
-            if (i !== ownedCurrencies.length - 1) {
-                symList += ","
+            if (ownedCurrencies[i].ownedQuantity > 0) {
+                if (i !== 0) {
+                    symList += ","
+                }
+                symList += ownedCurrencies[i].symbol;
             }
         }
 
-        var url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}&tsyms=USD&extraParams="School-project"`;
+        var url = 
+            `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}` +
+            `&tsyms=USD&extraParams="School-project"`;
 
+        // Submit an API request to get the most recent price for all owned currencies
         $.ajax({
             url: url,
             method: "GET"
