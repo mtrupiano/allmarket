@@ -129,7 +129,6 @@ $(document).ready(function() {
 
         // Add coin symbol and name as headers in chart area
         chartAreaHeader.children("h3").text(name + " (" + symbol + ")");
-        // chartAreaHeader.children("h4").text(symbol);
 
         // Shrink table to the left of the page
         var viewEl = selectedRow.parent().parent().parent().parent();
@@ -140,7 +139,7 @@ $(document).ready(function() {
 
         // Submit API request to CryptoCompare for history of selected coin's value
         var cryptoCompareURL =
-            `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}`;
+            `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}&extraParams="School-project"`;
         $.ajax({
             url: cryptoCompareURL,
             method: "GET"
@@ -330,7 +329,7 @@ $(document).ready(function() {
             }
         }
 
-        var url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}&tsyms=USD`;
+        var url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}&tsyms=USD&extraParams="School-project"`;
 
         $.ajax({
             url: url,

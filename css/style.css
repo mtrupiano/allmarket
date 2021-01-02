@@ -224,12 +224,7 @@ tr.active {
     top: 50%;   
 }
 
-body {
-    src: url("fonts/Gilroy-Medium.ttf");
-    font-family: "Gilroy-Medium";
-}
-
 .major-head {
-    src: url("fonts/Gilroy-Bold.ttf");
+    src: url("../fonts/Gilroy-Bold.ttf");
     font-family: "Gilroy-Bold";
 }
