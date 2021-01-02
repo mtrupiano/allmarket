@@ -147,7 +147,8 @@ $(document).ready(function() {
             method: "GET"
         }).then(function (response) {
             price = response.USD;
-
+            $("#chart-area-price-display").text(price.toFixed(2));
+            
             // Submit API request to CryptoCompare for history of selected coin's value
             var cryptoCompareURL =
                 `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}&extraParams="School-project"`;
