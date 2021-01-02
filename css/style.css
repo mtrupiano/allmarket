@@ -202,7 +202,7 @@ tr.active {
     color: #00bcd4;
 }
 
-#chart-close-btn {
+.close-btn {
     margin: 5px;
     border-radius: 50%;
     padding: 20px 20px;
@@ -212,7 +212,7 @@ tr.active {
     right: 7%;
 }
 
-#chart-close-btn i {
+.close-btn i {
     position: relative;
     top: -26px;
     right: 12px;
