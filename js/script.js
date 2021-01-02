@@ -58,6 +58,10 @@ $(document).ready(function() {
     var chart;
     var ctx = $("#chart");
 
+    $("a[href='#learn-view']").click(function (event) {
+        resetChartArea($("#learn-view"));
+    });
+
     /**
      * Render full currency table when 'Coins' tab is clicked
      */
@@ -489,7 +493,7 @@ $(document).ready(function() {
         viewContainer.removeClass("s6");
         viewContainer.addClass("s12");
         viewContainer.parent().attr("style", "");
-        viewContainer.parent().addClass("container")
+        viewContainer.parent().addClass("container");
     }
 
     /**
