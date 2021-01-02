@@ -109,6 +109,9 @@ $(document).ready(function() {
         renderWatchTable();
     });
 
+    /** 
+     * Render the chart area
+     */
     function showChartArea(event) {
         event.preventDefault();
 
