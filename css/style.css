@@ -33,6 +33,10 @@ td, th {
     padding-bottom: 7px;
 }
 
+h5 {
+    margin-top: 0px;
+}
+
 .tabs .tab a {
     color:rgb(39, 70, 39);
 }
@@ -42,7 +46,7 @@ td, th {
 }
 
 #tabs-div, #tabs-div nav{
-    height: 30px;
+    height: 40px;
 } 
 
 #tabs-nav ul {
@@ -62,10 +66,13 @@ td, th {
     background-color: red;
 }
 
+.canvas {
+    max-height: 380px;
+    max-width: 380px;
+}
+
 #watch-btn {
     width: 100px;
-    color: black;
-    background-color: yellow;
 }
 
 .currency-acronym {
@@ -73,7 +80,10 @@ td, th {
 }
 
 tr.active {
-    background-color: #8E24AA;
+    border: solid;
+    border-color: #943aad;
+    border-width: 3px;
+    background-color: #dacfddc4;
 }
 
 .table-row {
@@ -89,12 +99,28 @@ tr.active {
     width: 80%;
 }
 
+.loss {
+    background-color: rgba(192, 8, 8, 0.5);
+}
+
+.gain {
+    background-color: rgba(18, 155, 18, 0.5);
+}
+
 #chart-div {
     margin-top: 10px;
 }
 
+#coin-chart-header-row {
+    margin-bottom: 2px;
+}
+
 #purchase-sell-btn {
     width: 100%;
+}
+
+#buy-sell-watch-group {
+    margin-bottom: 15px;
 }
 
 #cancel-transaction-btn {
@@ -152,10 +178,13 @@ tr.active {
 
 #chart-div {
     padding-top: 40px;
+    margin-left: 20px;
 }
 
 #border-chart {
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
 }
 .row {
     margin-bottom: 0;
@@ -163,6 +192,17 @@ tr.active {
 
 #chart-close-btn {
     margin: 5px;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    position: absolute;
+    right: 7%;
+}
+
+#chart-close-btn i {
+    position: relative;
+    top: 1px;
+    right: 12px;
 }
 #footer-credits {
     position: relative;

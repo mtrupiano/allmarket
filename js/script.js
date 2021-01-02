@@ -53,10 +53,19 @@ $(document).ready(function() {
     var nomicsKey = "fa8abceb3eb222b8e323180022446677";
     var nomicsURL = "https://api.nomics.com/v1/currencies?key=" + nomicsKey + "&ids=BTC,ETH,XRP&attributes=id,name,logo_url";
 
+    // Chart.js set up
+    Chart.defaults.global.defaultFontFamily = "Inconsolata";
+    var chart;
+    var ctx = $("#chart");
+
     /**
      * Render full currency table when 'Coins' tab is clicked
      */
     $("a[href='#coins-view']").click(function(event) {
+        if ($("div#coins-view").hasClass("active")) {
+            return;
+        }
+
         resetChartArea($("#coins-view"));
         // Empty table
         var tbodyEl = $("div#coins-view tbody");
@@ -87,6 +96,9 @@ $(document).ready(function() {
      * Render owned and watching tables when 'My Wallet' tab is clicked
      */
     $("a[href='#wallet-view']").click(function (event) {
+        if ($("div#wallet-view").hasClass("active")) {
+            return;
+        }
         resetChartArea($("#wallet-view"));
         
         renderOwnedTable();
@@ -112,8 +124,8 @@ $(document).ready(function() {
         selectedCoin = { symbol: symbol, name: name, id: cryptoId };
 
         // Add coin symbol and name as headers in chart area
-        chartAreaHeader.children("h3").text(symbol);
-        chartAreaHeader.children("h4").text(name);
+        chartAreaHeader.children("h3").text(name + " (" + symbol + ")");
+        // chartAreaHeader.children("h4").text(symbol);
 
         // Shrink table to the left of the page
         var viewEl = selectedRow.parent().parent().parent().parent();
@@ -129,7 +141,18 @@ $(document).ready(function() {
             url: cryptoCompareURL,
             method: "GET"
         }).then(function (response) {
+            // Extract date and price data from response and render the chart
             console.log(response);
+            var dataArr = response.Data.Data;
+            var data = [];
+            for (var i = 0; i < dataArr.length; i++) {
+                var dateStr = (moment.unix(dataArr[i].time)).format("YYYY-MM-DD");
+                data.push({
+                    x: dataArr[i].time,
+                    y: dataArr[i].close
+                });
+            }
+            renderChart(data);
         });
 
         if (watchList.find(e => e.id === selectedCoin.id)) {
@@ -166,6 +189,68 @@ $(document).ready(function() {
             selectedRow.removeClass("active");
             chartAreaCloseBtn.off();
         });
+    }
+
+    /**
+     * Renders the price chart
+     * 
+     * @param  data     Array of points to plot
+     */
+    function renderChart(data) {
+        console.log(data);
+        
+
+        var chartOptions = {
+            responsive: true,
+            hover: {
+                mode: "nearest",
+                intersect: true
+            }, 
+            scales: {
+                xAxes: [{
+                    display: true,
+                    type: "linear",
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Date",
+                        fontSize: 20
+                    },
+                    ticks: {
+                        min: data[0].x
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    type: "linear",
+                    scaleLabel: {
+                        display: true,
+                        labelString: "USD ($)",
+                        fontSize: 20
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            }
+        }
+        var dataset = {
+            borderColor: 'rgb(148, 58, 173,1)',
+            fill: false,
+            data: data
+        }
+        var chartCfg = {
+            type: "line",
+            data: {
+                datasets: [dataset]
+            },
+            options: chartOptions
+        }
+
+        if (chart) {
+            chart.destroy();
+        } 
+        chart = new Chart(ctx, chartCfg);
+
     }
 
     /**
@@ -227,9 +312,26 @@ $(document).ready(function() {
         var ownedTbodyEl = $("#owned tbody");
         var activeRow = ownedTbodyEl.find(".active");
         ownedTbodyEl.text("");
+
         if (ownedCurrencies.length === 0) {
             // Show message in table area saying "You don't own any currencies"
-        } else {
+            return;
+        }
+
+        var symList = "";
+        for (var i = 0; i < ownedCurrencies.length; i++) {
+            symList += ownedCurrencies[i].symbol;
+            if (i !== ownedCurrencies.length - 1) {
+                symList += ","
+            }
+        }
+
+        var url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}&tsyms=USD`;
+
+        $.ajax({
+            url: url,
+            method: "GET"
+        }).then(function (response) {
             for (var i = 0; i < ownedCurrencies.length; i++) {
                 var element = ownedCurrencies[i];
                 if (element.ownedQuantity !== 0) {
@@ -238,7 +340,18 @@ $(document).ready(function() {
                     newTableRow.append($("<td>").text(element.symbol));
                     newTableRow.append($("<td>").text(element.name));
                     newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
-                    newTableRow.append($("<td>").text(element.currentEquity.toFixed(2)));
+                    newTableRow.append($("<td>").text(response[element.symbol].USD.toFixed(2)));
+                    var net = (response[element.symbol].USD * element.ownedQuantity) - element.spent;
+                    var netEntry = $("<td>").text(net.toFixed(2));
+                    if (net < 0) {
+                        netEntry.removeClass("gain");
+                        netEntry.addClass("loss");
+                    } else {
+                        netEntry.removeClass("loss");
+                        netEntry.addClass("gain");
+                    }
+
+                    newTableRow.append(netEntry);
 
                     // Apply "active" highlight if row was previously selected
                     if (activeRow.length !== 0 && element.id === activeRow.attr("data-crypto-id")) {
@@ -248,10 +361,13 @@ $(document).ready(function() {
                     ownedTbodyEl.append(newTableRow);
                 }
             }
-        }
+        });
+
 
         ownedTbodyEl.click(function (event) {
-            showChartArea(event);
+            if ($(event.target).prop("tagName").toLowerCase() === "td") {
+                showChartArea(event);
+            }
 
             // Show header with available funds and equity..?
         });
@@ -260,22 +376,44 @@ $(document).ready(function() {
     function renderWatchTable() {
         var watchingTbodyEl = $("#watching tbody");
         watchingTbodyEl.text(""); // Clear watching table
+
         if (watchList.length === 0) {
             // Show message in table body saying "You're not currently watching any currencies!"
-        } else {
-            var quotesStr = "";
-            for (var i = 0; i < watchList.length; i++) {
-                var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", watchList[i].id);
-                newTableRow.append($("<td>").text(watchList[i].symbol));
-                newTableRow.append($("<td>").text(watchList[i].name));
-                newTableRow.append($("<td>").text(""))
-                watchingTbodyEl.append(newTableRow);
+            return;
+        }
+
+        // Show message saying "updating watch list"
+
+        var symList = "";
+        for (var i = 0; i < watchList.length; i++) {
+            symList += watchList[i].symbol;
+            if (i !== watchList.length-1) {
+                symList += ","
             }
         }
 
+        var url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}&tsyms=USD`;
+
+        $.ajax({
+            url: url,
+            method: "GET"
+        }).then(function(response) {
+            console.log(response);
+            for (var i = 0; i < watchList.length; i++) {
+                var newTableRow = $("<tr>");
+                var symbol = watchList[i].symbol;
+                newTableRow.attr("data-crypto-id", watchList[i].id);
+                newTableRow.append($("<td>").text(symbol));
+                newTableRow.append($("<td>").text(watchList[i].name));
+                newTableRow.append($("<td>").text(response[symbol].USD));
+                watchingTbodyEl.append(newTableRow);
+            }
+        });
+
         watchingTbodyEl.click(function (event) {
-            showChartArea(event);
+            if ($(event.target).prop("tagName").toLowerCase() === "td") {
+                showChartArea(event);
+            }
         });
     }
 
@@ -427,7 +565,7 @@ $(document).ready(function() {
                     symbol: selectedCoin.symbol,
                     id: selectedCoin.id,
                     name: selectedCoin.name,
-                    currentEquity: totalPrice,
+                    spent: totalPrice,
                     ownedQuantity: parseFloat(receipt.qty),
                     purchaseTransactions: [receipt],
                     saleTransactions: []
@@ -435,7 +573,7 @@ $(document).ready(function() {
             } else {
                 var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id)
                 ownedCurrency.purchaseTransactions.push(receipt);
-                ownedCurrency.currentEquity += totalPrice;
+                ownedCurrency.spent += totalPrice;
                 ownedCurrency.ownedQuantity += parseFloat(receipt.qty);
             }
 
@@ -469,9 +607,9 @@ $(document).ready(function() {
             var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id);
 
             ownedCurrency.saleTransactions.push(receipt);
-            ownedCurrency.currentEquity -= totalPrice;
-            if (ownedCurrency.currentEquity < 0) {
-                ownedCurrency.currentEquity = 0;
+            ownedCurrency.spent -= totalPrice;
+            if (ownedCurrency.spent < 0) {
+                ownedCurrency.spent = 0;
             }
             ownedCurrency.ownedQuantity -= parseFloat(receipt.qty);
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
