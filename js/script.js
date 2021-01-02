@@ -365,7 +365,8 @@ $(document).ready(function() {
             `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}` +
             `&tsyms=USD&extraParams="School-project"`;
 
-        // Submit an API request to get the most recent price for all owned currencies
+        // Submit an API request to get the most recent price for all owned currencies and draw
+        // table rows with these prices
         $.ajax({
             url: url,
             method: "GET"
@@ -440,6 +441,8 @@ $(document).ready(function() {
 
         var url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}&tsyms=USD`;
 
+        // Submit an API request to get the most recent price for all watched currencies and draw
+        // table rows with these prices
         $.ajax({
             url: url,
             method: "GET"

@@ -10,6 +10,20 @@ h5 {
     margin-top: 0px;
 }
 
+.major-head {
+    src: url("../fonts/Gilroy-Bold.ttf");
+    font-family: "Gilroy-Bold";
+}
+
+.row {
+    margin-bottom: 0;
+}
+
+
+.currency-acronym {
+    font-size: 14px;
+}
+
 /* ------------ */
 /* Tab styling */
 .tabs {
@@ -40,6 +54,22 @@ h5 {
 
 #tabs-nav ul {
     height: 100%;
+}
+/* ------------ */
+
+
+/* ------------ */
+/* Tab-specific styling */
+#coins-view {
+    padding-top: 40px;
+}
+
+#wallet-view h3 {
+    margin-top: 12px;
+}
+
+#wallet-view tbody {
+    height: 30vh;
 }
 /* ------------ */
 
@@ -158,10 +188,6 @@ tr.active {
     background-color: red;
 }
 
-#quantity-input-column, #validation-alert-column {
-    margin-left: 0;
-}
-
 .validation-alert {
     display: none;
     padding: 3px 8px;
@@ -170,29 +196,22 @@ tr.active {
     color: rgba(48, 48, 48, 0.6);
 }
 
-.currency-acronym {
-    font-size: 14px;
+#quantity-input-column, #validation-alert-column {
+    margin-left: 0;
 }
+/* ------------ */
 
+
+/* ------------ */
+/* Footer styling */
 .page-footer {
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(29, 29, 29);
     color: #00bcd4;
     position: fixed;
     bottom: 0;
     width: 100%;
     padding: 0%;
-}
-
-#coins-view {
-    padding-top: 40px;
-}
-
-#wallet-view h3 {
-    margin-top: 12px;
-}
-
-#wallet-view tbody {
-    height: 30vh;
+    height: 40px;
 }
 
 #footer-logo {
@@ -204,9 +223,13 @@ tr.active {
     position: absolute;
 }
 
-.row {
-    margin-bottom: 0;
+#footer-credits {
+    margin-left: 8px;
+    margin-right: 8px;
+    position: relative;
+    top: 25%;
 }
+/* ------------ */
 
 /* .close-btn {
     margin: 5px;
@@ -226,16 +249,6 @@ tr.active {
     right: 12px;
 } */
 
-#footer-credits {
-    position: relative;
-    top: 50%;   
-}
-
-.major-head {
-    src: url("../fonts/Gilroy-Bold.ttf");
-    font-family: "Gilroy-Bold";
-}
-
 @media only screen and (max-width: 1210px) {
     #buy-sell-watch-group {
         align-items: center;
@@ -244,4 +257,10 @@ tr.active {
         width: 100px;
     }
 
+}
+
+@media only screen and (max-width: 600px) {
+    #footer-credits {
+        font-size: 8pt;
+    }
 }
