@@ -53,10 +53,19 @@ $(document).ready(function() {
     var nomicsKey = "fa8abceb3eb222b8e323180022446677";
     var nomicsURL = "https://api.nomics.com/v1/currencies?key=" + nomicsKey + "&ids=BTC,ETH,XRP&attributes=id,name,logo_url";
 
+    // Chart.js set up
+    Chart.defaults.global.defaultFontFamily = "Inconsolata";
+    var chart;
+    var ctx = $("#chart");
+
     /**
      * Render full currency table when 'Coins' tab is clicked
      */
     $("a[href='#coins-view']").click(function(event) {
+        if ($("div#coins-view").hasClass("active")) {
+            return;
+        }
+
         resetChartArea($("#coins-view"));
         // Empty table
         var tbodyEl = $("div#coins-view tbody");
@@ -87,6 +96,9 @@ $(document).ready(function() {
      * Render owned and watching tables when 'My Wallet' tab is clicked
      */
     $("a[href='#wallet-view']").click(function (event) {
+        if ($("div#wallet-view").hasClass("active")) {
+            return;
+        }
         resetChartArea($("#wallet-view"));
         
         renderOwnedTable();
@@ -112,8 +124,8 @@ $(document).ready(function() {
         selectedCoin = { symbol: symbol, name: name, id: cryptoId };
 
         // Add coin symbol and name as headers in chart area
-        chartAreaHeader.children("h3").text(symbol);
-        chartAreaHeader.children("h4").text(name);
+        chartAreaHeader.children("h3").text(name + " (" + symbol + ")");
+        // chartAreaHeader.children("h4").text(symbol);
 
         // Shrink table to the left of the page
         var viewEl = selectedRow.parent().parent().parent().parent();
@@ -129,7 +141,18 @@ $(document).ready(function() {
             url: cryptoCompareURL,
             method: "GET"
         }).then(function (response) {
+            // Extract date and price data from response and render the chart
             console.log(response);
+            var dataArr = response.Data.Data;
+            var data = [];
+            for (var i = 0; i < dataArr.length; i++) {
+                var dateStr = (moment.unix(dataArr[i].time)).format("YYYY-MM-DD");
+                data.push({
+                    x: dataArr[i].time,
+                    y: dataArr[i].close
+                });
+            }
+            renderChart(data);
         });
 
         if (watchList.find(e => e.id === selectedCoin.id)) {
@@ -166,6 +189,68 @@ $(document).ready(function() {
             selectedRow.removeClass("active");
             chartAreaCloseBtn.off();
         });
+    }
+
+    /**
+     * Renders the price chart
+     * 
+     * @param  data     Array of points to plot
+     */
+    function renderChart(data) {
+        console.log(data);
+        
+
+        var chartOptions = {
+            responsive: true,
+            hover: {
+                mode: "nearest",
+                intersect: true
+            }, 
+            scales: {
+                xAxes: [{
+                    display: true,
+                    type: "linear",
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Date",
+                        fontSize: 20
+                    },
+                    ticks: {
+                        min: data[0].x
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    type: "linear",
+                    scaleLabel: {
+                        display: true,
+                        labelString: "USD ($)",
+                        fontSize: 20
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            }
+        }
+        var dataset = {
+            borderColor: 'rgb(148, 58, 173,1)',
+            fill: false,
+            data: data
+        }
+        var chartCfg = {
+            type: "line",
+            data: {
+                datasets: [dataset]
+            },
+            options: chartOptions
+        }
+
+        if (chart) {
+            chart.destroy();
+        } 
+        chart = new Chart(ctx, chartCfg);
+
     }
 
     /**
