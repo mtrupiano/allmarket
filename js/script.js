@@ -73,12 +73,14 @@ $(document).ready(function() {
         resetChartArea($("#coins-view"));
         // Empty table
         var tbodyEl = $("div#coins-view tbody");
-        tbodyEl.text("");
+        tbodyEl.html(
+            "<tr class='table-empty-msg'><td>Updating prices...</td></tr>");
 
         $.ajax({
             url: coinLoreURL,
             method: "GET"
         }).then(function(response) {
+            tbodyEl.html("");
             var responseArr = response.data;
             for (var i = 0; i < response.data.length; i++) {
                 var element = responseArr[i];
@@ -337,11 +339,6 @@ $(document).ready(function() {
         var activeRow = ownedTbodyEl.find(".active");
         ownedTbodyEl.text("");
 
-        if (ownedCurrencies.length === 0) {
-            // Show message in table area saying "You don't own any currencies"
-            return;
-        }
-
         // Generate a string with all symbols of owned currencies to put on API request URL
         var symList = "";
         for (var i = 0; i < ownedCurrencies.length; i++) {
@@ -353,6 +350,17 @@ $(document).ready(function() {
             }
         }
 
+        // Indirect way of detecting if user owns any currencies
+        if (symList === "") {
+            // Show message in table area saying "You don't own any currencies"
+            ownedTbodyEl.html(
+                "<tr class='table-empty-msg'><td>You don't currently own any currencies.</td></tr>");
+            return;
+        }
+
+        ownedTbodyEl.html(
+            "<tr class='table-empty-msg'><td>Updating prices...</td></tr>");
+
         var url = 
             `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}` +
             `&tsyms=USD&extraParams="School-project"`;
@@ -362,6 +370,9 @@ $(document).ready(function() {
             url: url,
             method: "GET"
         }).then(function (response) {
+
+            ownedTbodyEl.html("")
+;
             for (var i = 0; i < ownedCurrencies.length; i++) {
                 var element = ownedCurrencies[i];
                 if (element.ownedQuantity !== 0) {
@@ -371,6 +382,7 @@ $(document).ready(function() {
                     newTableRow.append($("<td>").text(element.name));
                     newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
                     newTableRow.append($("<td>").text(response[element.symbol].USD.toFixed(2)));
+                    // Calculate net gain/loss on a currency
                     var net = (response[element.symbol].USD * element.ownedQuantity) - element.spent;
                     var netEntry = $("<td>").text(net.toFixed(2));
                     if (net < 0) {
@@ -395,11 +407,11 @@ $(document).ready(function() {
 
 
         ownedTbodyEl.click(function (event) {
-            if ($(event.target).prop("tagName").toLowerCase() === "td") {
+            var target = $(event.target);
+
+            if (target.prop("tagName").toLowerCase() === "td") {
                 showChartArea(event);
             }
-
-            // Show header with available funds and equity..?
         });
     }
 
@@ -408,11 +420,15 @@ $(document).ready(function() {
         watchingTbodyEl.text(""); // Clear watching table
 
         if (watchList.length === 0) {
-            // Show message in table body saying "You're not currently watching any currencies!"
+            // Show message in table body saying "You're not currently watching any currencies."
+            watchingTbodyEl.html(
+                "<tr class='table-empty-msg'><td>You're not currently watching any currencies.</td></tr>");
             return;
         }
 
         // Show message saying "updating watch list"
+        watchingTbodyEl.html(
+            "<tr class='table-empty-msg'><td>Updating prices...</td></tr>");
 
         var symList = "";
         for (var i = 0; i < watchList.length; i++) {
@@ -428,7 +444,7 @@ $(document).ready(function() {
             url: url,
             method: "GET"
         }).then(function(response) {
-            console.log(response);
+            watchingTbodyEl.html("");
             for (var i = 0; i < watchList.length; i++) {
                 var newTableRow = $("<tr>");
                 var symbol = watchList[i].symbol;
@@ -441,7 +457,8 @@ $(document).ready(function() {
         });
 
         watchingTbodyEl.click(function (event) {
-            if ($(event.target).prop("tagName").toLowerCase() === "td") {
+            var target = $(event.target);
+            if (target.prop("tagName").toLowerCase() === "td") {
                 showChartArea(event);
             }
         });

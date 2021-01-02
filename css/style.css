@@ -130,6 +130,11 @@ tr.active {
 .gain {
     background-color: rgba(18, 155, 18, 0.5);
 }
+
+.table-empty-msg {
+    color: rgba(175, 175, 175, 0.808);
+    height: 100%;
+}
 /* ------------ */
 
 
