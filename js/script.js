@@ -136,29 +136,42 @@ $(document).ready(function() {
         // Shrink table to the left of the page
         var viewEl = selectedRow.parent().parent().parent().parent();
         viewEl.parent().removeClass("container");
-        viewEl.parent().attr("style", "margin-left: 30px;")
+        viewEl.parent().attr("style", "margin-left: 30px; margin-right: 30px;")
         viewEl.removeClass("s12");
-        viewEl.addClass("s6");
+        viewEl.addClass("l6");
 
-        // Submit API request to CryptoCompare for history of selected coin's value
-        var cryptoCompareURL =
-            `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}&extraParams="School-project"`;
+        // Submit API request to get most up-to-date price
+        var price = 0;
         $.ajax({
-            url: cryptoCompareURL,
+            url: `https://min-api.cryptocompare.com/data/price?fsym=${symbol}&tsyms=USD`,
             method: "GET"
         }).then(function (response) {
-            // Extract date and price data from response and render the chart
-            console.log(response);
-            var dataArr = response.Data.Data;
-            var data = [];
-            for (var i = 0; i < dataArr.length; i++) {
-                var dateStr = (moment.unix(dataArr[i].time)).format("YYYY-MM-DD");
+            price = response.USD;
+
+            // Submit API request to CryptoCompare for history of selected coin's value
+            var cryptoCompareURL =
+                `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}&extraParams="School-project"`;
+            $.ajax({
+                url: cryptoCompareURL,
+                method: "GET"
+            }).then(function (response) {
+                // Extract date and price data from response and render the chart
+                console.log(response);
+                var dataArr = response.Data.Data;
+                var data = [];
+                for (var i = 0; i < dataArr.length; i++) {
+                    var dateStr = (moment.unix(dataArr[i].time)).format("YYYY-MM-DD");
+                    data.push({
+                        x: dataArr[i].time,
+                        y: dataArr[i].close
+                    });
+                }
                 data.push({
-                    x: dataArr[i].time,
-                    y: dataArr[i].close
+                    x: moment().unix(),
+                    y: price
                 });
-            }
-            renderChart(data);
+                renderChart(data);
+            });
         });
 
         if (watchList.find(e => e.id === selectedCoin.id)) {
@@ -188,7 +201,7 @@ $(document).ready(function() {
             // Re-size table
             viewEl.parent().addClass("container");
             viewEl.parent().attr("style", "");
-            viewEl.removeClass("s6");
+            viewEl.removeClass("l6");
             viewEl.addClass("s12");
 
             // Remove highlight from selected row 
@@ -222,7 +235,8 @@ $(document).ready(function() {
                         fontSize: 20
                     },
                     ticks: {
-                        min: data[0].x
+                        min: data[0].x,
+                        max: data[data.length-1].x
                     }
                 }],
                 yAxes: [{
@@ -492,7 +506,7 @@ $(document).ready(function() {
         // Hide chart area div
         $("#chart-div").hide();
 
-        viewContainer.removeClass("s6");
+        viewContainer.removeClass("l6");
         viewContainer.addClass("s12");
         viewContainer.parent().attr("style", "");
         viewContainer.parent().addClass("container");

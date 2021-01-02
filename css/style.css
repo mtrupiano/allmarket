@@ -6,37 +6,12 @@ nav {
     height: 4rem;
 }
 
-tbody {
-    display: block;
-    height: 70vh;
-    overflow: auto;
-}
-
-thead, tbody tr {
-    display: table;
-    width:100%;
-    table-layout: fixed;
-}
-
-thead {
-    width: 100%
-}
-
-table {
-    width: 100%;
-    margin-top: 10px;
-    border-radius: 10px;
-}
-
-td, th {
-    padding-top: 7px;
-    padding-bottom: 7px;
-}
-
 h5 {
     margin-top: 0px;
 }
 
+/* ------------ */
+/* Tab styling */
 .tabs {
     width:100%;
 }
@@ -66,18 +41,29 @@ h5 {
 #tabs-nav ul {
     height: 100%;
 }
+/* ------------ */
 
-.btn-large {
-    width: 200px;
+
+/* ------------ */
+/* Chart area styling */
+#border-chart {
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
 }
 
-.buy-btn {
-    background-color: green;
+#chart-div {
+    margin-top: 10px;
+    padding-top: 40px;
+    margin-left: 5px;
 }
 
-.sell-btn {
-    width: 100px;
-    background-color: red;
+#coin-chart-header-row {
+    margin-bottom: 2px;
+}
+
+#buy-sell-watch-group {
+    margin-bottom: 15px;
 }
 
 .canvas {
@@ -85,14 +71,49 @@ h5 {
     max-width: 380px;
 }
 
+.sell-btn {
+    width: 100px;
+    background-color: red;
+}
+
+.btn-large {
+    width: 200px;
+}
+
 #watch-btn {
     width: 100px;
 }
+/* ------------ */
 
-.currency-acronym {
-    font-size: 14px;
+
+/* ------------ */
+/* Table styling */
+table {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 10px;
+    min-width: 460px
 }
 
+tbody {
+    display: block;
+    height: 70vh;
+    overflow: auto;
+}
+
+thead, tbody tr {
+    display: table;
+    width:100%;
+    table-layout: fixed;
+}
+
+/* Control the height of table rows */
+td, th {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+/* Appearance of selected table rows */
 tr.active {
     border: solid;
     border-color: #943aad;
@@ -100,10 +121,20 @@ tr.active {
     background-color: #dacfddc4;
 }
 
-.table-row {
-    height: 80px;
+/* Color for when the value in the +/- column is negative */
+.loss {
+    background-color: rgba(192, 8, 8, 0.5);
 }
 
+/* Color for when the value in the +/- column is positive */
+.gain {
+    background-color: rgba(18, 155, 18, 0.5);
+}
+/* ------------ */
+
+
+/* ------------ */
+/* Modal form styling */
 #buysell-form .row h4 {
     display: flex;
     justify-content: space-between;
@@ -113,28 +144,8 @@ tr.active {
     width: 80%;
 }
 
-.loss {
-    background-color: rgba(192, 8, 8, 0.5);
-}
-
-.gain {
-    background-color: rgba(18, 155, 18, 0.5);
-}
-
-#chart-div {
-    margin-top: 10px;
-}
-
-#coin-chart-header-row {
-    margin-bottom: 2px;
-}
-
 #purchase-sell-btn {
     width: 100%;
-}
-
-#buy-sell-watch-group {
-    margin-bottom: 15px;
 }
 
 #cancel-transaction-btn {
@@ -154,8 +165,8 @@ tr.active {
     color: rgba(48, 48, 48, 0.6);
 }
 
-#currency-acronym {
-    font-size: 12pt;
+.currency-acronym {
+    font-size: 14px;
 }
 
 .page-footer {
@@ -164,8 +175,7 @@ tr.active {
     position: fixed;
     bottom: 0;
     width: 100%;
-    padding:0%;
-    height: 6%;
+    padding: 0%;
 }
 
 #coins-view {
@@ -187,29 +197,20 @@ tr.active {
 
 #footer-graphic {
     position: absolute;
-    height: 100%;
 }
 
-#chart-div {
-    padding-top: 40px;
-    margin-left: 20px;
-}
-
-#border-chart {
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-}
 .row {
     margin-bottom: 0;
 }
 
-.close-btn {
+/* .close-btn {
     margin: 5px;
     border-radius: 50%;
     padding: 20px 20px;
     width: 20px;
     height: 20px;
+    position: relative;
+    right: -47px;
     position: absolute;
     right: 7%;
 }
@@ -218,7 +219,8 @@ tr.active {
     position: relative;
     top: -26px;
     right: 12px;
-}
+} */
+
 #footer-credits {
     position: relative;
     top: 50%;   
@@ -227,4 +229,14 @@ tr.active {
 .major-head {
     src: url("../fonts/Gilroy-Bold.ttf");
     font-family: "Gilroy-Bold";
+}
+
+@media only screen and (max-width: 1210px) {
+    #buy-sell-watch-group {
+        align-items: center;
+    }
+    .btn-large {
+        width: 100px;
+    }
+
 }
