@@ -160,10 +160,12 @@ tr.active {
 
 .page-footer {
     background-color: rgb(0, 0, 0);
+    color: #00bcd4;
     position: fixed;
     bottom: 0;
     width: 100%;
-    padding:0%
+    padding:0%;
+    height: 6%;
 }
 
 #coins-view {
@@ -183,8 +185,9 @@ tr.active {
     margin-right: 1rem;
 }
 
-.bottom-graphic {
-    height: 75px;
+#footer-graphic {
+    position: absolute;
+    height: 100%;
 }
 
 #chart-div {
@@ -197,9 +200,8 @@ tr.active {
     display: flex;
     justify-content: center;
 }
-
-#fc {
-    color: #00bcd4;
+.row {
+    margin-bottom: 0;
 }
 
 .close-btn {
@@ -216,4 +218,18 @@ tr.active {
     position: relative;
     top: -26px;
     right: 12px;
+}
+#footer-credits {
+    position: relative;
+    top: 50%;   
+}
+
+body {
+    src: url("fonts/Gilroy-Medium.ttf");
+    font-family: "Gilroy-Medium";
+}
+
+.major-head {
+    src: url("fonts/Gilroy-Bold.ttf");
+    font-family: "Gilroy-Bold";
 }
