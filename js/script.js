@@ -226,14 +226,14 @@ $(document).ready(function() {
                 for (var i = 0; i < dataArr.length; i++) {
                     var dateStr = (moment.unix(dataArr[i].time)).format("YYYY-MM-DD");
                     data.push({
-                        x: dataArr[i].time,
+                        x: moment.unix(dataArr[i].time),
                         y: dataArr[i].close
                     });
                 }
-                data.push({
-                    x: moment().unix(),
-                    y: price
-                });
+                // data.push({
+                //     x: moment().unix(),
+                //     y: price
+                // });
                 renderChart(data);
             });
         });
@@ -359,7 +359,7 @@ $(document).ready(function() {
                     },
                     ticks: {
                         min: data[0].x,
-                        max: data[data.length-1].x
+                        max: data[data.length-1].x,
                     }
                 }],
                 yAxes: [{
