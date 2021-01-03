@@ -95,11 +95,11 @@ h5 {
 #buy-sell-watch-group {
     margin-bottom: 15px;
 }
-
+/* 
 .canvas {
     max-height: 380px;
     max-width: 380px;
-}
+} */
 
 .sell-btn {
     width: 100px;
@@ -122,7 +122,7 @@ table {
     width: 100%;
     margin-top: 10px;
     border-radius: 10px;
-    min-width: 460px
+    min-width: 400px
 }
 
 tbody {
@@ -231,24 +231,6 @@ tr.active {
 }
 /* ------------ */
 
-/* .close-btn {
-    margin: 5px;
-    border-radius: 50%;
-    padding: 20px 20px;
-    width: 20px;
-    height: 20px;
-    position: relative;
-    right: -47px;
-    position: absolute;
-    right: 7%;
-}
-
-.close-btn i {
-    position: relative;
-    top: -26px;
-    right: 12px;
-} */
-
 @media only screen and (max-width: 1210px) {
     #buy-sell-watch-group {
         align-items: center;
@@ -257,6 +239,14 @@ tr.active {
         width: 100px;
     }
 
+    #chart-div {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    
 }
 
 @media only screen and (max-width: 600px) {

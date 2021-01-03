@@ -28,7 +28,11 @@ $(document).ready(function() {
 
     var selectedCoin;
 
+    var walletView = $("#wallet-view");
+    var coinsView = $("#coins-view");
+
     // Elements of chart area
+    var chartDiv          = $("#chart-div");
     var chartAreaBtnGroup = $("#buy-sell-watch-group");
     var chartAreaCloseBtn = $("#chart-close-btn");
     var chartAreaHeader   = $("#coin-chart-header");
@@ -187,7 +191,24 @@ $(document).ready(function() {
         }
 
         // Un-hide the chart area div
-        $("#chart-div").show();
+        chartDiv.show();
+
+        // Hide the tables if on mobile
+        if ($(window).width() < 992) {
+            if (walletView.hasClass("active")) {
+                walletView.hide();
+            }
+            else if (coinsView.hasClass("active")) {
+                coinsView.hide();
+            }
+        } else {
+            if (walletView.hasClass("active")) {
+                walletView.show();
+            }
+            else if (coinsView.hasClass("active")) {
+                coinsView.show();
+            }
+        }
 
         // Disable 'Sell' button if user does not own any of this currency
         if (!ownedCurrencies.find(e => e.id === selectedCoin.id) ||
@@ -202,7 +223,14 @@ $(document).ready(function() {
          */
         chartAreaCloseBtn.click(function (event) {
             // Hide chart area div
-            $("#chart-div").hide();
+            chartDiv.hide();
+
+            // Show whichever view is hidden
+            if (walletView.attr("style") === "display: none;" && walletView.hasClass("active")) {
+                walletView.show();
+            } else if (coinsView.attr("style") === "display: none;" && coinsView.hasClass("active")) {
+                coinsView.show();
+            }
 
             // Re-size table
             viewEl.parent().addClass("container");
@@ -212,19 +240,18 @@ $(document).ready(function() {
 
             // Remove highlight from selected row 
             selectedRow.removeClass("active");
+
             chartAreaCloseBtn.off();
         });
     }
 
     /**
-     * Renders the price chart
+     * Renders the price history chart
      * 
      * @param  data     Array of points to plot
      */
     function renderChart(data) {
-        console.log(data);
-        
-
+        // Chart options
         var chartOptions = {
             responsive: true,
             hover: {
@@ -259,11 +286,15 @@ $(document).ready(function() {
                 display: false
             }
         }
+
+        // Data set options
         var dataset = {
             borderColor: 'rgb(148, 58, 173,1)',
             fill: false,
             data: data
         }
+
+        // Chart config object
         var chartCfg = {
             type: "line",
             data: {
@@ -272,11 +303,11 @@ $(document).ready(function() {
             options: chartOptions
         }
 
+        // Destroy chart before making new one
         if (chart) {
             chart.destroy();
         } 
         chart = new Chart(ctx, chartCfg);
-
     }
 
     /**
