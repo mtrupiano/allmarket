@@ -61,7 +61,7 @@ h5 {
 /* ------------ */
 /* Tab-specific styling */
 #coins-view {
-    padding-top: 40px;
+    padding-top: 10px;
 }
 
 #wallet-view h3 {
@@ -76,6 +76,17 @@ h5 {
     padding-left: 10px;
     padding-right: 10px;
     justify-content: space-between;
+}
+
+#funds-display-row {
+    border-radius: 10px;
+    height: 40px;
+    min-width: 300px;
+}
+
+#funds-display-row h5 {
+    font-weight: bold;
+    font-size: 15px;
 }
 /* ------------ */
 
@@ -242,6 +253,11 @@ tr.active {
 }
 /* ------------ */
 
+#news-row {
+    max-height: 300px;
+    overflow: scroll;
+}
+
 @media only screen and (max-width: 1200px) {
     #buy-sell-watch-group {
         align-items: center;
@@ -249,8 +265,6 @@ tr.active {
     .btn-large {
         width: 100px;
     }
-
-
 }
 
 @media only screen and (max-width: 992px) {
@@ -294,6 +308,10 @@ tr.active {
     #cancel-transaction-btn, #purchase-sell-btn {
         width: 100%;
         margin-top: 10px;
+    }
+
+    #funds-display-row h5 {
+        font-size: 12px;
     }
 
 }

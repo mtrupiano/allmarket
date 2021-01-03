@@ -85,6 +85,16 @@
 
         <!-- Wallet tab content -->
         <div class="row container" id="wallet-view-row">
+            <div class="col s12">
+                <div class="row z-depth-2 valign-wrapper" style="margin-top: 30px;" id="funds-display-row">
+                    <div class="col s6 center-align">
+                        <h5 id="available-funds-main-display" style="margin-bottom: 0;"></h5>
+                    </div>
+                    <div class="col s6 center-align">
+                        <h5 id="total-equity-display" style="margin-bottom: 0;"></h5>
+                    </div>
+                </div>
+            </div>
             <div class="col s12" id="wallet-view">
                 <div class="row">
                     <table class="highlight centered z-depth-2" id="owned">
@@ -127,6 +137,7 @@
                                 <th>Symbol</th>
                                 <th>Name</th>
                                 <th>Price (USD)</th>
+                                <th>% change (24hr)</th>
                             </tr>
                         </thead>
                 
@@ -178,6 +189,10 @@
                         <div class="row">
                             <canvas id="chart" height="325" width="350"></canvas>
                         </div>
+
+                        <br>
+
+                        <div class="row" id="news-row"></div>
                     </div>
                     
                 </div>

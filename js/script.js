@@ -28,8 +28,13 @@ $(document).ready(function() {
 
     var selectedCoin;
 
+    // Tab view elements
     var walletView = $("#wallet-view");
     var coinsView = $("#coins-view");
+
+    // Funds display elements
+    var availableFundsMainDisplay = $("#available-funds-main-display");
+    var equityMainDisplay = $("#total-equity-display");
 
     // Elements of chart area
     var chartDiv          = $("#chart-div");
@@ -80,6 +85,7 @@ $(document).ready(function() {
         var tbodyEl = $("div#coins-view tbody");
         tbodyEl.html(
             "<tr class='table-empty-msg'><td>Updating prices...</td></tr>");
+        renderAvailableFundsDisplay();
 
         $.ajax({
             url: coinLoreURL,
@@ -89,12 +95,12 @@ $(document).ready(function() {
             var responseArr = response.data;
             for (var i = 0; i < response.data.length; i++) {
                 var element = responseArr[i];
-
                 var newTableRow = $("<tr>");
                 newTableRow.attr("data-crypto-id", element.id);
                 newTableRow.append($("<td>").text(element.symbol));
                 newTableRow.append($("<td>").text(element.name));
                 newTableRow.append($("<td>").text(element.price_usd));
+                newTableRow.append($("<td>").text(element.percent_change_24h));
                 tbodyEl.append(newTableRow);
             }
 
@@ -112,15 +118,63 @@ $(document).ready(function() {
         }
         resetChartArea($("#wallet-view"));
         
+        renderAvailableFundsDisplay();
         renderOwnedTable();
         renderWatchTable();
     });
+
+    // Populate funds display with available funds and equity
+    function renderAvailableFundsDisplay() {
+        // Re-load available funds from local storage
+        if (localStorage.getItem("availableFunds")) {
+            var availableFunds = JSON.parse(localStorage.getItem("availableFunds"));
+        } else {
+            var availableFunds = 2000;
+            localStorage.setItem("availableFunds", availableFunds);
+        }
+        availableFundsMainDisplay.text("Funds available for trading: $" + availableFunds.toFixed(2) + " (USD)");
+
+        var symList = "";
+        for (var i = 0; i < ownedCurrencies.length; i++) {
+            if (ownedCurrencies[i].ownedQuantity > 0) {
+                if (i !== 0) {
+                    symList += ","
+                }
+                symList += ownedCurrencies[i].symbol;
+            }
+        }
+
+        if (symList === "") {
+            equityMainDisplay.text("Total equity: $0.00 (USD)");
+            return;
+        }
+
+        var url =
+            `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}` +
+            `&tsyms=USD&extraParams="School-project"`;
+        
+        $.ajax({
+            url: url,
+            method: "GET"
+        }).then(function(response) {
+            var totalEquity = 0;
+            for (var i = 0; i < ownedCurrencies.length; i++) {
+                var element = ownedCurrencies[i];
+                if (element.ownedQuantity !== 0) {
+                    totalEquity += response[element.symbol].USD * element.ownedQuantity;
+                }
+            }
+
+            equityMainDisplay.text("Total equity: $" + totalEquity.toFixed(2) + " (USD)");
+        });
+    }
 
     /** 
      * Render the chart area
      */
     function showChartArea(event) {
         event.preventDefault();
+        $("#news-row").html("");
 
         // Get selected table row from event
         var target = $(event.target);
@@ -156,17 +210,17 @@ $(document).ready(function() {
             method: "GET"
         }).then(function (response) {
             price = response.USD;
-            $("#chart-area-price-display").text(price.toFixed(2));
+            $("#chart-area-price-display").text(price);
 
             // Submit API request to CryptoCompare for history of selected coin's value
             var cryptoCompareURL =
-                `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&api_key=${cryptoCompareKey}&extraParams="School-project"`;
+                `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}`+
+                `&tsym=USD&api_key=${cryptoCompareKey}&extraParams="School-project"`;
             $.ajax({
                 url: cryptoCompareURL,
                 method: "GET"
             }).then(function (response) {
                 // Extract date and price data from response and render the chart
-                console.log(response);
                 var dataArr = response.Data.Data;
                 var data = [];
                 for (var i = 0; i < dataArr.length; i++) {
@@ -184,6 +238,33 @@ $(document).ready(function() {
             });
         });
 
+        var newsRow = $("#news-row");
+        var ccNewsURL = `https://min-api.cryptocompare.com/data/v2/news/?categories=${symbol}` + 
+            `regulation&extraParams=School-project`
+
+        newsRow.append($("<h5>").text(symbol + " News"));
+        $.ajax({
+            url: ccNewsURL,
+            method: "GET"
+        }).then(function(response) {
+            for (var i = 0; i < response.Data.length; i++) {
+                var newsLink = $("<a>");
+                newsLink.attr("href", response.Data[i].url);
+                var newDiv = $("<div>");
+
+                var newsImg = $("<img>").attr("src", response.Data[i].imageurl);
+                newsImg.attr("width", "50");
+                newsImg.attr("height", "50");
+
+                newDiv.append(newsImg);
+                newDiv.append($("<p>").text(response.Data[i].title + 
+                " (" + response.Data[i].source_info.name + ")"));
+                newsLink.append(newDiv);
+                newsRow.append(newsLink);
+            }
+        });
+
+        // Toggle watch list button saying "WATCH" or "UNWATCH"
         if (watchList.find(e => e.id === selectedCoin.id)) {
             watchBtn.text("UNWATCH");
         } else {
@@ -357,7 +438,9 @@ $(document).ready(function() {
                 $("#available-funds").text(availableFunds.toFixed(2));
                 updatePrice();
             },
-            onCloseEnd: renderOwnedTable
+            onCloseEnd: function() {
+                renderOwnedTable();
+            }
         });
         
     }
@@ -403,8 +486,7 @@ $(document).ready(function() {
             method: "GET"
         }).then(function (response) {
 
-            ownedTbodyEl.html("")
-;
+            ownedTbodyEl.html("");
             for (var i = 0; i < ownedCurrencies.length; i++) {
                 var element = ownedCurrencies[i];
                 if (element.ownedQuantity !== 0) {
@@ -413,7 +495,8 @@ $(document).ready(function() {
                     newTableRow.append($("<td>").text(element.symbol));
                     newTableRow.append($("<td>").text(element.name));
                     newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
-                    newTableRow.append($("<td>").text(response[element.symbol].USD.toFixed(2)));
+                    newTableRow.append($("<td>").text(
+                        (response[element.symbol].USD * element.ownedQuantity).toFixed(2)));
                     // Calculate net gain/loss on a currency
                     var net = (response[element.symbol].USD * element.ownedQuantity) - element.spent;
                     var netEntry = $("<td>").text(net.toFixed(2));
@@ -436,7 +519,6 @@ $(document).ready(function() {
                 }
             }
         });
-
 
         ownedTbodyEl.click(function (event) {
             var target = $(event.target);
@@ -566,6 +648,7 @@ $(document).ready(function() {
     function resetChartArea(viewContainer) {
         // Hide chart area div
         $("#chart-div").hide();
+        $("#news-row").html("");
 
         viewContainer.removeClass("l6");
         viewContainer.addClass("s12");
@@ -661,6 +744,7 @@ $(document).ready(function() {
             }
 
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
+            renderAvailableFundsDisplay();
 
         });
     }
