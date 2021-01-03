@@ -135,16 +135,22 @@ h5 {
     border-bottom: solid;
     border-bottom-width: 1px;
     border-color: rgb(117, 117, 117);
+    max-width: 99%;
+}
+
+.news-entry:hover {
+    background-color: #dacfddc4;
 }
 
 .news-entry p {
-    padding-right: 10px;
+    margin-top: 0;
 }
 
 #news-container {
     width: 80%;
     min-width: 300px;
     margin: 0 auto;
+    padding-bottom: 10px;
 }
 
 #news-container col {
@@ -163,7 +169,7 @@ h5 {
 
 #news-row {
     max-height: 300px;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 
 /* .btn-large {

@@ -250,7 +250,7 @@ $(document).ready(function() {
             url: ccNewsURL,
             method: "GET"
         }).then(function(response) {
-            for (var i = 0; i < response.Data.length; i++) {
+            for (var i = 0; i < (response.Data.length > 20 ? 20 : response.Data.length); i++) {
                 var newsLink = $("<a>");
                 newsLink.attr("href", response.Data[i].url);
                 newsLink.attr("target", "_blank");
@@ -269,7 +269,7 @@ $(document).ready(function() {
 
                 newDiv.append(imgCol);
                 pCol.append($("<p>").text(response.Data[i].title + 
-                " (" + response.Data[i].source_info.name + ")"));
+                    " (" + response.Data[i].source_info.name + ")"));
                 newDiv.append(pCol);
                 newsLink.append(newDiv);
                 newsRow.append(newsLink);
