@@ -242,7 +242,7 @@ $(document).ready(function() {
         var ccNewsURL = `https://min-api.cryptocompare.com/data/v2/news/?categories=${symbol}` + 
             `regulation&extraParams=School-project`
 
-        newsRow.append($("<h5>").text(symbol + " News"));
+        $("#news-row-header").text(symbol + " News");
         $.ajax({
             url: ccNewsURL,
             method: "GET"
@@ -250,15 +250,24 @@ $(document).ready(function() {
             for (var i = 0; i < response.Data.length; i++) {
                 var newsLink = $("<a>");
                 newsLink.attr("href", response.Data[i].url);
+                newsLink.attr("target", "_blank");
                 var newDiv = $("<div>");
+                newDiv.addClass("news-entry");
+                newDiv.addClass("row");
 
                 var newsImg = $("<img>").attr("src", response.Data[i].imageurl);
                 newsImg.attr("width", "50");
                 newsImg.attr("height", "50");
+                var imgCol = $("<div>").addClass("col");
+                imgCol.append(newsImg);
 
-                newDiv.append(newsImg);
-                newDiv.append($("<p>").text(response.Data[i].title + 
+                var pCol = $("<div>").addClass("col");
+                var pCol = $("<div>").addClass("s10");
+
+                newDiv.append(imgCol);
+                pCol.append($("<p>").text(response.Data[i].title + 
                 " (" + response.Data[i].source_info.name + ")"));
+                newDiv.append(pCol);
                 newsLink.append(newDiv);
                 newsRow.append(newsLink);
             }

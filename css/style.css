@@ -123,6 +123,41 @@ h5 {
     background-color: red;
 }
 
+.news-entry {
+    border-bottom: solid;
+    border-bottom-width: 1px;
+    border-color: rgb(117, 117, 117);
+}
+
+.news-entry p {
+    padding-right: 10px;
+}
+
+#news-container {
+    width: 80%;
+    min-width: 300px;
+    margin: 0 auto;
+}
+
+#news-container col {
+    display: inline-block;
+}
+
+
+#news-container a:link {
+    color: #943aad;
+}
+
+#news-row-header {
+    border-bottom: solid;
+    border-bottom-width: 2px;
+}
+
+#news-row {
+    max-height: 300px;
+    overflow: scroll;
+}
+
 /* .btn-large {
     width: 200px;
 } */
@@ -252,11 +287,6 @@ tr.active {
     top: 25%;
 }
 /* ------------ */
-
-#news-row {
-    max-height: 300px;
-    overflow: scroll;
-}
 
 @media only screen and (max-width: 1200px) {
     #buy-sell-watch-group {
