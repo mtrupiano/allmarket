@@ -69,6 +69,7 @@ $(document).ready(function() {
     var ctx = $("#chart");
 
     $("a[href='#learn-view']").click(function (event) {
+        $("#funds-display-row").hide();
         resetChartArea($("#learn-view"));
     });
 
@@ -80,6 +81,7 @@ $(document).ready(function() {
             return;
         }
 
+        $("#funds-display-row").show();
         resetChartArea($("#coins-view"));
         // Empty table
         var tbodyEl = $("div#coins-view tbody");
@@ -116,6 +118,7 @@ $(document).ready(function() {
         if ($("div#wallet-view").hasClass("active")) {
             return;
         }
+        $("#funds-display-row").show();
         resetChartArea($("#wallet-view"));
         
         renderAvailableFundsDisplay();
@@ -226,14 +229,14 @@ $(document).ready(function() {
                 for (var i = 0; i < dataArr.length; i++) {
                     var dateStr = (moment.unix(dataArr[i].time)).format("YYYY-MM-DD");
                     data.push({
-                        x: moment.unix(dataArr[i].time),
+                        x: dataArr[i].time,
                         y: dataArr[i].close
                     });
                 }
-                // data.push({
-                //     x: moment().unix(),
-                //     y: price
-                // });
+                data.push({
+                    x: moment().unix(),
+                    y: price
+                });
                 renderChart(data);
             });
         });
@@ -247,7 +250,7 @@ $(document).ready(function() {
             url: ccNewsURL,
             method: "GET"
         }).then(function(response) {
-            for (var i = 0; i < response.Data.length; i++) {
+            for (var i = 0; i < (response.Data.length > 20 ? 20 : response.Data.length); i++) {
                 var newsLink = $("<a>");
                 newsLink.attr("href", response.Data[i].url);
                 newsLink.attr("target", "_blank");
@@ -266,7 +269,7 @@ $(document).ready(function() {
 
                 newDiv.append(imgCol);
                 pCol.append($("<p>").text(response.Data[i].title + 
-                " (" + response.Data[i].source_info.name + ")"));
+                    " (" + response.Data[i].source_info.name + ")"));
                 newDiv.append(pCol);
                 newsLink.append(newDiv);
                 newsRow.append(newsLink);
@@ -360,6 +363,7 @@ $(document).ready(function() {
                     ticks: {
                         min: data[0].x,
                         max: data[data.length-1].x,
+                        minRotation: 30
                     }
                 }],
                 yAxes: [{

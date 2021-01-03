@@ -2,6 +2,10 @@ nav {
     background-color: rgb(0, 0, 0);
 }
 
+main {
+    margin-bottom: 20px;
+}
+
 #logo {
     height: 4rem;
 }
@@ -21,7 +25,6 @@ h5 {
 .row {
     margin-bottom: 0;
 }
-
 
 .currency-acronym {
     font-size: 14px;
@@ -132,16 +135,22 @@ h5 {
     border-bottom: solid;
     border-bottom-width: 1px;
     border-color: rgb(117, 117, 117);
+    max-width: 99%;
+}
+
+.news-entry:hover {
+    background-color: #dacfddc4;
 }
 
 .news-entry p {
-    padding-right: 10px;
+    margin-top: 0;
 }
 
 #news-container {
     width: 80%;
     min-width: 300px;
     margin: 0 auto;
+    padding-bottom: 10px;
 }
 
 #news-container col {
@@ -160,7 +169,7 @@ h5 {
 
 #news-row {
     max-height: 300px;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 
 /* .btn-large {
@@ -274,8 +283,8 @@ tr.active {
 .page-footer {
     background-color: rgb(0, 0, 0);
     color: #00bcd4;
-    position: fixed;
-    bottom: 0;
+    /* position: fixed;
+    bottom: 0; */
     width: 100%;
     padding: 0%;
     height: 6%;
