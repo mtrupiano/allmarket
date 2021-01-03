@@ -12,6 +12,10 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="icon" href="images/a-logo.svg">
 
+        <!-- Google font links -->
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600&display=swap" rel="stylesheet">
+
         <link rel="stylesheet" href="./css/style.css">
     </head>
     <body>
@@ -48,7 +52,7 @@
                         <hr class="col s5">
                     </div>
                     <div class="col">
-                        <p>So what is Allmarket all about you may ask? Well Allmarket is here to teach you and others about Cryptocurrency. Maybe you might already know what Cryptocurrency is or not but Allmarket may be able to still teach you a thing or two. The things you can do in Allmarket is to see how much each Cryptocurrency is worth in real time. You'll also be able to buy, trade, and sell with a dummy wallet that has a set amount on how much you can buy any Cryptocurrency.</p>
+                        <p>Welcome to allmarket, the cryptocurrency education platform. allmarket is here to provide a space for you to learn about cryptocurrency and to practice purchasing and trading it. In addition to near-real-time price reports, you can use $2000USD of fake money to "buy" and "sell" units of cryptocurrency. Head on over to the Coins tab to view popular currencies and check out the My Wallet tab to view any currencies you "own" or currently have bookmarked.</p>
                     </div>
                 </div>
                 <div class="row">
@@ -57,7 +61,7 @@
                         <hr class="col s6">
                     </div>
                     <div class="col s7">
-                        <p>Cryptocurrency is a form of payment that can be exchanged online for goods and services. Many companies have issued their own currencies, often called tokens, and these can be traded specifically for the good or service that the company provides. Think of them as you would arcade tokens or casino chips. You’ll need to exchange real currency for the cryptocurrency to access the good or service.</p>
+                        <p>Cryptocurrency is a digital asset designed to work as a traditional currency in regards to being exchangeable for goods & services. As opposed to traditional currency, ownership of cryptocurrency takes the form of records stored in a digital ledger on a decentralized, computerized database. Transactions, creating new coins, and verifying ownership transfers are cryptographically stored on this ledger. The ledger is typically implemented via a blockchain, and new coins are typically created through the process of mining. Follow the presented links to learn more.</p>
                     </div>
                     <div class="col push-s1">
                         <h4>Learn more...</h4>
@@ -74,12 +78,12 @@
                         <hr>
                     </div>
                     <div class="col">
-                        <p>Cryptocurrencies work using a technology called blockchain. Blockchain is a decentralized technology spread across many computers that manages and records transactions. Part of the appeal of this technology is its security.</p>
+                        <p>The validity of each cryptocurrency's coins is provided by a blockchain. A blockchain is a continuously growing list of records, called blocks, which are linked and secured using cryptography. Each block typically contains a hash pointer as a link to a previous block, a timestamp and transaction data. By design, blockchains are inherently resistant to modification of the data. It is "an open, distributed ledger that can record transactions between two parties efficiently and in a verifiable and permanent way". For use as a distributed ledger, a blockchain is typically managed by a peer-to-peer network collectively adhering to a protocol for validating new blocks. Once recorded, the data in any given block cannot be altered retroactively without the alteration of all subsequent blocks, which requires collusion of the network majority. Blockchains are secure by design and are an example of a distributed computing system with high Byzantine fault tolerance. Decentralized consensus has therefore been achieved with a blockchain.</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <h3>Trading vs. Owning</h3>
+                        <h3>Mining</h3>
                         <hr>
                     </div>
                     <div class="col">
@@ -90,7 +94,17 @@
         </div>
 
         <!-- Wallet tab content -->
-        <div class="row container">
+        <div class="row container" id="wallet-view-row">
+            <div class="col s12">
+                <div class="row z-depth-2 valign-wrapper" style="margin-top: 30px;" id="funds-display-row">
+                    <div class="col s6 center-align">
+                        <h5 id="available-funds-main-display" style="margin-bottom: 0;"></h5>
+                    </div>
+                    <div class="col s6 center-align">
+                        <h5 id="total-equity-display" style="margin-bottom: 0;"></h5>
+                    </div>
+                </div>
+            </div>
             <div class="col s12" id="wallet-view">
                 <div class="row">
                     <table class="highlight centered z-depth-2" id="owned">
@@ -133,6 +147,7 @@
                                 <th>Symbol</th>
                                 <th>Name</th>
                                 <th>Price (USD)</th>
+                                <th>% change (24hr)</th>
                             </tr>
                         </thead>
                 
@@ -142,14 +157,18 @@
             </div>
 
             <!-- Layout for chart view -->
-            <div class="col s5" id="chart-div" style="display: none;">
+            <div class="col" id="chart-div" style="display: none;">
                 <div class="row z-depth-2" id="border-chart">
-                    <button class="btn-large waves-effect waves-light red accent-3 right close-btn" id="chart-close-btn">
-                        <i class="material-icons">close</i>
-                    </button>
-                    <div class="col">
+                    <div class="col" style="width: 90%;">
                         <div class="row" id="coin-chart-header-row">
-                            <div class="col" id="coin-chart-header"id="coin-chart-header"><h3></h3></div>
+                            <div class="col s11" id="coin-chart-header"id="coin-chart-header"><h3></h3></div>
+                            <div class="col s1">
+                                <button 
+                                    class="btn waves-effect waves-light red accent-3 right close-btn" 
+                                    id="chart-close-btn">
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col">
@@ -160,8 +179,8 @@
                                 </h5>
                             </div>
                         </div>
-                        <div class="row center-align">
-                            <div class="btn-group valign-wrapper" id="buy-sell-watch-group">
+                        <div class="row ">
+                            <div class="btn-group valign-wrapper center-align" id="buy-sell-watch-group">
                                 <div class="col">
                                     <a href="#buysell-form" 
                                         class="waves-effect waves-light btn-large buy-btn modal-trigger cyan darken-2" id="buy-button">BUY</a>
@@ -177,8 +196,17 @@
                             </div>
                         </div>
     
-                        <div class="row" height="400px" width="380px">
-                            <canvas id="chart"></canvas>
+                        <div class="row">
+                            <canvas id="chart" height="325" width="350"></canvas>
+                        </div>
+
+                        <br>
+
+                        <div class="row" id="news-container">
+                            <div class="col">
+                                <div class="row"><h5 id="news-row-header"></h5></div>
+                                <div class="row" id="news-row"></div>
+                            </div>
                         </div>
                     </div>
                     
@@ -192,7 +220,7 @@
             <div class="modal-content">
                 <div class="row">
                     <button 
-                        class="btn-large waves-effect waves-light red accent-3 right close-btn"
+                        class="btn waves-effect waves-light red accent-3 right close-btn"
                         id="modal-form-close-btn">
                         <i class="material-icons">close</i>
                     </button>
@@ -228,11 +256,8 @@
 
                 <!-- Quantity row -->
                 <div class="row modal-form-row valign-wrapper modal-form-fields">
-                    <h4 class="col s4">Quantity:</h4>
-                    <div class="col s6 validation-alert-column">
-                        <span class="validation-alert" id="alert-qty-zero">Must be greater than 0.</span>
-                    </div>
-                    <div class="col s2" id="quantity-input-column">
+                    <h4 class="col">Quantity:</h4>
+                    <div class="col s2 right" id="quantity-input-column">
                         <input type="number" min="1" value="1" id="quantity">
                     </div>
                 </div>
@@ -241,11 +266,6 @@
                 <div class="row modal-form-row">
                     <h4 class="modal-form-fields" id="price-display">
                         <div class="col">Total:</div>
-                        <div class="col validation-alert-column">
-                            <span class="validation-alert" id="alert-insuf-funds">
-                                Insufficient funds!
-                            </span>
-                        </div>
                         <div class="col">
                             <span class="debit" style="display: none;">(</span>
                             <span class="currency-icon">$</span>
@@ -258,11 +278,11 @@
                 
                 <!-- Buttons row -->
                 <div class="row">
-                    <div class="col s8">
-                        <button class="btn btn-large " id="purchase-sell-btn"></button>
+                    <div class="col m8 s12">
+                        <button class="btn-large" id="purchase-sell-btn"></button>
                     </div>
-                    <div class="col s4">
-                        <button class="btn btn-large" id="cancel-transaction-btn">Cancel</button>
+                    <div class="col m4 s12">
+                        <button class="btn-large" id="cancel-transaction-btn">Cancel</button>
                     </div>
                 </div>
 
@@ -272,23 +292,37 @@
                         Updating prices...
                     </div>
                 </div>
+
+                <!-- 0 quantity alert -->
+                <div class="col s12 validation-alert" id="alert-qty-zero">
+                    Quantity must be greater than 0!
+                </div>
+
+                <!-- Insufficient funds alert -->
+                <div class="col s12 validation-alert" id="alert-insuf-funds" style="width: 70%">
+                    Insufficient funds!
+                </div>
+
+                <div class="col s12 validation-alert" id="alert-invalid-qty">
+                    Invalid quantity! You cannot sell more than the amount you own.
+                </div>
             </div>
         </div>
 
         <!-- Footer -->
         <footer class="page-footer">
             <img src="images/circuit.svg" id="footer-graphic" alt="allmarket">
-                <div class="footer-credits">
-                    <span class= "left">
-                        <img src="images/logoall.svg" id="footer-logo" alt="allmarket">
-                    </span>
-                    <span>
-                        © 2020 Copyright Mark Erik Dexter
-                    </span>
-                    <span class= "right">
-                        UW Coding Bootcamp
-                    </span>
-                </div>
+            <div id="footer-credits">
+                <span class= "left">
+                    <img src="images/logoall.svg" id="footer-logo" alt="allmarket">
+                </span>
+                <span>
+                    © 2020 Copyright Mark Erik Dexter
+                </span>
+                <span class= "right">
+                    UW Coding Bootcamp
+                </span>
+            </div>
         </footer>
 
         <!-- jQuery CDN -->
@@ -307,4 +341,3 @@
         <script src="./js/script.js"></script>
     </body>
 </html>
-© 2020 GitHub, Inc.
