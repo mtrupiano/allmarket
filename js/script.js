@@ -48,6 +48,7 @@ $(document).ready(function() {
     var loadingAlertMsg =           $("#loading-alert");
     var insufficientFundsAlert =    $("#alert-insuf-funds");
     var quantityZeroAlert =         $("#alert-qty-zero");
+    var invalidQtyAlert =           $("#alert-invalid-qty");
 
     var coinLoreURL = "https://api.coinlore.net/api/tickers/";
     var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE/";
@@ -145,9 +146,8 @@ $(document).ready(function() {
         // Shrink table to the left of the page
         var viewEl = selectedRow.parent().parent().parent().parent();
         viewEl.parent().removeClass("container");
-        viewEl.parent().attr("style", "margin-left: 30px; margin-right: 30px;")
         viewEl.removeClass("s12");
-        viewEl.addClass("l6");
+        viewEl.addClass("m6");
 
         // Submit API request to get most up-to-date price
         var price = 0;
@@ -235,7 +235,7 @@ $(document).ready(function() {
             // Re-size table
             viewEl.parent().addClass("container");
             viewEl.parent().attr("style", "");
-            viewEl.removeClass("l6");
+            viewEl.removeClass("m6");
             viewEl.addClass("s12");
 
             // Remove highlight from selected row 
@@ -354,7 +354,7 @@ $(document).ready(function() {
                 }
                 $("#modal-form-header").text(`${method} ${coinInfo.name} (${coinInfo.symbol})`);
                 executeTransactionButton.text(method === "BUY" ? "PURCHASE" : "SELL");
-                availableFundsDisplay.text(availableFunds.toFixed(2));
+                $("#available-funds").text(availableFunds.toFixed(2));
                 updatePrice();
             },
             onCloseEnd: renderOwnedTable
@@ -581,8 +581,10 @@ $(document).ready(function() {
             var ownedCurrency = ownedCurrencies.find(e => e.id === selectedCoin.id);
             if (ownedCurrency.ownedQuantity < quantityField.val()) {
                 executeTransactionButton.addClass("disabled");
+                invalidQtyAlert.show()
                 return;
             } else {
+                invalidQtyAlert.hide()
                 executeTransactionButton.removeClass("disabled");
             }
         }

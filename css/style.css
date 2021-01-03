@@ -71,6 +71,12 @@ h5 {
 #wallet-view tbody {
     height: 30vh;
 }
+
+#wallet-view-row {
+    padding-left: 10px;
+    padding-right: 10px;
+    justify-content: space-between;
+}
 /* ------------ */
 
 
@@ -86,6 +92,7 @@ h5 {
     margin-top: 10px;
     padding-top: 40px;
     margin-left: 5px;
+    min-width: 480px;
 }
 
 #coin-chart-header-row {
@@ -95,24 +102,23 @@ h5 {
 #buy-sell-watch-group {
     margin-bottom: 15px;
 }
-/* 
+
 .canvas {
-    max-height: 380px;
-    max-width: 380px;
-} */
+    min-height: 325px;
+    min-width: 325;
+}
 
 .sell-btn {
-    width: 100px;
     background-color: red;
 }
 
-.btn-large {
+/* .btn-large {
     width: 200px;
-}
+} */
 
-#watch-btn {
+/* #watch-btn {
     width: 100px;
-}
+} */
 /* ------------ */
 
 
@@ -122,7 +128,7 @@ table {
     width: 100%;
     margin-top: 10px;
     border-radius: 10px;
-    min-width: 400px
+    min-width: 300px;
 }
 
 tbody {
@@ -170,6 +176,10 @@ tr.active {
 
 /* ------------ */
 /* Modal form styling */
+.modal-content h4 {
+    font-size: 30px;
+}
+
 #buysell-form .row h4 {
     display: flex;
     justify-content: space-between;
@@ -193,10 +203,11 @@ tr.active {
     padding: 3px 8px;
     background-color: rgba(255, 100, 100, 0.6);
     border-radius: 2px;
+    margin-top: 10px;
     color: rgba(48, 48, 48, 0.6);
 }
 
-#quantity-input-column, #validation-alert-column {
+#quantity-input-column {
     margin-left: 0;
 }
 /* ------------ */
@@ -231,7 +242,7 @@ tr.active {
 }
 /* ------------ */
 
-@media only screen and (max-width: 1210px) {
+@media only screen and (max-width: 1200px) {
     #buy-sell-watch-group {
         align-items: center;
     }
@@ -239,18 +250,50 @@ tr.active {
         width: 100px;
     }
 
-    #chart-div {
-        margin-left: 0;
-        width: 100%;
-    }
+
 }
 
 @media only screen and (max-width: 992px) {
-    
+    .modal-form-row {
+        width: 90%;
+    }
+
+    #chart-div {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 @media only screen and (max-width: 600px) {
+    #border-chart {
+        width: 95%;
+    }
+
     #footer-credits {
         font-size: 8pt;
     }
+
+    .modal .modal-content {
+        padding-left: 10px;
+        padding-right: 10px
+    }
+
+    .modal .col {
+        padding: 0;
+    }
+
+    .modal-content h2 {
+        font-size: 24px;
+    }
+
+    .modal-content h4 {
+        font-size: 16px;
+    }
+
+    #cancel-transaction-btn, #purchase-sell-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+
 }
