@@ -2,6 +2,10 @@ nav {
     background-color: rgb(29, 29, 29);
 }
 
+main {
+    margin-bottom: 20px;
+}
+
 #logo {
     height: 4rem;
 }
@@ -21,7 +25,6 @@ h5 {
 .row {
     margin-bottom: 0;
 }
-
 
 .currency-acronym {
     font-size: 14px;
@@ -274,8 +277,8 @@ tr.active {
 .page-footer {
     background-color: rgb(29, 29, 29);
     color: #00bcd4;
-    position: fixed;
-    bottom: 0;
+    /* position: fixed;
+    bottom: 0; */
     width: 100%;
     padding: 0%;
     height: 40px;
