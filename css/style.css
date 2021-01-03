@@ -6,13 +6,16 @@ nav {
     height: 4rem;
 }
 
+h2, h3, h4, h5 {
+    font-family: "Baloo 2", cursive;
+}
+
 h5 {
     margin-top: 0px;
 }
 
 .major-head {
-    src: url("../fonts/Gilroy-Bold.ttf");
-    font-family: "Gilroy-Bold";
+    font-family: "Baloo 2", cursive;
 }
 
 .row {
@@ -32,6 +35,8 @@ h5 {
 
 .tabs .tab a {
     color: #943aad;
+    font-family: "Baloo 2", cursive;
+    font-size: 16px;
 }
 
 .tabs .tab a:hover, .tabs .tab a.active {
@@ -187,6 +192,11 @@ thead, tbody tr {
     display: table;
     width:100%;
     table-layout: fixed;
+}
+
+th {
+    font-family: "Baloo 2", cursive;
+    font-size: 16px;
 }
 
 /* Control the height of table rows */
