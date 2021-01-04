@@ -1,5 +1,5 @@
 nav {
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(30, 30, 30);
 }
 
 main {
@@ -87,6 +87,10 @@ h5 {
 }
 
 #funds-display-row {
+    display: flex;
+    justify-content: center; 
+    margin-top: 30px;
+    width: 70%;
     border-radius: 10px;
     height: 40px;
     min-width: 300px;
@@ -145,6 +149,7 @@ h5 {
 .news-entry p {
     font-size: 13px;
     margin-top: 0;
+    margin-bottom: 0;
 }
 
 #news-container {
@@ -157,7 +162,6 @@ h5 {
 #news-container col {
     display: inline-block;
 }
-
 
 #news-container a:link {
     color: #943aad;
@@ -239,6 +243,7 @@ tr.active {
 }
 
 #buysell-form .row h4 {
+    border-radius: 10px;
     display: flex;
     justify-content: space-between;
 }
@@ -274,34 +279,32 @@ tr.active {
 /* ------------ */
 /* Footer styling */
 .page-footer {
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(30, 30, 30);
     color: #00bcd4;
-    position: fixed;
-    bottom: 0; 
     width: 100%;
     padding: 0%;
-    height: 6%;
+    height: 60px;
     z-index: 1;
 }
 
 #footer-logo {
-    height: 1.5rem;
+    /* height: 1.5rem; */
+    height: 20px;
     margin-right: 1rem;
 }
 
 #footer-graphic {
     position: absolute;
-    height: 100%;
+    height: 6%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%);
+    width: 98vw;
 }
 
 #footer-credits {
     margin-left: 8px;
     margin-right: 8px;
-    position: relative;
-    top: 50%;
 }
 /* ------------ */
 
@@ -327,8 +330,20 @@ tr.active {
 }
 
 @media only screen and (max-width: 600px) {
+    h2 {
+        font-size: 38px;
+    }
     #border-chart {
-        width: 95%;
+        width: 100%;
+        margin: 0;
+    }
+
+    #funds-display-row {
+        width: 100%;
+    }
+
+    #funds-display-row h5 {
+        font-size: 12px;
     }
 
     #footer-credits {
@@ -356,19 +371,4 @@ tr.active {
         width: 100%;
         margin-top: 10px;
     }
-
-#funds-display-row h5 {
-        font-size: 12px;
-    }
-
-#funds {
-    margin-right: 8px;
-}
-
-#available-funds-display {
-    color: #00bcd4;
-}
-
-#buysell-form {
-    border-radius: 20px;
 }

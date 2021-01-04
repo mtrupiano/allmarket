@@ -37,11 +37,6 @@
                 </ul>
             </nav>
         </div>
-        <div class="right" id=funds>
-            <span>Available Funds:</span>
-                <span id="available-funds-display">0</span>
-                
-        </div>
 
         <main>
         <!-- Education tab content -->
@@ -50,40 +45,44 @@
                 <div class="row">
                     <div class="col s10">
                         <h2>Welcome to allmarket!</h2>
-                        <hr class="col s5">
+                        <hr>
                     </div>
                     <div class="col">
                         <p>Welcome to allmarket, the cryptocurrency education platform. allmarket is here to provide a space for you to learn about cryptocurrency and to practice purchasing and trading it. In addition to near-real-time price reports, you can use $2000USD of fake money to "buy" and "sell" units of cryptocurrency. Head on over to the Coins tab to view popular currencies and check out the My Wallet tab to view any currencies you "own" or currently have bookmarked.</p>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s11">
-                        <h2>What is Cryptocurrency?</h2>
-                        <hr class="col s6">
-                    </div>
-                    <div class="col s7">
-                        <p>Cryptocurrency is a digital asset designed to work as a traditional currency in regards to being exchangeable for goods & services. As opposed to traditional currency, ownership of cryptocurrency takes the form of records stored in a digital ledger on a decentralized, computerized database. Transactions, creating new coins, and verifying ownership transfers are cryptographically stored on this ledger. The ledger is typically implemented via a blockchain, and new coins are typically created through the process of mining. Follow the presented links to learn more.</p>
-                    </div>
-                    <div class="col push-s1">
-                        <h4>Learn more...</h4>
-                        <li><a href="https://www.investopedia.com/terms/b/blockchain.asp#what-is-blockchain">Blockchain information</a></li>
-                        <li><a href="https://www.telegraph.co.uk/technology/digital-money/buying-vs-trading-cryptocurrency/#:~:text=You%20can%20decide%20to%20own,the%20price%20of%20the%20asset.">About buying or trading</a></li>
-                        <li><a href="https://www.coindesk.com/">Keeping updated with the latest news on Cryptocurrency</a></li>
-                        <li><a href="https://coinmarketcap.com/all/views/all/">All types of Cryptocurrencies</a></li>
-                        <li><a href="https://www.nerdwallet.com/article/investing/cryptocurrency-7-things-to-know">Things you should know about if you're interested in Cryptocurrency</a></li>
+                    <div class="col s12">
+                        <div class="row">
+                            <h2>What is Cryptocurrency?</h2>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col m7">
+                                <p>Cryptocurrency is a digital asset designed to work as a traditional currency in regards to being exchangeable for goods & services. As opposed to traditional currency, ownership of cryptocurrency takes the form of records stored in a digital ledger on a decentralized, computerized database. Transactions, creating new coins, and verifying ownership transfers are cryptographically stored on this ledger. The ledger is typically implemented via a blockchain, and new coins are typically created through the process of mining. Follow the presented links to learn more.</p>
+                            </div>
+                            <div class="col m5">
+                                <h4>Learn more...</h4>
+                                <li><a href="https://www.investopedia.com/terms/b/blockchain.asp#what-is-blockchain">Blockchain information</a></li>
+                                <li><a href="https://www.telegraph.co.uk/technology/digital-money/buying-vs-trading-cryptocurrency/#:~:text=You%20can%20decide%20to%20own,the%20price%20of%20the%20asset.">About buying or trading</a></li>
+                                <li><a href="https://www.coindesk.com/">Keeping updated with the latest news on Cryptocurrency</a></li>
+                                <li><a href="https://coinmarketcap.com/all/views/all/">All types of Cryptocurrencies</a></li>
+                                <li><a href="https://www.nerdwallet.com/article/investing/cryptocurrency-7-things-to-know">Things you should know about if you're interested in Cryptocurrency</a></li>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col">
+                    <div class="col s12">
                         <h3>What is a Blockchain?</h3>
                         <hr>
                     </div>
-                    <div class="col">
+                    <div class="col s12">
                         <p>The validity of each cryptocurrency's coins is provided by a blockchain. A blockchain is a continuously growing list of records, called blocks, which are linked and secured using cryptography. Each block typically contains a hash pointer as a link to a previous block, a timestamp and transaction data. By design, blockchains are inherently resistant to modification of the data. It is "an open, distributed ledger that can record transactions between two parties efficiently and in a verifiable and permanent way". For use as a distributed ledger, a blockchain is typically managed by a peer-to-peer network collectively adhering to a protocol for validating new blocks. Once recorded, the data in any given block cannot be altered retroactively without the alteration of all subsequent blocks, which requires collusion of the network majority. Blockchains are secure by design and are an example of a distributed computing system with high Byzantine fault tolerance. Decentralized consensus has therefore been achieved with a blockchain.</p>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col">
+                    <div class="col s12">
                         <h3>Mining</h3>
                         <hr>
                     </div>
@@ -97,7 +96,7 @@
         <!-- Wallet tab content -->
         <div class="row container" id="wallet-view-row">
 
-            <div class="row z-depth-2 valign-wrapper" style="margin-top: 30px;" id="funds-display-row">
+            <div class="row z-depth-2 valign-wrapper" style="display: none; margin-top: 30px;" id="funds-display-row">
                 <div class="col s6 center-align">
                     <h5 id="available-funds-main-display" style="margin-bottom: 0;"></h5>
                 </div>
@@ -311,18 +310,11 @@
         </main>
 
         <!-- Footer -->
-        <footer class="page-footer">
-            <img src="images/circuit.svg" id="footer-graphic" alt="allmarket">
-            <div id="footer-credits">
-                <span class= "left">
-                    <img src="images/logoall.svg" id="footer-logo" alt="allmarket">
-                </span>
-                <span>
-                    © 2020 Copyright Mark Erik Dexter
-                </span>
-                <span class= "right">
-                    UW Coding Bootcamp
-                </span>
+        <footer class="page-footer valign-wrapper">
+            <!-- <img src="images/circuit.svg" id="footer-graphic" alt="allmarket"> -->
+            <div id="footer-credits" class="valign-wrapper">
+                <img src="images/logoall.svg" id="footer-logo" alt="allmarket">
+                <span>© 2020 Copyright Mark Erik Dexter, UW Coding Bootcamp</span>
             </div>
         </footer>
 

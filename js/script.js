@@ -258,15 +258,18 @@ $(document).ready(function() {
                 var newDiv = $("<div>");
                 newDiv.addClass("news-entry");
                 newDiv.addClass("row");
+                newDiv.addClass("valign-wrapper");
 
                 var newsImg = $("<img>").attr("src", response.Data[i].imageurl);
                 newsImg.attr("width", "50");
                 newsImg.attr("height", "50");
                 var imgCol = $("<div>").addClass("col");
                 imgCol.append(newsImg);
+                imgCol.addClass("valign-wrapper");
+                imgCol.addClass("s2");
 
                 var pCol = $("<div>").addClass("col");
-                var pCol = $("<div>").addClass("s10");
+                pCol.addClass("s10");
 
                 newDiv.append(imgCol);
                 pCol.append($("<p>").text(response.Data[i].title + 
