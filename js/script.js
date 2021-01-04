@@ -195,7 +195,7 @@ $(document).ready(function() {
         selectedCoin = { symbol: symbol, name: name, id: cryptoId };
 
         // Add coin symbol and name as headers in chart area
-        chartAreaHeader.children("h3").text(name + " (" + symbol + ")");
+        chartAreaHeader.children("h3").text(`${name} (${symbol})`);
 
         // Shrink table to the left of the page
         var viewEl = selectedRow.parent().parent().parent().parent();
