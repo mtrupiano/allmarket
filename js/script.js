@@ -97,12 +97,9 @@ $(document).ready(function() {
             var responseArr = response.data;
             for (var i = 0; i < response.data.length; i++) {
                 var element = responseArr[i];
-                var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", element.id);
-                newTableRow.append($("<td>").text(element.symbol));
-                newTableRow.append($("<td>").text(element.name));
-                newTableRow.append($("<td>").text(element.price_usd));
-                newTableRow.append($("<td>").text(element.percent_change_24h));
+                var newTableRow = $("<tr>").attr("data-crypto-id", element.id);
+                newTableRow.append($("<td>").text(element.symbol), $("<td>").text(element.name),
+                    $("<td>").text(element.price_usd), $("<td>").text(element.percent_change_24h));
                 tbodyEl.append(newTableRow);
             }
 
@@ -503,11 +500,10 @@ $(document).ready(function() {
                 if (element.ownedQuantity !== 0) {
                     var newTableRow = $("<tr>");
                     newTableRow.attr("data-crypto-id", element.id);
-                    newTableRow.append($("<td>").text(element.symbol));
-                    newTableRow.append($("<td>").text(element.name));
-                    newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
-                    newTableRow.append($("<td>").text(
-                        (response[element.symbol].USD * element.ownedQuantity).toFixed(2)));
+                    newTableRow.append($("<td>").text(element.symbol), $("<td>").text(element.name),
+                        $("<td>").text(element.ownedQuantity.toFixed(2)), 
+                        $("<td>").text((response[element.symbol].USD * element.ownedQuantity).toFixed(2)));
+
                     // Calculate net gain/loss on a currency
                     var net = (response[element.symbol].USD * element.ownedQuantity) - element.spent;
                     var netEntry = $("<td>").text(net.toFixed(2));
