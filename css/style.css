@@ -143,6 +143,7 @@ h5 {
 }
 
 .news-entry p {
+    font-size: 13px;
     margin-top: 0;
 }
 
@@ -171,14 +172,6 @@ h5 {
     max-height: 300px;
     overflow-y: scroll;
 }
-
-/* .btn-large {
-    width: 200px;
-} */
-
-/* #watch-btn {
-    width: 100px;
-} */
 /* ------------ */
 
 

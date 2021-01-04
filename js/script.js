@@ -241,6 +241,7 @@ $(document).ready(function() {
             });
         });
 
+        // Pull top news articles related to selected coin
         var newsRow = $("#news-row");
         var ccNewsURL = `https://min-api.cryptocompare.com/data/v2/news/?categories=${symbol}` + 
             `regulation&extraParams=School-project`
