@@ -256,25 +256,19 @@ $(document).ready(function() {
                 newsLink.attr("href", response.Data[i].url);
                 newsLink.attr("target", "_blank");
                 var newDiv = $("<div>");
-                newDiv.addClass("news-entry");
-                newDiv.addClass("row");
-                newDiv.addClass("valign-wrapper");
+                newDiv.addClass("row news-entry valign-wrapper");
 
                 var newsImg = $("<img>").attr("src", response.Data[i].imageurl);
                 newsImg.attr("width", "50");
                 newsImg.attr("height", "50");
-                var imgCol = $("<div>").addClass("col");
+                var imgCol = $("<div>").addClass("col s2 valign-wrapper");
                 imgCol.append(newsImg);
-                imgCol.addClass("valign-wrapper");
-                imgCol.addClass("s2");
 
-                var pCol = $("<div>").addClass("col");
-                pCol.addClass("s10");
+                var pCol = $("<div>").addClass("col s10");
 
-                newDiv.append(imgCol);
                 pCol.append($("<p>").text(response.Data[i].title + 
                     " (" + response.Data[i].source_info.name + ")"));
-                newDiv.append(pCol);
+                newDiv.append(imgCol, pCol);
                 newsLink.append(newDiv);
                 newsRow.append(newsLink);
             }
