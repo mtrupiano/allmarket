@@ -569,12 +569,10 @@ $(document).ready(function() {
             }
         }
 
-        var url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}&tsyms=USD`;
-
         // Submit an API request to get the most recent price for all watched currencies and draw
         // table rows with these prices
         $.ajax({
-            url: url,
+            url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symList}&tsyms=USD`,
             method: "GET"
         }).then(function(response) {
             watchingTbodyEl.html("");
@@ -608,11 +606,12 @@ $(document).ready(function() {
         loadingAlertMsg.show();
 
         $.ajax({
-            url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
+            url: (`https://min-api.cryptocompare.com/data/price?fsym=${selectedCoin.symbol}` +
+                `&tsyms=USD&extraParams=School-project`),
             method: "GET",
         }).then(function (response) {
-            var totalPrice = (quantityField.val() * response[0].price_usd).toFixed(2);
-            pricePerDisplay.text(response[0].price_usd);
+            var totalPrice = (quantityField.val() * response.USD).toFixed(2);
+            pricePerDisplay.text(response.USD);
             totalPriceDisplay.text(totalPrice);
 
             // Check for sufficient funds
@@ -717,9 +716,12 @@ $(document).ready(function() {
     });
 
     function executeBuy(receipt) {
+        executeTransactionButton.addClass("disabled");
+        $("#transaction-submit-alert").show();
         // Submit another API request to get most up-to-date price
         $.ajax({
-            url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
+            url: (`https://min-api.cryptocompare.com/data/price?fsym=${selectedCoin.symbol}` + 
+                 `&tsyms=USD&extraParams=School-project`),
             method: "GET"
         }).then(function (response) {
             if (totalPrice > availableFunds) {
@@ -735,7 +737,7 @@ $(document).ready(function() {
             });
             
             // Debit price from available funds
-            var totalPrice = response[0].price_usd * receipt.qty;
+            var totalPrice = response.USD * receipt.qty;
             localStorage.setItem("availableFunds", availableFunds - totalPrice);
 
             // Generate transaction receipt info and store in transaction history (local storage)
@@ -762,11 +764,15 @@ $(document).ready(function() {
 
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
             renderAvailableFundsDisplay();
-
+            executeTransactionButton.removeClass("disabled");
+            $("#transaction-submit-alert").hide();
         });
     }
 
     function executeSell(receipt) {
+        executeTransactionButton.addClass("disabled");
+        $("#transaction-submit-alert").show();
+
         // Submit another API request to get most up-to-date price
         $.ajax({
             url: "https://api.coinlore.net/api/ticker/?id=" + selectedCoin.id,
@@ -797,6 +803,9 @@ $(document).ready(function() {
             }
             ownedCurrency.ownedQuantity -= parseFloat(receipt.qty);
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
+
+            executeTransactionButton.removeClass("disabled");
+            $("#transaction-submit-alert").hide();
         });
     }
 
