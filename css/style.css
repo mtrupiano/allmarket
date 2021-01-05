@@ -106,13 +106,15 @@ h5 {
 /* ------------ */
 /* Chart area styling */
 #border-chart {
+    max-width: 550px;
     border-radius: 10px;
     display: flex;
     justify-content: center;
 }
 
 #chart-div {
-    height: 70vh;
+    display: flex;
+    justify-content: center;
     margin-top: 10px;
     min-width: 480px;
 }

@@ -656,6 +656,8 @@ $(document).ready(function() {
         $("#chart-div").hide();
         $("#news-row").html("");
 
+        console.log(viewContainer);
+
         viewContainer.removeClass("m6");
         viewContainer.addClass("s12");
         viewContainer.parent().attr("style", "");
