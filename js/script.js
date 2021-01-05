@@ -732,7 +732,8 @@ $(document).ready(function() {
             
             // Debit price from available funds
             var totalPrice = response.USD * receipt.qty;
-            localStorage.setItem("availableFunds", availableFunds - totalPrice);
+            availableFunds -= totalPrice;
+            localStorage.setItem("availableFunds", availableFunds);
 
             // Generate transaction receipt info and store in transaction history (local storage)
             receipt.pricePer = totalPrice / receipt.qty;
