@@ -107,15 +107,16 @@ h5 {
 /* ------------ */
 /* Chart area styling */
 #border-chart {
+    max-width: 550px;
     border-radius: 10px;
     display: flex;
     justify-content: center;
 }
 
 #chart-div {
+    display: flex;
+    justify-content: center;
     margin-top: 10px;
-    padding-top: 40px;
-    margin-left: 5px;
     min-width: 480px;
 }
 
@@ -184,7 +185,6 @@ h5 {
 /* Table styling */
 table {
     width: 100%;
-    margin-top: 10px;
     border-radius: 10px;
     min-width: 300px;
 }
@@ -336,9 +336,11 @@ tr.active {
     h2 {
         font-size: 38px;
     }
-    #border-chart {
+
+    /* #border-chart {
         width: 100%;
-    }
+        margin: 0;
+    } */
 
     #funds-display-row {
         width: 100%;

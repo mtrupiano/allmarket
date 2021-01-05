@@ -97,12 +97,9 @@ $(document).ready(function() {
             var responseArr = response.data;
             for (var i = 0; i < response.data.length; i++) {
                 var element = responseArr[i];
-                var newTableRow = $("<tr>");
-                newTableRow.attr("data-crypto-id", element.id);
-                newTableRow.append($("<td>").text(element.symbol));
-                newTableRow.append($("<td>").text(element.name));
-                newTableRow.append($("<td>").text(element.price_usd));
-                newTableRow.append($("<td>").text(element.percent_change_24h));
+                var newTableRow = $("<tr>").attr("data-crypto-id", element.id);
+                newTableRow.append($("<td>").text(element.symbol), $("<td>").text(element.name),
+                    $("<td>").text(element.price_usd), $("<td>").text(element.percent_change_24h));
                 tbodyEl.append(newTableRow);
             }
 
@@ -198,7 +195,7 @@ $(document).ready(function() {
         selectedCoin = { symbol: symbol, name: name, id: cryptoId };
 
         // Add coin symbol and name as headers in chart area
-        chartAreaHeader.children("h3").text(name + " (" + symbol + ")");
+        chartAreaHeader.children("h3").text(`${name} (${symbol})`);
 
         // Shrink table to the left of the page
         var viewEl = selectedRow.parent().parent().parent().parent();
@@ -256,25 +253,19 @@ $(document).ready(function() {
                 newsLink.attr("href", response.Data[i].url);
                 newsLink.attr("target", "_blank");
                 var newDiv = $("<div>");
-                newDiv.addClass("news-entry");
-                newDiv.addClass("row");
-                newDiv.addClass("valign-wrapper");
+                newDiv.addClass("row news-entry valign-wrapper");
 
                 var newsImg = $("<img>").attr("src", response.Data[i].imageurl);
                 newsImg.attr("width", "50");
                 newsImg.attr("height", "50");
-                var imgCol = $("<div>").addClass("col");
+                var imgCol = $("<div>").addClass("col s2 valign-wrapper");
                 imgCol.append(newsImg);
-                imgCol.addClass("valign-wrapper");
-                imgCol.addClass("s2");
 
-                var pCol = $("<div>").addClass("col");
-                pCol.addClass("s10");
+                var pCol = $("<div>").addClass("col s10");
 
-                newDiv.append(imgCol);
                 pCol.append($("<p>").text(response.Data[i].title + 
                     " (" + response.Data[i].source_info.name + ")"));
-                newDiv.append(pCol);
+                newDiv.append(imgCol, pCol);
                 newsLink.append(newDiv);
                 newsRow.append(newsLink);
             }
@@ -509,11 +500,10 @@ $(document).ready(function() {
                 if (element.ownedQuantity !== 0) {
                     var newTableRow = $("<tr>");
                     newTableRow.attr("data-crypto-id", element.id);
-                    newTableRow.append($("<td>").text(element.symbol));
-                    newTableRow.append($("<td>").text(element.name));
-                    newTableRow.append($("<td>").text(element.ownedQuantity.toFixed(2)));
-                    newTableRow.append($("<td>").text(
-                        (response[element.symbol].USD * element.ownedQuantity).toFixed(2)));
+                    newTableRow.append($("<td>").text(element.symbol), $("<td>").text(element.name),
+                        $("<td>").text(element.ownedQuantity.toFixed(2)), 
+                        $("<td>").text((response[element.symbol].USD * element.ownedQuantity).toFixed(2)));
+
                     // Calculate net gain/loss on a currency
                     var net = (response[element.symbol].USD * element.ownedQuantity) - element.spent;
                     var netEntry = $("<td>").text(net.toFixed(2));
@@ -666,7 +656,9 @@ $(document).ready(function() {
         $("#chart-div").hide();
         $("#news-row").html("");
 
-        viewContainer.removeClass("l6");
+        console.log(viewContainer);
+
+        viewContainer.removeClass("m6");
         viewContainer.addClass("s12");
         viewContainer.parent().attr("style", "");
         viewContainer.parent().addClass("container");
