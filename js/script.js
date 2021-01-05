@@ -175,6 +175,7 @@ $(document).ready(function() {
     function showChartArea(event) {
         event.preventDefault();
         $("#news-row").html("");
+        $("#wallet-view-row").show();
 
         // Get selected table row from event
         var target = $(event.target);
@@ -199,9 +200,10 @@ $(document).ready(function() {
 
         // Shrink table to the left of the page
         var viewEl = selectedRow.parent().parent().parent().parent();
-        viewEl.parent().removeClass("container");
+        viewEl.parent().parent().removeClass("container");
         viewEl.removeClass("s12");
         viewEl.addClass("m6");
+        viewEl.attr("style", "max-width: 650px;");
 
         // Submit API request to get most up-to-date price
         var price = 0;
@@ -321,8 +323,8 @@ $(document).ready(function() {
             }
 
             // Re-size table
-            viewEl.parent().addClass("container");
-            viewEl.parent().attr("style", "");
+            viewEl.parent().parent().addClass("container");
+            viewEl.attr("style", "max-width: none;");
             viewEl.removeClass("m6");
             viewEl.addClass("s12");
 
@@ -660,8 +662,8 @@ $(document).ready(function() {
 
         viewContainer.removeClass("m6");
         viewContainer.addClass("s12");
-        viewContainer.parent().attr("style", "");
-        viewContainer.parent().addClass("container");
+        viewContainer.attr("style", "max-width: none;");
+        viewContainer.parent().parent().addClass("container");
     }
 
     /**

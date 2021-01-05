@@ -69,7 +69,13 @@ h5 {
 
 /* ------------ */
 /* Tab-specific styling */
+#main-row {
+    display: flex;
+    justify-content: center;
+}
 #coins-view {
+    display: flex;
+    justify-content: center;
     padding-top: 10px;
 }
 
