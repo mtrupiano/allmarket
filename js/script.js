@@ -656,7 +656,7 @@ $(document).ready(function() {
         $("#chart-div").hide();
         $("#news-row").html("");
 
-        viewContainer.removeClass("l6");
+        viewContainer.removeClass("m6");
         viewContainer.addClass("s12");
         viewContainer.parent().attr("style", "");
         viewContainer.parent().addClass("container");

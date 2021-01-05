@@ -333,10 +333,11 @@ tr.active {
     h2 {
         font-size: 38px;
     }
-    #border-chart {
+
+    /* #border-chart {
         width: 100%;
         margin: 0;
-    }
+    } */
 
     #funds-display-row {
         width: 100%;
