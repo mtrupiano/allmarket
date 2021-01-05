@@ -607,7 +607,7 @@ $(document).ready(function() {
             totalPriceDisplay.text(totalPrice);
 
             // Check for sufficient funds
-            if (totalPrice > availableFunds) {
+            if (totalPrice > availableFunds && executeTransactionButton.text() === "PURCHASE") {
                 insufficientFundsAlert.show();
                 executeTransactionButton.addClass("disabled");
             } else {
