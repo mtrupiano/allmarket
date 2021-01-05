@@ -287,12 +287,12 @@ tr.active {
     bottom: 0%;
     padding: 0%;
     height: 5rem;
+    overflow-x: hidden;
 }
 
 #footer-logo {
-    height: 1.5rem; 
-    /* height: 20px;  */
-     margin-right: 1rem;
+    height: 1.5rem;
+    margin-right: 1rem;
 }
 
 #footer-graphic {
@@ -301,6 +301,7 @@ tr.active {
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%);
+    
 }
 
 #footer-credits {
