@@ -99,7 +99,14 @@ $(document).ready(function() {
                 var element = responseArr[i];
                 var newTableRow = $("<tr>").attr("data-crypto-id", element.id);
                 newTableRow.append($("<td>").text(element.symbol), $("<td>").text(element.name),
-                    $("<td>").text(element.price_usd), $("<td>").text(element.percent_change_24h));
+                    $("<td>").text(element.price_usd));
+                var pChange = $("<td>").text(element.percent_change_24h);
+                if (element.percent_change_24h >= 0) {
+                    pChange.addClass("gain");
+                } else {
+                    pChange.addClass("loss");
+                }
+                newTableRow.append(pChange);
                 tbodyEl.append(newTableRow);
             }
 
