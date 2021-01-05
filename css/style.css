@@ -301,14 +301,12 @@ tr.active {
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%);
-    
 }
 
 #footer-credits {
     margin-left: 8px;
     margin-right: 8px;
     position: relative;
-    top: 50%;
 } 
 /* ------------ */
 
