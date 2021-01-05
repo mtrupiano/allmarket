@@ -780,7 +780,8 @@ $(document).ready(function() {
             var totalPrice = response[0].price_usd * receipt.qty;
 
             // Credit price to available funds
-            localStorage.setItem("availableFunds", availableFunds + totalPrice);
+            availableFunds += totalPrice;
+            localStorage.setItem("availableFunds", availableFunds);
 
             // Generate transaction receipt info and store in transaction history (local storage)
             receipt.pricePer = totalPrice / receipt.qty;
