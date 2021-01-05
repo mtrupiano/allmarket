@@ -200,7 +200,7 @@ $(document).ready(function() {
 
         // Shrink table to the left of the page
         var viewEl = selectedRow.parent().parent().parent().parent();
-        viewEl.parent().parent().removeClass("container");
+        $("#wallet-view-row").removeClass("container");
         viewEl.removeClass("s12");
         viewEl.addClass("m6");
         viewEl.attr("style", "max-width: 650px;");
@@ -323,7 +323,7 @@ $(document).ready(function() {
             }
 
             // Re-size table
-            viewEl.parent().parent().addClass("container");
+            $("#wallet-view-row").addClass("container");
             viewEl.attr("style", "max-width: none;");
             viewEl.removeClass("m6");
             viewEl.addClass("s12");
@@ -661,7 +661,7 @@ $(document).ready(function() {
         viewContainer.removeClass("m6");
         viewContainer.addClass("s12");
         viewContainer.attr("style", "max-width: none;");
-        viewContainer.parent().parent().addClass("container");
+        $("#wallet-view-row").addClass("container");
     }
 
     /**
