@@ -127,6 +127,9 @@ h5 {
 #buy-sell-watch-group {
     margin-bottom: 15px;
 }
+#watch-btn {
+    color:rgb(25, 25, 25);
+}
 
 .canvas {
     min-height: 325px;
