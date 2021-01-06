@@ -1,0 +1,387 @@
+nav {
+    background-color: rgb(25, 25, 25);
+}
+
+main {
+    min-height: 85vh;
+    margin-bottom: 20px;
+}
+
+#logo {
+    height: 4rem;
+}
+
+h2, h3, h4, h5 {
+    font-family: "Baloo 2", cursive;
+}
+
+h5 {
+    margin-top: 0px;
+}
+
+.major-head {
+    font-family: "Baloo 2", cursive;
+}
+
+.row {
+    margin-bottom: 0;
+}
+
+.currency-acronym {
+    font-size: 14px;
+}
+
+/* ------------ */
+/* Tab styling */
+.tabs {
+    width:100%;
+}
+
+.tabs .tab a {
+    color: #943aad;
+    font-family: "Baloo 2", cursive;
+    font-size: 16px;
+}
+
+.tabs .tab a:hover, .tabs .tab a.active {
+    color: #943aad;
+    background-color: #dacfddc4;
+}
+
+.tabs .tab a:focus, .tabs .tab a:focus.active {
+    color: #943aad;
+    background-color: #dacfddc4;
+}
+
+.tabs .indicator {
+    background-color: #943aad;
+}
+
+#tabs-div, #tabs-div nav {
+    height: 40px;
+} 
+
+#tabs-nav ul {
+    height: 100%;
+}
+/* ------------ */
+
+
+/* ------------ */
+/* Tab-specific styling */
+#main-row {
+    display: flex;
+    justify-content: center;
+}
+#coins-view {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+}
+
+#wallet-view h3 {
+    margin-top: 12px;
+}
+
+#wallet-view tbody {
+    height: 30vh;
+}
+
+#coin-and-wallet-view-container {
+    padding-left: 10px;
+    padding-right: 10px;
+    justify-content: space-between;
+}
+
+#funds-display-row {
+    display: flex;
+    justify-content: center; 
+    margin-top: 30px;
+    width: 70%;
+    border-radius: 10px;
+    height: 40px;
+    min-width: 300px;
+}
+
+#funds-display-row h5 {
+    font-weight: bold;
+    font-size: 15px;
+}
+/* ------------ */
+
+
+/* ------------ */
+/* Chart area styling */
+#border-chart {
+    max-width: 750px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+#chart-div {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    min-width: 300px;
+}
+
+#coin-chart-header-row {
+    margin-bottom: 2px;
+}
+
+#buy-sell-watch-group {
+    margin-bottom: 15px;
+}
+
+#watch-btn {
+    background-color:rgb(25, 25, 25);
+}
+
+.canvas {
+    min-height: 325px;
+    min-width: 325;
+}
+
+.sell-btn {
+    background-color: red;
+}
+
+.news-entry {
+    border-bottom: solid;
+    border-bottom-width: 1px;
+    border-color: rgb(117, 117, 117);
+    max-width: 99%;
+}
+
+.news-entry:hover {
+    background-color: #dacfddc4;
+}
+
+.news-entry p {
+    font-size: 13px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#news-container {
+    width: 80%;
+    min-width: 300px;
+    margin: 0 auto;
+    padding-bottom: 10px;
+}
+
+#news-container col {
+    display: inline-block;
+}
+
+#news-container a:link {
+    color: #943aad;
+}
+
+#news-row-header {
+    border-bottom: solid;
+    border-bottom-width: 2px;
+}
+
+#news-row {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+/* ------------ */
+
+
+/* ------------ */
+/* Table styling */
+table {
+    width: 100%;
+    border-radius: 10px;
+    min-width: 300px;
+}
+
+tbody {
+    display: block;
+    height: 70vh;
+    overflow: auto;
+}
+
+thead, tbody tr {
+    display: table;
+    width:100%;
+    table-layout: fixed;
+}
+
+th {
+    font-family: "Baloo 2", cursive;
+    font-size: 16px;
+}
+
+/* Control the height of table rows */
+td, th {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+/* Appearance of selected table rows */
+tr.active {
+    border: solid;
+    border-color: #943aad;
+    border-width: 3px;
+    background-color: #dacfddc4;
+}
+
+/* Color for when the value in the +/- column is negative */
+.loss {
+    background-color: rgba(192, 8, 8, 0.5);
+}
+
+/* Color for when the value in the +/- column is positive */
+.gain {
+    background-color: rgba(18, 155, 18, 0.5);
+}
+
+.table-empty-msg {
+    color: rgba(175, 175, 175, 0.808);
+    height: 100%;
+}
+/* ------------ */
+
+
+/* ------------ */
+/* Modal form styling */
+.modal-content h4 {
+    font-size: 30px;
+}
+
+#buysell-form .row h4 {
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-form-row {
+    width: 80%;
+}
+
+#purchase-sell-btn {
+    width: 100%;
+}
+
+#cancel-transaction-btn {
+    width: 90%;
+    background-color: red;
+}
+
+.validation-alert {
+    display: none;
+    padding: 3px 8px;
+    background-color: rgba(255, 100, 100, 0.6);
+    border-radius: 2px;
+    margin-top: 10px;
+    color: rgba(48, 48, 48, 0.6);
+}
+
+#quantity-input-column {
+    margin-left: 0;
+}
+/* ------------ */
+
+
+/* ------------ */
+/* Footer styling */
+ .page-footer {
+    background-color: rgb(25, 25, 25);
+    position: relative;
+    color: #00bcd4;
+    width: 100%;
+    bottom: 0%;
+    padding: 0%;
+    height: 5rem;
+    overflow-x: hidden;
+}
+
+#footer-logo {
+    height: 1.5rem;
+    margin-right: 1rem;
+}
+
+#footer-graphic {
+    position: absolute;
+    height: 100%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%);
+}
+
+#footer-credits {
+    margin-left: 8px;
+    margin-right: 8px;
+    position: relative;
+} 
+/* ------------ */
+
+@media only screen and (max-width: 1200px) {
+    #buy-sell-watch-group {
+        align-items: center;
+    }
+    .btn-large {
+        width: 100px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .modal-form-row {
+        width: 90%;
+    }
+
+    #chart-div {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    h2 {
+        font-size: 38px;
+    }
+
+    /* #border-chart {
+        width: 100%;
+        margin: 0;
+    } */
+
+    #funds-display-row {
+        width: 100%;
+    }
+
+    #funds-display-row h5 {
+        font-size: 12px;
+    }
+
+    #footer-credits {
+        font-size: 8pt;
+    }
+
+    .modal .modal-content {
+        padding-left: 10px;
+        padding-right: 10px
+    }
+
+    .modal .col {
+        padding: 0;
+    }
+
+    .modal-content h2 {
+        font-size: 24px;
+    }
+
+    .modal-content h4 {
+        font-size: 16px;
+    }
+
+    #cancel-transaction-btn, #purchase-sell-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
