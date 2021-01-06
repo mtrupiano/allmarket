@@ -540,6 +540,9 @@ $(document).ready(function() {
         });
     }
 
+    /**
+     * Draw table showing "watched" currencies
+     */
     function renderWatchTable() {
         var watchingTbodyEl = $("#watching tbody");
         watchingTbodyEl.text(""); // Clear watching table
@@ -574,9 +577,8 @@ $(document).ready(function() {
                 var newTableRow = $("<tr>");
                 var symbol = watchList[i].symbol;
                 newTableRow.attr("data-crypto-id", watchList[i].id);
-                newTableRow.append($("<td>").text(symbol));
-                newTableRow.append($("<td>").text(watchList[i].name));
-                newTableRow.append($("<td>").text(response[symbol].USD));
+                newTableRow.append($("<td>").text(symbol), $("<td>").text(watchList[i].name),
+                    $("<td>").text(response[symbol].USD));
                 watchingTbodyEl.append(newTableRow);
             }
         });
