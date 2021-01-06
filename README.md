@@ -13,6 +13,9 @@ Allmarket is an educational cryptocurrency trading platform where you can:
  This application also uses [Moment.js](https://momentjs.com/), [Chart.js](https://www.chartjs.org/), and [Materialize](https://materializecss.com/).
 
  ![screengrab1](images/allmarket-screengrab-01.png)
+ 
  ![screengrab2](images/allmarket-screengrab-02.png)
+
  ![screengrab3](images/allmarket-screengrab-03.png)
+ 
  ![screengrab4](images/allmarket-screengrab-04.png)
