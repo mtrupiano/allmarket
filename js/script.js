@@ -29,15 +29,16 @@ $(document).ready(function() {
     var selectedCoin;
     
     // Tab view elements
-    
-    var learnView = $("#learn-view");
-    var currentView = learnView;
-    var walletView = $("#wallet-view");
-    var coinsView = $("#coins-view");
+    var learnView                   = $("#learn-view");
+    var currentView                 = learnView;
+    var walletView                  = $("#wallet-view");
+    var coinsView                   = $("#coins-view");
+    var coinAndWalletViewContainer  = $("#coin-and-wallet-view-container");
 
     // Funds display elements
-    var availableFundsMainDisplay = $("#available-funds-main-display");
-    var equityMainDisplay = $("#total-equity-display");
+    var fundsDisplayRow             = $("#funds-display-row");
+    var availableFundsMainDisplay   = $("#available-funds-main-display");
+    var equityMainDisplay           = $("#total-equity-display");
 
     // Elements of chart area
     var chartDiv          = $("#chart-div");
@@ -57,6 +58,7 @@ $(document).ready(function() {
     var insufficientFundsAlert =    $("#alert-insuf-funds");
     var quantityZeroAlert =         $("#alert-qty-zero");
     var invalidQtyAlert =           $("#alert-invalid-qty");
+    var transactionSubmitAlert =    $("#transaction-submit-alert");
 
     var coinLoreURL = "https://api.coinlore.net/api/tickers/";
     var key = "1D8CF151-75D6-407B-BD64-253F4241EFEE/";
@@ -72,8 +74,9 @@ $(document).ready(function() {
     var ctx = $("#chart");
 
     $("a[href='#learn-view']").click(function (event) {
+        if (currentView === learnView) { return; }
         currentView = learnView;
-        $("#funds-display-row").hide();
+        fundsDisplayRow.hide();
         resetChartArea(learnView);
     });
 
@@ -81,15 +84,10 @@ $(document).ready(function() {
      * Render full currency table when 'Coins' tab is clicked
      */
     $("a[href='#coins-view']").click(function(event) {
-        if (currentView === coinsView) {
-            return;
-        }
-        // if ($("div#coins-view").hasClass("active")) {
-        //     return;
-        // }
+        if (currentView === coinsView) { return; }
 
         currentView = coinsView;
-        $("#funds-display-row").show();
+        fundsDisplayRow.show();
         resetChartArea(coinsView);
         // Empty table
         var tbodyEl = $("div#coins-view tbody");
@@ -127,14 +125,10 @@ $(document).ready(function() {
      * Render owned and watching tables when 'My Wallet' tab is clicked
      */
     $("a[href='#wallet-view']").click(function (event) {
-        if (currentView === walletView) {
-            return;
-        }
-        // if ($("div#wallet-view").hasClass("active")) {
-        //     return;
-        // }
+        if (currentView === walletView) { return; }
+
         currentView = walletView;
-        $("#funds-display-row").show();
+        fundsDisplayRow.show();
         resetChartArea(walletView);
         
         renderAvailableFundsDisplay();
@@ -194,7 +188,7 @@ $(document).ready(function() {
     function showChartArea(event) {
         event.preventDefault();
         $("#news-row").html("");
-        $("#wallet-view-row").show();
+        coinAndWalletViewContainer.show();
 
         // Get selected table row from event
         var target = $(event.target);
@@ -219,7 +213,7 @@ $(document).ready(function() {
 
         // Shrink table to the left of the page
         var viewEl = selectedRow.parent().parent().parent().parent();
-        $("#wallet-view-row").removeClass("container");
+        coinAndWalletViewContainer.removeClass("container");
         viewEl.removeClass("s12");
         viewEl.addClass("m6");
         viewEl.attr("style", "max-width: 750px;");
@@ -311,22 +305,6 @@ $(document).ready(function() {
             else if (currentView === coinsView) { coinsView.show(); }
         }
 
-        // if ($(window).width() < 992) {
-        //     if (walletView.hasClass("active")) {
-        //         walletView.hide();
-        //     }
-        //     else if (coinsView.hasClass("active")) {
-        //         coinsView.hide();
-        //     }
-        // } else {
-        //     if (walletView.hasClass("active")) {
-        //         walletView.show();
-        //     }
-        //     else if (coinsView.hasClass("active")) {
-        //         coinsView.show();
-        //     }
-        // }
-
         // Disable 'Sell' button if user does not own any of this currency
         if (!ownedCurrencies.find(e => e.id === selectedCoin.id) ||
             (ownedCurrencies.find(e => e.id === selectedCoin.id)).ownedQuantity === 0) {
@@ -345,14 +323,9 @@ $(document).ready(function() {
             // Show whichever view is hidden
             if (currentView === walletView) { walletView.show(); }
             else if (currentView === coinsView) { coinsView.show(); }
-            // if (walletView.attr("style") === "display: none;" && walletView.hasClass("active")) {
-            //     walletView.show();
-            // } else if (coinsView.attr("style") === "display: none;" && coinsView.hasClass("active")) {
-            //     coinsView.show();
-            // }
 
             // Re-size table
-            $("#wallet-view-row").addClass("container");
+            coinAndWalletViewContainer.addClass("container");
             viewEl.attr("style", "max-width: none;");
             viewEl.removeClass("m6");
             viewEl.addClass("s12");
@@ -460,7 +433,7 @@ $(document).ready(function() {
         pricePerDisplay.text("");
 
         // Initialize modal pane
-        $("#buysell-form").modal({
+        modalForm.modal({
             dismissible: false,
             onOpenStart: function (modal, trigger) {
                 if (method === "SELL") {
@@ -684,13 +657,13 @@ $(document).ready(function() {
      */
     function resetChartArea(viewContainer) {
         // Hide chart area div
-        $("#chart-div").hide();
+        chartDiv.hide();
         $("#news-row").html("");
 
         viewContainer.removeClass("m6");
         viewContainer.addClass("s12");
         viewContainer.attr("style", "max-width: none;");
-        $("#wallet-view-row").addClass("container");
+        coinAndWalletViewContainer.addClass("container");
     }
 
     /**
@@ -738,7 +711,7 @@ $(document).ready(function() {
 
     function executeBuy(receipt) {
         executeTransactionButton.addClass("disabled");
-        $("#transaction-submit-alert").show();
+        transactionSubmitAlert.show();
         // Submit another API request to get most up-to-date price
         $.ajax({
             url: (`https://min-api.cryptocompare.com/data/price?fsym=${selectedCoin.symbol}` + 
@@ -787,13 +760,13 @@ $(document).ready(function() {
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
             renderAvailableFundsDisplay();
             executeTransactionButton.removeClass("disabled");
-            $("#transaction-submit-alert").hide();
+            transactionSubmitAlert.hide();
         });
     }
 
     function executeSell(receipt) {
         executeTransactionButton.addClass("disabled");
-        $("#transaction-submit-alert").show();
+        transactionSubmitAlert.show();
 
         // Submit another API request to get most up-to-date price
         $.ajax({
@@ -828,7 +801,7 @@ $(document).ready(function() {
             localStorage.setItem("ownedCurrencies", JSON.stringify(ownedCurrencies));
 
             executeTransactionButton.removeClass("disabled");
-            $("#transaction-submit-alert").hide();
+            transactionSubmitAlert.hide();
         });
     }
 

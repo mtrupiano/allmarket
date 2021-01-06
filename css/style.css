@@ -87,7 +87,7 @@ h5 {
     height: 30vh;
 }
 
-#wallet-view-row {
+#coin-and-wallet-view-container {
     padding-left: 10px;
     padding-right: 10px;
     justify-content: space-between;
